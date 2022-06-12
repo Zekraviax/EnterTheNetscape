@@ -1,0 +1,19 @@
+Range = 6
+Location: X1250, Y0, Z-100
+Scale: X6, Y10, Z5
+
+Range = 5
+Location: X1060, Y0, Z-100
+Scale: X5, Y8, Z4
+
+Range = 4
+Location: X870, Y0, Z-100
+Scale: X4, Y6, Z3
+
+Range = 3
+Location: X680, Y0, Z-100
+Scale: X3, Y4, Z2
+
+Range = 2
+Location: X490, Y0, Z-100
+Scale: X2, Y2, Z1
