@@ -50,7 +50,7 @@ public:
 	UDataTable* UltimateTypeChartDataTable;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int ExpectedPlayers = 2;
+	int ExpectedPlayers = 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<AActor_AttackEffectsLibrary> AttackEffectsLibrary_Class;
@@ -91,7 +91,7 @@ public:
 	void Server_AssembleTurnOrderText();
 
 	UFUNCTION(BlueprintCallable, Server, Reliable)
-	void Server_SpawnAvatar(APlayerController_Battle* PlayerController, int IndexInPlayerParty, FAvatar_Struct AvatarData);
+	void Server_SpawnAvatar(APlayerController_Battle* PlayerController, int IndexInPlayerParty, FNetscapeExplorer_Struct AvatarData);
 
 	UFUNCTION(BlueprintCallable, NetMulticast, Unreliable)
 	void Server_UpdateAllAvatarDecals();

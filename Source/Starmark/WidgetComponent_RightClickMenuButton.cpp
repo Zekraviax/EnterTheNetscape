@@ -40,10 +40,10 @@ void UWidgetComponent_RightClickMenuButton::EquipAvatar()
 	TArray<int> OccupiedIndices;
 	AEnterTheNetscape_PlayerState* PlayerStateReference = Cast<AEnterTheNetscape_PlayerState>(GetOwningPlayerState());
 
-	for (int i = 0; i < PlayerStateReference->PlayerProfileReference->CurrentAvatarTeam.Num(); i++) {
-		if (PlayerStateReference->PlayerProfileReference->CurrentAvatarTeam[i].AvatarName != "None" &&
-			PlayerStateReference->PlayerProfileReference->CurrentAvatarTeam[i].AvatarName != "Default")
-			OccupiedIndices.Add(PlayerStateReference->PlayerProfileReference->CurrentAvatarTeam[i].IndexInPlayerLibrary);
+	for (int i = 0; i < PlayerStateReference->PlayerProfileReference->CurrentExplorerTeam.Num(); i++) {
+		if (PlayerStateReference->PlayerProfileReference->CurrentExplorerTeam[i].NetscapeExplorerName != "None" &&
+			PlayerStateReference->PlayerProfileReference->CurrentExplorerTeam[i].NetscapeExplorerName != "Default")
+			OccupiedIndices.Add(PlayerStateReference->PlayerProfileReference->CurrentExplorerTeam[i].IndexInPlayerLibrary);
 	}
 
 	for (int j = 5; j >= 0; j--) {
@@ -53,11 +53,11 @@ void UWidgetComponent_RightClickMenuButton::EquipAvatar()
 
 	if (FirstEmptyIndex < 6) {
 		// Get the avatar
-		FAvatar_Struct ChosenAvatar = Cast<UWidgetComponent_Avatar>(RightClickMenuWidget->OwnerWidget)->AvatarData;
+		FNetscapeExplorer_Struct ChosenAvatar = Cast<UWidgetComponent_Avatar>(RightClickMenuWidget->OwnerWidget)->AvatarData;
 		ChosenAvatar.IndexInPlayerLibrary = FirstEmptyIndex;
 
-		PlayerStateReference->PlayerProfileReference->CurrentAvatarTeam.Insert(ChosenAvatar, FirstEmptyIndex);
-		PlayerStateReference->PlayerProfileReference->AvatarLibrary.Remove(ChosenAvatar);
+		PlayerStateReference->PlayerProfileReference->CurrentExplorerTeam.Insert(ChosenAvatar, FirstEmptyIndex);
+		PlayerStateReference->PlayerProfileReference->Explorers.Remove(ChosenAvatar);
 
 		TArray<UUserWidget*> FoundAvatarLibraryWidgets, FoundAvatarComponents;
 		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(this, FoundAvatarLibraryWidgets, UWidget_AvatarLibrary::StaticClass(), true);
@@ -80,17 +80,17 @@ void UWidgetComponent_RightClickMenuButton::UnequipAvatar()
 	TArray<int> OccupiedIndices;
 	AEnterTheNetscape_PlayerState* PlayerStateReference = Cast<AEnterTheNetscape_PlayerState>(GetOwningPlayerState());
 
-	for (int i = 0; i < PlayerStateReference->PlayerProfileReference->AvatarLibrary.Num(); i++) {
-		if (PlayerStateReference->PlayerProfileReference->AvatarLibrary[i].IndexInPlayerLibrary < FirstEmptyIndex) {
-			PlayerStateReference->PlayerProfileReference->AvatarLibrary[i].IndexInPlayerLibrary = FirstEmptyIndex;
+	for (int i = 0; i < PlayerStateReference->PlayerProfileReference->CurrentExplorerTeam.Num(); i++) {
+		if (PlayerStateReference->PlayerProfileReference->CurrentExplorerTeam[i].IndexInPlayerLibrary < FirstEmptyIndex) {
+			PlayerStateReference->PlayerProfileReference->CurrentExplorerTeam[i].IndexInPlayerLibrary = FirstEmptyIndex;
 		}
 	}
 
-	FAvatar_Struct ChosenAvatar = Cast<UWidgetComponent_Avatar>(RightClickMenuWidget->OwnerWidget)->AvatarData;
+	FNetscapeExplorer_Struct ChosenAvatar = Cast<UWidgetComponent_Avatar>(RightClickMenuWidget->OwnerWidget)->AvatarData;
 	ChosenAvatar.IndexInPlayerLibrary = FirstEmptyIndex;
 
-	PlayerStateReference->PlayerProfileReference->CurrentAvatarTeam.Remove(ChosenAvatar);
-	PlayerStateReference->PlayerProfileReference->AvatarLibrary.Add(ChosenAvatar);
+	PlayerStateReference->PlayerProfileReference->CurrentExplorerTeam.Remove(ChosenAvatar);
+	PlayerStateReference->PlayerProfileReference->Explorers.Add(ChosenAvatar);
 
 	TArray<UUserWidget*> FoundAvatarLibraryWidgets, FoundAvatarComponents;
 	UWidgetBlueprintLibrary::GetAllWidgetsOfClass(this, FoundAvatarLibraryWidgets, UWidget_AvatarLibrary::StaticClass(), true);
@@ -114,12 +114,12 @@ void UWidgetComponent_RightClickMenuButton::DeleteAvatar()
 	UWidgetComponent_Avatar* AvatarSlot = Cast<UWidgetComponent_Avatar>(RightClickMenuWidget->OwnerWidget);
 
 	if (AvatarSlot->IndexInPlayerTeam >= 0) {
-		PlayerStateReference->PlayerProfileReference->CurrentAvatarTeam.Remove(AvatarSlot->AvatarData);
+		PlayerStateReference->PlayerProfileReference->CurrentExplorerTeam.Remove(AvatarSlot->AvatarData);
 	} else {
-		PlayerStateReference->PlayerProfileReference->AvatarLibrary.Remove(AvatarSlot->AvatarData);
+		PlayerStateReference->PlayerProfileReference->Explorers.Remove(AvatarSlot->AvatarData);
 	}
 
-	AvatarSlot->AvatarData = FAvatar_Struct();
+	AvatarSlot->AvatarData = FNetscapeExplorer_Struct();
 
 	// Update all Avatar widgets
 	for (int i = 0; i < FoundAvatarLibraryWidgets.Num(); i++) {

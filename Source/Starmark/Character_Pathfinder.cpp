@@ -3,26 +3,15 @@
 #include "Actor_GridTile.h"
 #include "AIController_Avatar.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "CollisionQueryParams.h"
-#include "CollisionShape.h"
 #include "Components/CapsuleComponent.h"
-#include "DrawDebugHelpers.h"
 #include "Engine/EngineTypes.h"
 #include "Engine/World.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/PlayerController.h"
-#include "Materials/Material.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetSystemLibrary.h"
 #include "PlayerController_Battle.h"
-#include "Runtime/NavigationSystem/Public/NavigationSystem.h"
 #include "Widget_HUD_Battle.h"
 #include "WidgetComponent_AvatarBattleData.h"
-#include "EnterTheNetscape_GameState.h"
-#include "EnterTheNetscape_GameMode.h"
-#include "EnterTheNetscape_PlayerState.h"
-#include "UObject/ConstructorHelpers.h"
 
 
 ACharacter_Pathfinder::ACharacter_Pathfinder()
@@ -30,7 +19,7 @@ ACharacter_Pathfinder::ACharacter_Pathfinder()
 	// Set size for player capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 69.0f);
 
-	// Don't rotate character to camera direction
+	// Don't rotate character to camera
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
@@ -44,8 +33,8 @@ ACharacter_Pathfinder::ACharacter_Pathfinder()
 	// Actor Selected Decal (Don't delete this)
 	ActorSelected = CreateDefaultSubobject<UDecalComponent>("ActorSelected");
 	ActorSelected->SetupAttachment(RootComponent);
-	ActorSelected->SetVisibility(true);
-	ActorSelected->SetHiddenInGame(false);
+	ActorSelected->SetVisibility(false);
+	ActorSelected->SetHiddenInGame(true);
 	ActorSelected->DecalSize = FVector(32.0f, 64.0f, 64.0f);
 	ActorSelected->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f).Quaternion());
 	ActorSelected->SetRelativeLocation(FVector(0.f, 0.f, -90.f));
@@ -121,8 +110,8 @@ void ACharacter_Pathfinder::BeginPlayWorkaroundFunction_Implementation(UWidget_H
 	ActorLocationSnappedToGrid.Z = GetActorLocation().Z;
 	SetActorLocation(ActorLocationSnappedToGrid);
 
-	AvatarData.CurrentHealthPoints = AvatarData.BaseStats.HealthPoints;
-	AvatarData.CurrentManaPoints = AvatarData.BaseStats.ManaPoints;
+	AvatarData.CurrentHealthPoints = AvatarData.BattleStats.MaximumHealthPoints;
+	AvatarData.CurrentManaPoints = AvatarData.BattleStats.MaximumManaPoints;
 	AvatarData.CurrentTileMoves = AvatarData.MaximumTileMoves;
 
 	// Set default selected attack
@@ -443,13 +432,13 @@ void ACharacter_Pathfinder::AvatarStopMoving(bool SnapToGrid)
 
 
 // ------------------------- Multiplayer
-void ACharacter_Pathfinder::Client_GetAvatarData_Implementation(FAvatar_Struct NewAvatarData)
+void ACharacter_Pathfinder::Client_GetAvatarData_Implementation(FNetscapeExplorer_Struct NewAvatarData)
 {
 	Local_GetAvatarData(NewAvatarData);
 }
 
 
-void ACharacter_Pathfinder::Local_GetAvatarData(FAvatar_Struct NewAvatarData)
+void ACharacter_Pathfinder::Local_GetAvatarData(FNetscapeExplorer_Struct NewAvatarData)
 {
 	AvatarData = NewAvatarData;
 }

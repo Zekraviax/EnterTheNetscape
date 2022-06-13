@@ -42,14 +42,14 @@ public:
 
 // ------------------------- Components
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* AvatarName;
+	UTextBlock* NetscapeExplorerName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UImage* AvatarImage;
 
 // ------------------------- Avatars
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FAvatar_Struct AvatarData;
+	FNetscapeExplorer_Struct AvatarData;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UMaterial* AvatarMaterial;
@@ -100,7 +100,7 @@ public:
 	void UpdateWidgetMaterials();
 
 	UFUNCTION()
-	void ApplyNewAvatarData(FAvatar_Struct NewAvatarData);
+	void ApplyNewAvatarData(FNetscapeExplorer_Struct NewAvatarData);
 
 // ------------------------- Right Click Menu
 	UFUNCTION()

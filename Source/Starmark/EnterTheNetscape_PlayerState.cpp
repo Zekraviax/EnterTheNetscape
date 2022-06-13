@@ -61,15 +61,59 @@ void AEnterTheNetscape_PlayerState::Server_UpdatePlayerData_Implementation()
 				GameInstanceReference = Cast<UEnterTheNetscape_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 
 			ReplicatedPlayerName = GameInstanceReference->PlayerName;
+			if (!GameInstanceReference->CurrentProfileReference->IsValidLowLevel()) {
+				// If the player doesn't have a profile loaded, attempt to load a default profile.
+				GameInstanceReference->CurrentProfileReference = Cast<UPlayer_SaveData>(UGameplayStatics::LoadGameFromSlot("DefaultProfile", 0));
+
+				// Check if a default profile exists. If not, create one.
+				if (!GameInstanceReference->CurrentProfileReference->IsValidLowLevel()) {
+					UPlayer_SaveData* DefaultProfile = Cast<UPlayer_SaveData>(UGameplayStatics::CreateSaveGameObject(UPlayer_SaveData::StaticClass()));
+
+					// Add all available explorers to the default profile
+					if (ExplorersDataTableRowNames.Num() == 0) {
+						ExplorersDataTableRowNames = ExplorersDataTable->GetRowNames();
+					}
+
+					for (const FName ExplorerRowName : ExplorersDataTableRowNames) {
+						FNetscapeExplorer_Struct* Explorer = ExplorersDataTable->FindRow<FNetscapeExplorer_Struct>(ExplorerRowName, PlayerStateContextString);
+						if (Explorer) {
+							DefaultProfile->Explorers.Add(*Explorer);
+
+							if (DefaultProfile->CurrentExplorerTeam.Num() < 4) {
+								Explorer->IndexInPlayerLibrary = DefaultProfile->CurrentExplorerTeam.Num();
+								DefaultProfile->CurrentExplorerTeam.Add(*Explorer);
+							}
+						}
+					}
+
+					// Set other variables
+					DefaultProfile->Name = "DefaultProfile";
+					DefaultProfile->ProfileName = "DefaultProfile";
+
+					// Save the default slot
+					UGameplayStatics::SaveGameToSlot(DefaultProfile, "DefaultProfile", 0);
+					GameInstanceReference->CurrentProfileReference = DefaultProfile;
+				}
+			}
+
 			PlayerProfileReference = GameInstanceReference->CurrentProfileReference;
-			PlayerState_PlayerParty = GameInstanceReference->CurrentProfileReference->CurrentAvatarTeam;
+			PlayerState_PlayerParty = GameInstanceReference->CurrentProfileReference->CurrentExplorerTeam;
 
 			UE_LOG(LogTemp, Warning, TEXT("Server_UpdatePlayerData / IsValid(PlayerProfileReference) returns: %s"), IsValid(PlayerProfileReference) ? TEXT("true") : TEXT("false"));
 			UE_LOG(LogTemp, Warning, TEXT("Server_UpdatePlayerData / ReplicatedPlayerName is: %s"), *ReplicatedPlayerName);
 			
-			// Update player controller
-			Cast<APlayerController_Battle>(GetPawn()->GetController())->PlayerParty = GameInstanceReference->CurrentProfileReference->CurrentAvatarTeam;
-			Cast<APlayerController_Battle>(GetPawn()->GetController())->PlayerProfileReference = GameInstanceReference->CurrentProfileReference;
+			// Update player controller with team
+			UE_LOG(LogTemp, Warning, TEXT("Server_UpdatePlayerData / ReplicatedPlayerName is: %s"), *GetNetOwningPlayer()->GetPlayerController(GetWorld())->GetName());
+			/*
+			const APawn* Pawn = GetPawn();
+			while (Pawn == nullptr) {
+				Pawn = GetPawn();
+			}
+			AController* Controller = Pawn->GetController();
+			Cast<APlayerController_Battle>(Controller)->PlayerParty = GameInstanceReference->CurrentProfileReference->CurrentExplorerTeam;
+			*/
+			
+			Cast<APlayerController_Battle>(GetNetOwningPlayer()->GetPlayerController(GetWorld()))->PlayerProfileReference = GameInstanceReference->CurrentProfileReference;
 
 			SetPlayerName(GameInstanceReference->PlayerName);
 			SendUpdateToMultiplayerLobby();
@@ -149,8 +193,8 @@ void AEnterTheNetscape_PlayerState::Server_AddHealth_Implementation(ACharacter_P
 		Avatar->AvatarData.CurrentHealthPoints += Healing;
 		Avatar->UpdateAvatarDataInPlayerParty();
 
-		if (Avatar->AvatarData.CurrentHealthPoints > Avatar->AvatarData.BaseStats.HealthPoints)
-			Avatar->AvatarData.CurrentHealthPoints = Avatar->AvatarData.BaseStats.HealthPoints;
+		if (Avatar->AvatarData.CurrentHealthPoints > Avatar->AvatarData.BattleStats.MaximumHealthPoints)
+			Avatar->AvatarData.CurrentHealthPoints = Avatar->AvatarData.BattleStats.MaximumHealthPoints;
 	}
 }
 
@@ -165,7 +209,7 @@ void AEnterTheNetscape_PlayerState::Battle_AvatarDefeated_Implementation(ACharac
 			Avatar->PlayerControllerReference->PlayerParty.RemoveAt(Avatar->IndexInPlayerParty);
 
 			// Remove the Avatar from the turn order
-			UE_LOG(LogTemp, Warning, TEXT("Battle_AvatarDefeated / Remove Avatar %s from Turn Order"), *Avatar->AvatarData.AvatarName);
+			UE_LOG(LogTemp, Warning, TEXT("Battle_AvatarDefeated / Remove Avatar %s from Turn Order"), *Avatar->AvatarData.NetscapeExplorerName);
 			GameStateReference->AvatarTurnOrder.Remove(Avatar);
 			GameStateReference->DynamicAvatarTurnOrder.Remove(Avatar);
 
@@ -182,7 +226,7 @@ void AEnterTheNetscape_PlayerState::Battle_AvatarDefeated_Implementation(ACharac
 			bool FoundAvatarInReserve = false;
 			
 			for (int i = 0; i < Avatar->PlayerControllerReference->PlayerParty.Num(); i++) {
-				FAvatar_Struct FoundAvatar = Avatar->PlayerControllerReference->PlayerParty[i];
+				FNetscapeExplorer_Struct FoundAvatar = Avatar->PlayerControllerReference->PlayerParty[i];
 				if (FoundAvatar.CurrentHealthPoints > 0 && FoundAvatar.IndexInPlayerLibrary >= 4) {
 					// To-Do: Allow the player to summon an Avatar from reserve as a special action.
 					FoundAvatarInReserve = true;
@@ -202,13 +246,13 @@ void AEnterTheNetscape_PlayerState::Battle_AvatarDefeated_Implementation(ACharac
 }
 
 
-void AEnterTheNetscape_PlayerState::Server_UpdatePlayerStateVariables_Implementation(const TArray<FAvatar_Struct>& UpdatedPlayerParty)
+void AEnterTheNetscape_PlayerState::Server_UpdatePlayerStateVariables_Implementation(const TArray<FNetscapeExplorer_Struct>& UpdatedPlayerParty)
 {
 	PlayerState_PlayerParty = UpdatedPlayerParty;
 
 	for (int i = 0; i < UpdatedPlayerParty.Num(); i++) {
-		if (UpdatedPlayerParty[i].AvatarName != "Default") {
-			UE_LOG(LogTemp, Warning, TEXT("Server_UpdatePlayerStateVariables / Found Avatar %s in Player %s's PlayerState"), *UpdatedPlayerParty[i].AvatarName, *GetPlayerName());
+		if (UpdatedPlayerParty[i].NetscapeExplorerName != "Default") {
+			UE_LOG(LogTemp, Warning, TEXT("Server_UpdatePlayerStateVariables / Found Avatar %s in Player %s's PlayerState"), *UpdatedPlayerParty[i].NetscapeExplorerName, *GetPlayerName());
 		}
 	}
 }

@@ -81,7 +81,7 @@ public:
 	bool IsReadyToStartMultiplayerBattle = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, Category = "Player")
-	TArray<FAvatar_Struct> PlayerParty;
+	TArray<FNetscapeExplorer_Struct> PlayerParty;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, Category = "Player")
 	bool IsCurrentlyActingPlayer;
@@ -123,7 +123,7 @@ public:
 	void Client_GetTurnOrderText(const FString& NewTurnOrderText);
 
 	UFUNCTION()
-	void Local_GetTurnOrderText(const FString& NewTurnOrderText);
+	void Local_GetTurnOrderText(const FString& NewTurnOrderText) const;
 
 // ------------------------- Avatar
 	UFUNCTION(BlueprintCallable, Client, Reliable)

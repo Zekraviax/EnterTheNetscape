@@ -62,10 +62,7 @@ public:
 
 // ------------------------- Avatar
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, Category = "Avatar")
-	FAvatar_Struct AvatarData;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar")
-	FAvatar_ElementalEssences ElementalEssences;
+	FNetscapeExplorer_Struct AvatarData;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar")
 	bool RotateAvatarTowardsMouse = false;
@@ -152,8 +149,8 @@ public:
 
 // ------------------------- Multiplayer
 	UFUNCTION(Client, Unreliable)
-	void Client_GetAvatarData(FAvatar_Struct NewAvatarData);
+	void Client_GetAvatarData(FNetscapeExplorer_Struct NewAvatarData);
 
 	UFUNCTION()
-	void Local_GetAvatarData(FAvatar_Struct NewAvatarData);
+	void Local_GetAvatarData(FNetscapeExplorer_Struct NewAvatarData);
 };

@@ -230,48 +230,71 @@ struct STARMARK_API FAvatar_DyeColours : public FTableRowBase
 
 
 USTRUCT(BlueprintType)
-struct STARMARK_API FAvatar_BaseStats
+struct STARMARK_API FNetscapeExplorer_BattleStats
 {
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int HealthPoints;
+	int MaximumHealthPoints;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int ManaPoints;
+	int MaximumManaPoints;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Attack;
+	int Strength;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Defence;
+	int Endurance;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int SpecialAttack;
+	int Agility;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int SpecialDefence;
+	int Magic;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Speed;
+	int Luck;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Evade;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Power;
-
-	FAvatar_BaseStats()
+	FNetscapeExplorer_BattleStats()
 	{
-		HealthPoints = 100;
-		ManaPoints = 100;
-		Attack = 10;
-		Defence = 10;
-		SpecialAttack = 10;
-		SpecialDefence = 10;
-		Speed = 10;
-		Evade = 10;
-		Power = 10;
+		MaximumHealthPoints = 10;
+		MaximumManaPoints = 10;
+		Strength = 1;
+		Endurance = 1;
+		Agility = 1;
+		Magic = 1;
+		Luck = 1;
+	}
+};
+
+
+USTRUCT(BlueprintType)
+struct STARMARK_API FNetscapeExplorer_SocialStats
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Courage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Diligence;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Empathy;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Talent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Charisma;
+
+	FNetscapeExplorer_SocialStats()
+	{
+		Courage = 1;
+		Diligence = 1;
+		Empathy = 1;
+		Talent = 1;
+		Charisma = 1;
 	}
 };
 
@@ -297,45 +320,6 @@ struct STARMARK_API FAvatar_Size
 	{
 		SizeX = InSizeX;
 		SizeY = InSizeY;
-	}
-};
-
-
-USTRUCT(BlueprintType)
-struct STARMARK_API FAvatar_ElementalEssences
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int FireEssence;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int WaterEssence;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int AirEssence;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int EarthEssence;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int LightEssence;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int DarkEssence;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int ArcaneEssence;
-
-	FAvatar_ElementalEssences()
-	{
-		FireEssence = 0;
-		WaterEssence = 0;
-		AirEssence = 0;
-		EarthEssence = 0;
-		LightEssence = 0;
-		DarkEssence = 0;
-		ArcaneEssence = 0;
 	}
 };
 
@@ -506,20 +490,23 @@ struct STARMARK_API FAvatar_ItemStruct : public FTableRowBase
 
 
 USTRUCT(BlueprintType)
-struct STARMARK_API FAvatar_Struct : public FTableRowBase
+struct STARMARK_API FNetscapeExplorer_Struct : public FTableRowBase
 {
 	GENERATED_BODY()
 
 // ------------------------- Base Data
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
-	FString AvatarName;
+	FString NetscapeExplorerName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
 	FString Nickname;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
+	FNetscapeExplorer_SocialStats SocialStats;
+
 // ------------------------- Battle
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Battle")
-	FAvatar_BaseStats BaseStats;
+	FNetscapeExplorer_BattleStats BattleStats;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Battle")
 	int CurrentHealthPoints;
@@ -538,9 +525,6 @@ struct STARMARK_API FAvatar_Struct : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Battle")
 	int CurrentActionPoints;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Battle")
-	float SameTypeAttackBonusMultiplier;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Battle")
 	TArray<FAvatar_AttackStruct> CurrentAttacks;
@@ -579,52 +563,30 @@ struct STARMARK_API FAvatar_Struct : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Appearance")
 	int DyableColourCount;
 
-	// Animations
-	// Menu Image(s)
-
 // ------------------------- Other Data Tables
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Other DataTables")
-	TArray<FDataTableRowHandle> SimpleAttacks;
+	TArray<FDataTableRowHandle> Attacks;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Other DataTables")
-	TArray<FDataTableRowHandle> AttacksLearnedByBuyingWithEssence;
-
-// ------------------------- Encyclopedia
-	// Number
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Encyclopedia")
-	int EncyclopediaNumber;
-
-	// Height Range
-	// Weight Range
-
-	// Lore
+// ------------------------- Lore
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Encyclopedia")
 	FString Lore;
 
-
-	// ------------------------- Other Data
+// ------------------------- Other Data
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Other")
 	TArray<FIntPoint> OccupiedTiles;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Other")
-	int Tier;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Other")
-	int TokensRequired;
-
-	// 0 - 3 are reserved for active avatars
-	// 4 and 5 are reserved for reserve avatars
+	
+	// 0 - 3 are reserved for active netscape explorers
+	// 4 and up are  for reserve explorers
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Other")
 	int IndexInPlayerLibrary;
 
 	// Fetch all the attacks from the datatable when the battle starts,
-	// not when the avatar is created or edited
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Other")
 	TArray<FName> CurrentEquippedAttackNames;
 
-	FAvatar_Struct()
+	FNetscapeExplorer_Struct()
 	{
-		AvatarName = "Default";
+		NetscapeExplorerName = "Default";
 		Nickname = "";
 		CurrentHealthPoints = 1;
 		CurrentManaPoints = 1;
@@ -632,22 +594,18 @@ struct STARMARK_API FAvatar_Struct : public FTableRowBase
 		CurrentTileMoves = 2;
 		MaximumActionPoints = 1;
 		CurrentActionPoints = 1;
-		SameTypeAttackBonusMultiplier = 150;
 		DefaultImage = nullptr;
 		SkeletalMesh = nullptr;
 		DyableMaterial = nullptr;
 		DyableColourCount = 0;
-		EncyclopediaNumber = 0;
 		Lore = "Default";
 		OccupiedTiles.AddUnique(FIntPoint(0, 0));
-		Tier = 1;
-		TokensRequired = 1;
 		IndexInPlayerLibrary = -1000000;
 	}
 
-	bool operator==(const FAvatar_Struct& OtherAvatar) const
+	bool operator==(const FNetscapeExplorer_Struct& OtherAvatar) const
 	{
-		return (AvatarName == OtherAvatar.AvatarName &&
+		return (NetscapeExplorerName == OtherAvatar.NetscapeExplorerName &&
 			Nickname == OtherAvatar.Nickname);
 	}
 };

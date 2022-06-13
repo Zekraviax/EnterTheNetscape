@@ -15,12 +15,12 @@ AActor_GridTile::AActor_GridTile()
 	// Initialize Components
 	Floor = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Floor"));
 	Floor->SetupAttachment(RootComponent);
-	Floor->SetRelativeTransform(FTransform(FRotator::ZeroRotator, FVector::ZeroVector, FVector(2.f, 2.f, 1.f)));
+	Floor->SetRelativeTransform(FTransform(FRotator(0, 0, 0), FVector::ZeroVector, FVector(1.f, 1.f, 1.f)));
 
 	// Hitbox
 	GridTileHitbox = CreateDefaultSubobject<UBoxComponent>(TEXT("GridTileHitbox"));
 	GridTileHitbox->SetupAttachment(RootComponent);
-	GridTileHitbox->SetRelativeScale3D(FVector(2.5f, 2.5f, 1.f));
+	GridTileHitbox->SetRelativeScale3D(FVector(3.f, 1.f, 1.f));
 	// Set 'Simulation Generates Hit Events'
 	GridTileHitbox->SetNotifyRigidBodyCollision(true);
 }

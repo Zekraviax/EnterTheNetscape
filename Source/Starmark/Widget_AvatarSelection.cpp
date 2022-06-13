@@ -24,12 +24,12 @@ void UWidget_AvatarSelection::OnWidgetOpened()
 		// Populate Avatar Team Slots
 		TArray<UWidget*> FoundChildWidgetComponents = Cast<UPanelWidget>(SelectionWidgetTree->RootWidget)->GetAllChildren();
 
-		for (int i = 0; i < PlayerStateReference->PlayerProfileReference->CurrentAvatarTeam.Num(); i++) {
+		for (int i = 0; i < PlayerStateReference->PlayerProfileReference->CurrentExplorerTeam.Num(); i++) {
 			for (int j = 0; j < FoundChildWidgetComponents.Num(); j++) {
 				if (Cast<UWidgetComponent_Avatar>(FoundChildWidgetComponents[j])) {
 					AvatarWidgetComponent_Reference = Cast<UWidgetComponent_Avatar>(FoundChildWidgetComponents[j]);
 					if (AvatarWidgetComponent_Reference->IndexInPlayerTeam == i) {
-						AvatarWidgetComponent_Reference->ApplyNewAvatarData(PlayerStateReference->PlayerProfileReference->CurrentAvatarTeam[i]);
+						AvatarWidgetComponent_Reference->ApplyNewAvatarData(PlayerStateReference->PlayerProfileReference->CurrentExplorerTeam[i]);
 						AvatarWidgetComponent_Reference->CurrentFunction = E_AvatarWidgetComponent_Function::E_AddAvatarToChosenSlot;
 						break;
 					}
@@ -41,9 +41,9 @@ void UWidget_AvatarSelection::OnWidgetOpened()
 		AvatarLibraryUniformGridPanel->ClearChildren();
 
 		// Populate Avatar Library
-		for (int i = 0; i < PlayerStateReference->PlayerProfileReference->AvatarLibrary.Num(); i++) {
+		for (int i = 0; i < PlayerStateReference->PlayerProfileReference->Explorers.Num(); i++) {
 			AvatarWidgetComponent_Reference = CreateWidget<UWidgetComponent_Avatar>(this, AvatarWidgetComponent_Class);
-			AvatarWidgetComponent_Reference->ApplyNewAvatarData(PlayerStateReference->PlayerProfileReference->AvatarLibrary[i]);
+			AvatarWidgetComponent_Reference->ApplyNewAvatarData(PlayerStateReference->PlayerProfileReference->Explorers[i]);
 
 			Column++;
 			if (Column >= 4) {
@@ -68,7 +68,7 @@ void UWidget_AvatarSelection::OnWidgetOpened()
 		//}
 
 		//AvatarWidgetComponent_Reference->UpdateWidgetMaterials();
-		//AvatarWidgetComponent_Reference->AvatarName->SetText(FText::FromString("Create New"));
+		//AvatarWidgetComponent_Reference->NetscapeExplorerName->SetText(FText::FromString("Create New"));
 		//AvatarLibraryUniformGridPanel->AddChildToUniformGrid(AvatarWidgetComponent_Reference, Row, Column);
 	}
 

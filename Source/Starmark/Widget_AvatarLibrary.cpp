@@ -27,22 +27,22 @@ void UWidget_AvatarLibrary::OnWidgetOpened()
 		FoundChildWidgetComponents = Cast<UPanelWidget>(LibraryWidgetTree->RootWidget)->GetAllChildren();
 
 		// Add Avatars to the team slots, making sure that the index in the players team is preserved
-		for (int i = 0; i < PlayerStateReference->PlayerProfileReference->CurrentAvatarTeam.Num(); i++) {
+		for (int i = 0; i < PlayerStateReference->PlayerProfileReference->CurrentExplorerTeam.Num(); i++) {
 			for (int j = 0; j < FoundChildWidgetComponents.Num(); j++) {
 				if (Cast<UWidgetComponent_Avatar>(FoundChildWidgetComponents[j]) ) {
 					AvatarWidgetComponent_Reference = Cast<UWidgetComponent_Avatar>(FoundChildWidgetComponents[j]);
 					if (AvatarWidgetComponent_Reference->IndexInPlayerTeam == i) {
-						if (PlayerStateReference->PlayerProfileReference->CurrentAvatarTeam[i].IndexInPlayerLibrary != i)
-							PlayerStateReference->PlayerProfileReference->CurrentAvatarTeam[i].IndexInPlayerLibrary = i;
+						if (PlayerStateReference->PlayerProfileReference->CurrentExplorerTeam[i].IndexInPlayerLibrary != i)
+							PlayerStateReference->PlayerProfileReference->CurrentExplorerTeam[i].IndexInPlayerLibrary = i;
 
 						AvatarWidgetComponent_Reference->PairedWidget = this;
-						AvatarWidgetComponent_Reference->ApplyNewAvatarData(PlayerStateReference->PlayerProfileReference->CurrentAvatarTeam[i]);
+						AvatarWidgetComponent_Reference->ApplyNewAvatarData(PlayerStateReference->PlayerProfileReference->CurrentExplorerTeam[i]);
 
 						AvatarWidgetComponent_Reference->CurrentFunction = E_AvatarWidgetComponent_Function::E_AddAvatarToChosenSlot;
 
 						AvatarWidgetComponent_Reference->RightClickMenuCommands.Empty();
 
-						if (AvatarWidgetComponent_Reference->AvatarData.AvatarName != "None") {
+						if (AvatarWidgetComponent_Reference->AvatarData.NetscapeExplorerName != "None") {
 							AvatarWidgetComponent_Reference->RightClickMenuCommands.Add(E_RightClickMenu_Commands::EditAvatar);
 							AvatarWidgetComponent_Reference->RightClickMenuCommands.Add(E_RightClickMenu_Commands::UnequipAvatar);
 							AvatarWidgetComponent_Reference->RightClickMenuCommands.Add(E_RightClickMenu_Commands::DeleteAvatar);
@@ -59,9 +59,9 @@ void UWidget_AvatarLibrary::OnWidgetOpened()
 		AvatarLibraryUniformGridPanel->ClearChildren();
 
 		// Populate the Avatar Library (Avatars not currently in the players' team)
-		for (int i = 0; i < PlayerStateReference->PlayerProfileReference->AvatarLibrary.Num(); i++) {
+		for (int i = 0; i < PlayerStateReference->PlayerProfileReference->Explorers.Num(); i++) {
 			AvatarWidgetComponent_Reference = CreateWidget<UWidgetComponent_Avatar>(this, AvatarWidgetComponent_Class);
-			AvatarWidgetComponent_Reference->ApplyNewAvatarData(PlayerStateReference->PlayerProfileReference->AvatarLibrary[i]);
+			AvatarWidgetComponent_Reference->ApplyNewAvatarData(PlayerStateReference->PlayerProfileReference->Explorers[i]);
 
 			Column++;
 			if (Column >= 4) {
@@ -92,7 +92,7 @@ void UWidget_AvatarLibrary::OnWidgetOpened()
 		}
 
 		AvatarWidgetComponent_Reference->UpdateWidgetMaterials();
-		AvatarWidgetComponent_Reference->AvatarName->SetText(FText::FromString("Create New"));
+		AvatarWidgetComponent_Reference->NetscapeExplorerName->SetText(FText::FromString("Create New"));
 		AvatarLibraryUniformGridPanel->AddChildToUniformGrid(AvatarWidgetComponent_Reference, Row, Column);
 	}
 
@@ -132,10 +132,10 @@ void UWidget_AvatarLibrary::UpdateAllAvatarsInTeam()
 
 			if (AvatarWidgetComponent_Reference->IndexInPlayerTeam >= 0) {
 				bool FoundAvatarInSlot = false;
-				for (int k = 0; k < PlayerStateReference->PlayerProfileReference->CurrentAvatarTeam.Num(); k++) {
-					if (PlayerStateReference->PlayerProfileReference->CurrentAvatarTeam[k].IndexInPlayerLibrary == AvatarWidgetComponent_Reference->IndexInPlayerTeam) {
+				for (int k = 0; k < PlayerStateReference->PlayerProfileReference->CurrentExplorerTeam.Num(); k++) {
+					if (PlayerStateReference->PlayerProfileReference->CurrentExplorerTeam[k].IndexInPlayerLibrary == AvatarWidgetComponent_Reference->IndexInPlayerTeam) {
 						FoundAvatarInSlot = true;
-						AvatarWidgetComponent_Reference->AvatarData = PlayerStateReference->PlayerProfileReference->CurrentAvatarTeam[k];
+						AvatarWidgetComponent_Reference->AvatarData = PlayerStateReference->PlayerProfileReference->CurrentExplorerTeam[k];
 						break;
 					}
 				}
@@ -148,8 +148,8 @@ void UWidget_AvatarLibrary::UpdateAllAvatarsInTeam()
 
 					AvatarWidgetComponent_Reference->UpdateWidgetMaterials();
 				} else {
-					AvatarWidgetComponent_Reference->AvatarData = FAvatar_Struct();
-					AvatarWidgetComponent_Reference->AvatarName->SetText(FText::FromString("Empty Slot"));
+					AvatarWidgetComponent_Reference->AvatarData = FNetscapeExplorer_Struct();
+					AvatarWidgetComponent_Reference->NetscapeExplorerName->SetText(FText::FromString("Empty Slot"));
 					AvatarWidgetComponent_Reference->AvatarImage->SetBrushFromTexture(Cast<UTexture2D>(QuestionMarkMaterials[0]), true);
 				}
 
@@ -179,7 +179,7 @@ void UWidget_AvatarLibrary::OnAvatarChangedSlotDelegateBroadcast()
 	UWidgetTree* LibraryWidgetTree = this->WidgetTree;
 	TArray<UWidget*> FoundChildWidgetComponents;
 
-	PlayerStateReference->PlayerProfileReference->CurrentAvatarTeam.Empty();
+	PlayerStateReference->PlayerProfileReference->CurrentExplorerTeam.Empty();
 
 	FoundChildWidgetComponents = Cast<UPanelWidget>(LibraryWidgetTree->RootWidget)->GetAllChildren();
 
@@ -187,8 +187,8 @@ void UWidget_AvatarLibrary::OnAvatarChangedSlotDelegateBroadcast()
 		if (Cast<UWidgetComponent_Avatar>(FoundChildWidgetComponents[i])) {
 			UWidgetComponent_Avatar* AvatarWidgetComponentReference = Cast<UWidgetComponent_Avatar>(FoundChildWidgetComponents[i]);
 			if (AvatarWidgetComponentReference->IndexInPlayerTeam >= 0) {
-				PlayerStateReference->PlayerProfileReference->CurrentAvatarTeam.Insert(AvatarWidgetComponentReference->AvatarData, AvatarWidgetComponentReference->IndexInPlayerTeam);
-				PlayerStateReference->PlayerProfileReference->AvatarLibrary.Remove(AvatarWidgetComponentReference->AvatarData);
+				PlayerStateReference->PlayerProfileReference->CurrentExplorerTeam.Insert(AvatarWidgetComponentReference->AvatarData, AvatarWidgetComponentReference->IndexInPlayerTeam);
+				PlayerStateReference->PlayerProfileReference->Explorers.Remove(AvatarWidgetComponentReference->AvatarData);
 			}
 		}
 	}

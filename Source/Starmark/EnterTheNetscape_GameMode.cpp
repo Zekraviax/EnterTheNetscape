@@ -48,6 +48,9 @@ void AEnterTheNetscape_GameMode::OnPlayerPostLogin(APlayerController_Battle* New
 		CombatLogTextArray.Empty();
 
 	// When all players have joined, begin running the functions needed to start the battle
+	UE_LOG(LogTemp, Warning, TEXT("OnPlayerPostLogin / Call Server_SinglePlayerBeginMultiplayerBattle()"));
+	Server_SinglePlayerBeginMultiplayerBattle(NewPlayerController);
+	/*
 	if (ExpectedPlayers >= 2 && PlayerControllerReferences.Num() >= ExpectedPlayers) {
 		UE_LOG(LogTemp, Warning, TEXT("OnPlayerPostLogin / Call Server_BeginMultiplayerBattle()"));
 		Server_BeginMultiplayerBattle();
@@ -55,6 +58,7 @@ void AEnterTheNetscape_GameMode::OnPlayerPostLogin(APlayerController_Battle* New
 		UE_LOG(LogTemp, Warning, TEXT("OnPlayerPostLogin / Call Server_SinglePlayerBeginMultiplayerBattle()"));
 		Server_SinglePlayerBeginMultiplayerBattle(NewPlayerController);
 	}
+	*/
 }
 
 
@@ -64,19 +68,19 @@ void AEnterTheNetscape_GameMode::Server_BeginMultiplayerBattle_Implementation()
 
 	for (int i = 0; i < PlayerControllerReferences.Num(); i++) {
 		PlayerControllerReferences[i]->Server_GetDataFromProfile();
-		TArray<FAvatar_Struct> CurrentPlayerTeam = PlayerControllerReferences[i]->PlayerParty;
+		TArray<FNetscapeExplorer_Struct> CurrentPlayerTeam = PlayerControllerReferences[i]->PlayerParty;
 
 		int SpawnedAvatarCount = 0;
 
 		for (int j = CurrentPlayerTeam.Num() - 1; j >= 0; j--) {
-			if (CurrentPlayerTeam[j].AvatarName != "Default") {
+			if (CurrentPlayerTeam[j].NetscapeExplorerName != "Default") {
 				if (SpawnedAvatarCount < 4) {
 					Server_SpawnAvatar(PlayerControllerReferences[i], j + 1, CurrentPlayerTeam[j]);
-					UE_LOG(LogTemp, Warning, TEXT("OnPlayerPostLogin / Spawn Avatar %s for Player %s"), *CurrentPlayerTeam[j].AvatarName, *PlayerControllerReferences[i]->PlayerName);
+					UE_LOG(LogTemp, Warning, TEXT("OnPlayerPostLogin / Spawn Avatar %s for Player %s"), *CurrentPlayerTeam[j].NetscapeExplorerName, *PlayerControllerReferences[i]->PlayerName);
 					SpawnedAvatarCount++;
 				}
 			} else {
-				Cast<UEnterTheNetscape_GameInstance>(PlayerControllerReferences[i]->GetGameInstance())->CurrentProfileReference->CurrentAvatarTeam.RemoveAt(j);
+				Cast<UEnterTheNetscape_GameInstance>(PlayerControllerReferences[i]->GetGameInstance())->CurrentProfileReference->CurrentExplorerTeam.RemoveAt(j);
 				UE_LOG(LogTemp, Warning, TEXT("Server_BeginMultiplayerBattle / Remove invalid member %d from PlayerState_PlayerParty"), j);
 			}
 		}
@@ -88,17 +92,17 @@ void AEnterTheNetscape_GameMode::Server_BeginMultiplayerBattle_Implementation()
 
 void AEnterTheNetscape_GameMode::Server_SinglePlayerBeginMultiplayerBattle_Implementation(APlayerController_Battle* PlayerControllerReference)
 {
-	TArray<FAvatar_Struct> CurrentPlayerTeam = Cast<UEnterTheNetscape_GameInstance>(PlayerControllerReferences[0]->GetGameInstance())->CurrentProfileReference->CurrentAvatarTeam;
+	TArray<FNetscapeExplorer_Struct> CurrentPlayerTeam = Cast<UEnterTheNetscape_GameInstance>(PlayerControllerReferences[0]->GetGameInstance())->CurrentProfileReference->CurrentExplorerTeam;
 	int SpawnedAvatarCount = 0;
 
 	for (int j = CurrentPlayerTeam.Num() - 1; j >= 0; j--) {
-		if (CurrentPlayerTeam[j].AvatarName != "Default") {
+		if (CurrentPlayerTeam[j].NetscapeExplorerName != "Default") {
 			if (SpawnedAvatarCount < 4) {
-				Server_SpawnAvatar(PlayerControllerReferences[0], j + 1, Cast<UEnterTheNetscape_GameInstance>(PlayerControllerReferences[0]->GetGameInstance())->CurrentProfileReference->CurrentAvatarTeam[j]);
+				Server_SpawnAvatar(PlayerControllerReferences[0], j + 1, Cast<UEnterTheNetscape_GameInstance>(PlayerControllerReferences[0]->GetGameInstance())->CurrentProfileReference->CurrentExplorerTeam[j]);
 				SpawnedAvatarCount++;
 			}
 		} else {
-			Cast<UEnterTheNetscape_GameInstance>(PlayerControllerReferences[0]->GetGameInstance())->CurrentProfileReference->CurrentAvatarTeam.RemoveAt(j);
+			Cast<UEnterTheNetscape_GameInstance>(PlayerControllerReferences[0]->GetGameInstance())->CurrentProfileReference->CurrentExplorerTeam.RemoveAt(j);
 			UE_LOG(LogTemp, Warning, TEXT("Server_SinglePlayerBeginMultiplayerBattle / Remove invalid member %d from PlayerState_PlayerParty"), j);
 		}
 	}
@@ -121,7 +125,7 @@ void AEnterTheNetscape_GameMode::Server_MultiplayerBattleCheckAllPlayersReady_Im
 	if (ReadyStatuses.Contains(false) || ReadyStatuses.Num() < ExpectedPlayers) {
 		GetWorld()->GetTimerManager().SetTimer(PlayerReadyCheckTimerHandle, this, &AEnterTheNetscape_GameMode::Server_MultiplayerBattleCheckAllPlayersReady, 0.5f, false);
 	} else {
-		// Only set the turn order once all Avatars are spawned
+		// Only set the turn order once all entities are spawned
 		for (int i = 0; i < PlayerControllerReferences.Num(); i++) {
 			GameStateReference->SetTurnOrder(PlayerControllerReferences);
 		}
@@ -159,10 +163,10 @@ void AEnterTheNetscape_GameMode::Server_AssembleTurnOrderText_Implementation()
 			if (PlayerStateReference->ReplicatedPlayerName == "" || PlayerStateReference->ReplicatedPlayerName.Len() <= 0)
 				PlayerStateReference->ReplicatedPlayerName = ("Player " + FString::FromInt(GameStateReference->AvatarTurnOrder[i]->PlayerControllerReference->MultiplayerUniqueID));
 
-			NewTurnOrderText.Append(GameStateReference->AvatarTurnOrder[i]->AvatarData.AvatarName + " / " + PlayerStateReference->ReplicatedPlayerName + "\n");
+			NewTurnOrderText.Append(GameStateReference->AvatarTurnOrder[i]->AvatarData.Nickname + " / " + PlayerStateReference->ReplicatedPlayerName + "\n");
 		}
 		else
-			NewTurnOrderText.Append(GameStateReference->AvatarTurnOrder[i]->AvatarData.AvatarName + " / ?\n");
+			NewTurnOrderText.Append(GameStateReference->AvatarTurnOrder[i]->AvatarData.Nickname + " / ?\n");
 	}
 
 	GameStateReference->CurrentTurnOrderText = NewTurnOrderText;
@@ -173,7 +177,7 @@ void AEnterTheNetscape_GameMode::Server_AssembleTurnOrderText_Implementation()
 }
 
 
-void AEnterTheNetscape_GameMode::Server_SpawnAvatar_Implementation(APlayerController_Battle* PlayerController, int IndexInPlayerParty, FAvatar_Struct AvatarData)
+void AEnterTheNetscape_GameMode::Server_SpawnAvatar_Implementation(APlayerController_Battle* PlayerController, int IndexInPlayerParty, FNetscapeExplorer_Struct AvatarData)
 {
 	FString ContextString;
 	const FActorSpawnParameters SpawnInfo;
@@ -186,35 +190,34 @@ void AEnterTheNetscape_GameMode::Server_SpawnAvatar_Implementation(APlayerContro
 	for (int i = 0; i < FoundGridTileActors.Num(); i++) {
 		const AActor_GridTile* GridTileReference = Cast<AActor_GridTile>(FoundGridTileActors[i]);
 
-		if (GridTileReference->Properties.Contains(E_GridTile_Properties::E_PlayerAvatarSpawn) &&
-			GridTileReference->AssignedMultiplayerUniqueID == PlayerController->MultiplayerUniqueID &&
-			GridTileReference->AvatarSlotNumber == IndexInPlayerParty) {
+		//if (GridTileReference->Properties.Contains(E_GridTile_Properties::E_PlayerAvatarSpawn) && GridTileReference->AvatarSlotNumber == IndexInPlayerParty) {
+		if (GridTileReference->Properties.Contains(E_GridTile_Properties::E_PlayerAvatarSpawn)) {
 			ValidMultiplayerSpawnTiles.Add(FoundGridTileActors[i]);
 		}
 	}
 
 	FVector Location = ValidMultiplayerSpawnTiles[0]->GetActorLocation();
-	Location.Z = 95;
+	Location.Z = 1000;
 
-	ACharacter_Pathfinder* NewAvatarActor = GetWorld()->SpawnActor<ACharacter_Pathfinder>(AvatarBlueprintClass, Location, FRotator::ZeroRotator, SpawnInfo);
-	NewAvatarActor->AvatarData = AvatarData;
+	ACharacter_Pathfinder* NewCharacter = GetWorld()->SpawnActor<ACharacter_Pathfinder>(AvatarBlueprintClass, Location, FRotator::ZeroRotator, SpawnInfo);
+	NewCharacter->AvatarData = AvatarData;
 
 	// Random Avatars
 	//AvatarRowNames = AvatarDataTable->GetRowNames();
-	//NewAvatarActor->AvatarData = *AvatarDataTable->FindRow<FAvatar_Struct>(AvatarRowNames[FMath::RandRange(0, AvatarRowNames.Num() - 1)], ContextString);
+	//NewAvatarActor->AvatarData = *AvatarDataTable->FindRow<FNetscapeExplorer_Struct>(AvatarRowNames[FMath::RandRange(0, AvatarRowNames.Num() - 1)], ContextString);
 
 	// Avatar Stats
-	NewAvatarActor->AvatarData.CurrentHealthPoints = NewAvatarActor->AvatarData.BaseStats.HealthPoints;
-	NewAvatarActor->AvatarData.CurrentManaPoints = NewAvatarActor->AvatarData.BaseStats.ManaPoints;
-	NewAvatarActor->AvatarData.CurrentTileMoves = NewAvatarActor->AvatarData.MaximumTileMoves;
+	NewCharacter->AvatarData.CurrentHealthPoints = NewCharacter->AvatarData.BattleStats.MaximumHealthPoints;
+	NewCharacter->AvatarData.CurrentManaPoints = NewCharacter->AvatarData.BattleStats.MaximumManaPoints;
+	NewCharacter->AvatarData.CurrentTileMoves = NewCharacter->AvatarData.MaximumTileMoves;
 
 	// MultiplayerUniqueID
-	NewAvatarActor->PlayerControllerReference = PlayerController;
-	NewAvatarActor->MultiplayerControllerUniqueID = PlayerController->MultiplayerUniqueID;
+	NewCharacter->PlayerControllerReference = PlayerController;
+	NewCharacter->MultiplayerControllerUniqueID = PlayerController->MultiplayerUniqueID;
 
 	// Get attacks
 	for (int i = 0; i < AvatarData.CurrentAttacks.Num(); i++) {
-		NewAvatarActor->CurrentKnownAttacks.Add(AvatarData.CurrentAttacks[i]);
+		NewCharacter->CurrentKnownAttacks.Add(AvatarData.CurrentAttacks[i]);
 	}
 
 	// Set Model
@@ -222,19 +225,18 @@ void AEnterTheNetscape_GameMode::Server_SpawnAvatar_Implementation(APlayerContro
 
 	//}
 
-	// Sent data to Clients
-	NewAvatarActor->Client_GetAvatarData(NewAvatarActor->AvatarData);
+	// Send data to Clients
+	NewCharacter->Client_GetAvatarData(NewCharacter->AvatarData);
 
-	PlayerController->CurrentSelectedAvatar = NewAvatarActor;
+	PlayerController->CurrentSelectedAvatar = NewCharacter;
 	PlayerController->OnRepNotify_CurrentSelectedAvatar();
-
-	//NewAvatarActor->SetTilesOccupiedBySize();
+	
 	// Set spawn tile to be occupied
 	if (Cast<AActor_GridTile>(ValidMultiplayerSpawnTiles[0])->Properties.Contains(E_GridTile_Properties::E_None))
 		Cast<AActor_GridTile>(ValidMultiplayerSpawnTiles[0])->Properties.Remove(E_GridTile_Properties::E_None);
 
 	Cast<AActor_GridTile>(ValidMultiplayerSpawnTiles[0])->Properties.Add(E_GridTile_Properties::E_Occupied);
-	Cast<AActor_GridTile>(ValidMultiplayerSpawnTiles[0])->OccupyingActor = NewAvatarActor;
+	Cast<AActor_GridTile>(ValidMultiplayerSpawnTiles[0])->OccupyingActor = NewCharacter;
 }
 
 
@@ -277,7 +279,6 @@ void AEnterTheNetscape_GameMode::Server_LaunchAttack_Implementation(ACharacter_P
 	TArray<FName> ComplexAttackRowNames = AvatarComplexAttacksDataTable->GetRowNames();
 	ACharacter_Pathfinder* TargetAsCharacter = Cast<ACharacter_Pathfinder>(Target);
 	//int AttackerStat, DefenderStat;
-	int CurrentDamage = 1;
 
 	UE_LOG(LogTemp, Warning, TEXT("Server_LaunchAttack / Attack chosen: %s"), *AttackName);
 	for (int i = 0; i < ComplexAttackRowNames.Num(); i++) {
@@ -288,6 +289,8 @@ void AEnterTheNetscape_GameMode::Server_LaunchAttack_Implementation(ACharacter_P
 	}
 
 	if (IsValid(TargetAsCharacter) && AttackData.AttackCategory == EBattle_AttackCategories::Offensive) {
+		int CurrentDamage = 1;
+		
 		// Check for the No Friendly Fire attack ability
 		if (AttackData.AttackEffectsOnTarget.Contains(EBattle_AttackEffects::NoFriendlyFire)) {
 			if (Attacker->MultiplayerControllerUniqueID == TargetAsCharacter->MultiplayerControllerUniqueID) {
@@ -297,8 +300,7 @@ void AEnterTheNetscape_GameMode::Server_LaunchAttack_Implementation(ACharacter_P
 
 		// Calculate damage for moves with variable base damage
 		if (AttackData.AttackEffectsOnTarget.Contains(EBattle_AttackEffects::LowerTargetHealthEqualsHigherDamageDealt)) {
-			float VariableBasePower = 1.f;
-			VariableBasePower = (float)TargetAsCharacter->AvatarData.CurrentHealthPoints / (float)TargetAsCharacter->AvatarData.BaseStats.HealthPoints;
+			float VariableBasePower = (float)TargetAsCharacter->AvatarData.CurrentHealthPoints / (float)TargetAsCharacter->AvatarData.BattleStats.MaximumHealthPoints;
 			VariableBasePower = 0.9 - VariableBasePower;
 			VariableBasePower = VariableBasePower * 100.f;
 			VariableBasePower += 10;
@@ -311,9 +313,9 @@ void AEnterTheNetscape_GameMode::Server_LaunchAttack_Implementation(ACharacter_P
 
 		// To-Do: Get either the Physical or Special stats, based on the move
 		// Standard Attack Damage Formula
-		CurrentDamage = FMath::CeilToInt(Attacker->AvatarData.BaseStats.Attack * AttackData.BasePower);
+		CurrentDamage = FMath::CeilToInt(Attacker->AvatarData.BattleStats.Strength * AttackData.BasePower);
 		UE_LOG(LogTemp, Warning, TEXT("Server_LaunchAttack / Attacker's Attack * Attack's Base Power is: %d"), CurrentDamage);
-		CurrentDamage = FMath::CeilToInt(CurrentDamage / TargetAsCharacter->AvatarData.BaseStats.Defence);
+		CurrentDamage = FMath::CeilToInt(CurrentDamage / TargetAsCharacter->AvatarData.BattleStats.Endurance);
 		UE_LOG(LogTemp, Warning, TEXT("Server_LaunchAttack / Current Damage / Defender's Defence is: %d"), CurrentDamage);
 
 		// Get the averages of the attacker' and defender's combat stats and use them in the damage calculation

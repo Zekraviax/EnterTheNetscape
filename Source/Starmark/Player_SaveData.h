@@ -26,8 +26,8 @@ public:
 
 // ------------------------- Avatars
 	UPROPERTY()
-	TArray<FAvatar_Struct> AvatarLibrary;
+	TArray<FNetscapeExplorer_Struct> Explorers;
 
 	UPROPERTY()
-	TArray<FAvatar_Struct> CurrentAvatarTeam;
+	TArray<FNetscapeExplorer_Struct> CurrentExplorerTeam;
 };

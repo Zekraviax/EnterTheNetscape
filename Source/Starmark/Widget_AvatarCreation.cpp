@@ -14,17 +14,17 @@ void UWidget_AvatarCreation::PopulateDropDowns()
 		AvatarRowNames = AvatarDataTable->GetRowNames();
 
 		for (int i = 0; i < AvatarRowNames.Num(); i++) {
-			SpeciesDropDown->AddOption(AvatarDataTable->FindRow<FAvatar_Struct>(FName(*AvatarRowNames[i].ToString()), ContextString)->AvatarName);
+			SpeciesDropDown->AddOption(AvatarDataTable->FindRow<FNetscapeExplorer_Struct>(FName(*AvatarRowNames[i].ToString()), ContextString)->NetscapeExplorerName);
 
 			if (i == 0) {
 				SpeciesDropDown->SetSelectedOption(AvatarRowNames[i].ToString());
 				SpeciesDropDown->SetIsEnabled(true);
-				CurrentAvatar = *AvatarDataTable->FindRow<FAvatar_Struct>(FName(*AvatarRowNames[i].ToString()), ContextString);
+				CurrentAvatar = *AvatarDataTable->FindRow<FNetscapeExplorer_Struct>(FName(*AvatarRowNames[i].ToString()), ContextString);
 			}
 		}
 
 		OnSpeciesDropDownChanged(SpeciesDropDown->GetSelectedOption());
-		OnAvatarNicknameTextChanged(AvatarNameEditableText->GetText());
+		OnAvatarNicknameTextChanged(NetscapeExplorerNameEditableText->GetText());
 	}
 
 	// Avatars' Attacks
@@ -79,13 +79,13 @@ void UWidget_AvatarCreation::PopulateDropDowns()
 }
 
 
-void UWidget_AvatarCreation::PopulateDropDownsWithAvatarData(FAvatar_Struct Avatar)
+void UWidget_AvatarCreation::PopulateDropDownsWithAvatarData(FNetscapeExplorer_Struct Avatar)
 {
 	PopulateDropDowns();
 
 	// Species
 	for (int a = 0; a < SpeciesDropDown->GetOptionCount(); a++) {
-		if (Avatar.AvatarName == SpeciesDropDown->GetOptionAtIndex(a)) {
+		if (Avatar.NetscapeExplorerName == SpeciesDropDown->GetOptionAtIndex(a)) {
 			SpeciesDropDown->SetSelectedIndex(a);
 			OnSpeciesDropDownChanged(SpeciesDropDown->GetSelectedOption());
 			break;
@@ -145,9 +145,9 @@ void UWidget_AvatarCreation::PopulateDropDownsWithAvatarData(FAvatar_Struct Avat
 void UWidget_AvatarCreation::OnAvatarNicknameTextChanged(FText NewNickname)
 {
 	if (NewNickname.IsEmpty())
-		AvatarNameText->SetText(FText::FromString("No Nickname"));
+		NetscapeExplorerNameText->SetText(FText::FromString("No Nickname"));
 	else 
-		AvatarNameText->SetText(NewNickname);
+		NetscapeExplorerNameText->SetText(NewNickname);
 }
 
 
@@ -158,8 +158,8 @@ void UWidget_AvatarCreation::OnSpeciesDropDownChanged(FString Option)
 		ElementsText->SetText(FText::FromString("Elements: None"));
 	} else {
 		for (int i = 0; i < AvatarRowNames.Num(); i++) {
-			if (AvatarDataTable->FindRow<FAvatar_Struct>(FName(*AvatarRowNames[i].ToString()), ContextString)->AvatarName == SpeciesDropDown->GetSelectedOption()) {
-				CurrentAvatar = *AvatarDataTable->FindRow<FAvatar_Struct>(FName(*AvatarRowNames[i].ToString()), ContextString);
+			if (AvatarDataTable->FindRow<FNetscapeExplorer_Struct>(FName(*AvatarRowNames[i].ToString()), ContextString)->NetscapeExplorerName == SpeciesDropDown->GetSelectedOption()) {
+				CurrentAvatar = *AvatarDataTable->FindRow<FNetscapeExplorer_Struct>(FName(*AvatarRowNames[i].ToString()), ContextString);
 				break;
 			}
 		}
@@ -308,8 +308,8 @@ void UWidget_AvatarCreation::OnSaveButtonPressed()
 		PlayerStateReference = Cast<AEnterTheNetscape_PlayerState>(GetOwningPlayerState());
 
 	if (!IsEditingExistingAvatar) {
-		CurrentAvatar.IndexInPlayerLibrary = PlayerStateReference->PlayerProfileReference->AvatarLibrary.Num() + 6;
-		PlayerStateReference->PlayerProfileReference->AvatarLibrary.Add(CurrentAvatar);
+		CurrentAvatar.IndexInPlayerLibrary = PlayerStateReference->PlayerProfileReference->Explorers.Num() + 6;
+		PlayerStateReference->PlayerProfileReference->Explorers.Add(CurrentAvatar);
 	} else {
 		// Clear out old moves, then add new moves
 		FString ContextString;
@@ -350,17 +350,17 @@ void UWidget_AvatarCreation::OnSaveButtonPressed()
 		}
 
 		// Update the avatar if it's in the player's team
-		for (int i = 0; i < PlayerStateReference->PlayerProfileReference->CurrentAvatarTeam.Num(); i++) {
-			if (PlayerStateReference->PlayerProfileReference->CurrentAvatarTeam[i].IndexInPlayerLibrary == CurrentAvatar.IndexInPlayerLibrary) {
-				PlayerStateReference->PlayerProfileReference->CurrentAvatarTeam[i] = CurrentAvatar;
+		for (int i = 0; i < PlayerStateReference->PlayerProfileReference->CurrentExplorerTeam.Num(); i++) {
+			if (PlayerStateReference->PlayerProfileReference->CurrentExplorerTeam[i].IndexInPlayerLibrary == CurrentAvatar.IndexInPlayerLibrary) {
+				PlayerStateReference->PlayerProfileReference->CurrentExplorerTeam[i] = CurrentAvatar;
 				break;
 			}
 		}
 
 		// Update the avatar if it's in the player's library
-		for (int i = 0; i < PlayerStateReference->PlayerProfileReference->AvatarLibrary.Num(); i++) {
-			if (PlayerStateReference->PlayerProfileReference->AvatarLibrary[i].IndexInPlayerLibrary == CurrentAvatar.IndexInPlayerLibrary) {
-				PlayerStateReference->PlayerProfileReference->AvatarLibrary[i] = CurrentAvatar;
+		for (int i = 0; i < PlayerStateReference->PlayerProfileReference->Explorers.Num(); i++) {
+			if (PlayerStateReference->PlayerProfileReference->Explorers[i].IndexInPlayerLibrary == CurrentAvatar.IndexInPlayerLibrary) {
+				PlayerStateReference->PlayerProfileReference->Explorers[i] = CurrentAvatar;
 				break;
 			}
 		}

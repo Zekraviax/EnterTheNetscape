@@ -2,9 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameState.h"
-
-#include "Engine/Datatable.h"
-
 #include "EnterTheNetscape_GameState.generated.h"
 
 

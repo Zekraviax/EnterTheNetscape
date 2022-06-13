@@ -55,10 +55,10 @@ public:
 	UComboBoxString* MoveFourDropDown;
 
 	UPROPERTY(meta = (BindWidget))
-	UEditableText* AvatarNameEditableText;
+	UEditableText* NetscapeExplorerNameEditableText;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* AvatarNameText;
+	UTextBlock* NetscapeExplorerNameText;
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* SpeciesText;
@@ -126,7 +126,7 @@ public:
 
 // ------------------------- Avatar
 	UPROPERTY()
-	FAvatar_Struct CurrentAvatar;
+	FNetscapeExplorer_Struct CurrentAvatar;
 
 	UPROPERTY()
 	bool IsEditingExistingAvatar = false;
@@ -143,7 +143,7 @@ public:
 	void PopulateDropDowns();
 
 	UFUNCTION()
-	void PopulateDropDownsWithAvatarData(FAvatar_Struct Avatar);
+	void PopulateDropDownsWithAvatarData(FNetscapeExplorer_Struct Avatar);
 
 	UFUNCTION(BlueprintCallable)
 	void OnAvatarNicknameTextChanged(FText NewNickname);

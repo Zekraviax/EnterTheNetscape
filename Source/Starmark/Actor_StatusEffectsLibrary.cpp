@@ -33,8 +33,8 @@ void AActor_StatusEffectsLibrary::OnStatusEffectApplied_Implementation(ACharacte
 {
 	// switch expression of type 'const FString' is illegal
 	if (StatusEffectReference.Name == FString("Stone Skin")) {
-		RememberedVariableOne = FMath::CeilToInt(AffectedAvatar->AvatarData.BaseStats.Defence * 1.5);
-		AffectedAvatar->AvatarData.BaseStats.Defence += RememberedVariableOne;
+		RememberedVariableOne = FMath::CeilToInt(AffectedAvatar->AvatarData.BattleStats.Endurance * 1.5);
+		AffectedAvatar->AvatarData.BattleStats.Endurance += RememberedVariableOne;
 
 		AffectedAvatar->CurrentStatusEffectsArray.Add(StatusEffectReference);
 	} else {
@@ -51,21 +51,21 @@ void AActor_StatusEffectsLibrary::OnStatusEffectStartOfTurn_Implementation(AChar
 	if (StatusEffectReference.Name == FString("Paralyzed")) {
 		AffectedAvatar->AvatarData.CurrentTileMoves = FMath::CeilToInt(AffectedAvatar->AvatarData.MaximumTileMoves / 2);
 	} else if (StatusEffectReference.Name == FString("Bleeding")) {
-		AffectedAvatar->AvatarData.CurrentHealthPoints -= FMath::CeilToInt(AffectedAvatar->AvatarData.BaseStats.HealthPoints * 0.2);
+		AffectedAvatar->AvatarData.CurrentHealthPoints -= FMath::CeilToInt(AffectedAvatar->AvatarData.BattleStats.MaximumHealthPoints * 0.2);
 	} else if (StatusEffectReference.Name == FString("Spellbound")) {
-		int HealthToTransfer = HealthToTransfer = FMath::CeilToInt(RememberedAvatarTwo->AvatarData.BaseStats.HealthPoints * 0.2);
-		int ManaToTransfer = ManaToTransfer = FMath::CeilToInt(RememberedAvatarTwo->AvatarData.BaseStats.ManaPoints * 0.2);
+		int HealthToTransfer = HealthToTransfer = FMath::CeilToInt(RememberedAvatarTwo->AvatarData.BattleStats.MaximumHealthPoints * 0.2);
+		int ManaToTransfer = ManaToTransfer = FMath::CeilToInt(RememberedAvatarTwo->AvatarData.BattleStats.MaximumManaPoints * 0.2);
 		
 		RememberedAvatarTwo->AvatarData.CurrentHealthPoints -= HealthToTransfer;
 		RememberedAvatarTwo->AvatarData.CurrentManaPoints -= ManaToTransfer;
 
 		RememberedAvatarOne->AvatarData.CurrentHealthPoints += HealthToTransfer;
-		if (RememberedAvatarOne->AvatarData.CurrentHealthPoints > RememberedAvatarOne->AvatarData.BaseStats.HealthPoints)
-			RememberedAvatarOne->AvatarData.CurrentHealthPoints = RememberedAvatarOne->AvatarData.BaseStats.HealthPoints;
+		if (RememberedAvatarOne->AvatarData.CurrentHealthPoints > RememberedAvatarOne->AvatarData.BattleStats.MaximumHealthPoints)
+			RememberedAvatarOne->AvatarData.CurrentHealthPoints = RememberedAvatarOne->AvatarData.BattleStats.MaximumHealthPoints;
 
 		RememberedAvatarOne->AvatarData.CurrentManaPoints += ManaToTransfer;
-		if (RememberedAvatarOne->AvatarData.CurrentManaPoints > RememberedAvatarOne->AvatarData.BaseStats.ManaPoints)
-			RememberedAvatarOne->AvatarData.CurrentManaPoints = RememberedAvatarOne->AvatarData.BaseStats.ManaPoints;
+		if (RememberedAvatarOne->AvatarData.CurrentManaPoints > RememberedAvatarOne->AvatarData.BattleStats.MaximumManaPoints)
+			RememberedAvatarOne->AvatarData.CurrentManaPoints = RememberedAvatarOne->AvatarData.BattleStats.MaximumManaPoints;
 	}
 	else {
 		// Do nothing
@@ -76,7 +76,7 @@ void AActor_StatusEffectsLibrary::OnStatusEffectStartOfTurn_Implementation(AChar
 void AActor_StatusEffectsLibrary::OnStatusEffectRemoved_Implementation(ACharacter_Pathfinder* AffectedAvatar, FAvatar_StatusEffect StatusEffectReference)
 {
 	if (StatusEffectReference.Name == FString("Stone Skin")) {
-		AffectedAvatar->AvatarData.BaseStats.Defence -= RememberedVariableOne;
+		AffectedAvatar->AvatarData.BattleStats.Endurance -= RememberedVariableOne;
 	} else {
 		// Do nothing
 	}

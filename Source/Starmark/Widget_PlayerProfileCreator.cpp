@@ -96,14 +96,14 @@ void UWidget_PlayerProfileCreator::OnExitButtonPressed()
 void UWidget_PlayerProfileCreator::PopulateTeamCreatorDropdowns()
 {
 	if (AvatarDataTable) {
-		TArray<FAvatar_Struct> AvatarsArray;
+		TArray<FNetscapeExplorer_Struct> AvatarsArray;
 		FString ContextString;
 		TArray<FName> RowNames;
 		RowNames = AvatarDataTable->GetRowNames();
 
 		for (auto& Name : RowNames) {
 			if (Name != "BigBoxBoy") {
-				FAvatar_Struct* Avatar = AvatarDataTable->FindRow<FAvatar_Struct>(Name, ContextString);
+				FNetscapeExplorer_Struct* Avatar = AvatarDataTable->FindRow<FNetscapeExplorer_Struct>(Name, ContextString);
 
 				if (Avatar)
 					AvatarsArray.Add(*Avatar);

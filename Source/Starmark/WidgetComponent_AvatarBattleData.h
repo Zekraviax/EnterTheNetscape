@@ -68,14 +68,14 @@ public:
 
 // ------------------------- Avatar
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FAvatar_Struct LinkedAvatar;
+	FNetscapeExplorer_Struct LinkedAvatar;
 
 // Functions
 // --------------------------------------------------
 
 // ------------------------- Avatar
 	UFUNCTION(BlueprintCallable)
-	void UpdateAvatarData(FAvatar_Struct NewLinkedAvatar);
+	void UpdateAvatarData(FNetscapeExplorer_Struct NewLinkedAvatar);
 
 	UFUNCTION(BlueprintCallable)
 	void GetAvatarStatusEffects(TArray<FAvatar_StatusEffect> StatusEffectsArray);

@@ -75,16 +75,16 @@ void UWidgetComponent_Avatar::UpdateWidgetMaterials_Implementation()
 }
 
 
-void UWidgetComponent_Avatar::ApplyNewAvatarData(FAvatar_Struct NewAvatarData)
+void UWidgetComponent_Avatar::ApplyNewAvatarData(FNetscapeExplorer_Struct NewAvatarData)
 {
 	// Empty Slot
 	if (NewAvatarData.Nickname.Len() == 0 &&
-		NewAvatarData.AvatarName == "Default") {
-		AvatarName->SetText(FText::FromString("Empty Slot"));
+		NewAvatarData.NetscapeExplorerName == "Default") {
+		NetscapeExplorerName->SetText(FText::FromString("Empty Slot"));
 	} else {
 		AvatarData = NewAvatarData;
 		AvatarMaterial = AvatarData.DefaultImage;
-		AvatarName->SetText(FText::FromString(AvatarData.AvatarName));
+		NetscapeExplorerName->SetText(FText::FromString(AvatarData.NetscapeExplorerName));
 
 		UpdateWidgetMaterials();
 	}

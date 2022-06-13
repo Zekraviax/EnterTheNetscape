@@ -30,9 +30,16 @@ public:
 	UPROPERTY()
 	UEnterTheNetscape_GameInstance* GameInstanceReference;
 
+// ------------------------- Data Tables
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UDataTable* ExplorersDataTable;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FName> ExplorersDataTableRowNames;
+
 // ------------------------- Player
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
-	TArray<FAvatar_Struct> PlayerState_PlayerParty;
+	TArray<FNetscapeExplorer_Struct> PlayerState_PlayerParty;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	UPlayer_SaveData* PlayerProfileReference;
@@ -44,10 +51,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	FString PlayerReadyStatus = "Not Ready";
 
-// ------------------------- Avatar
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UDataTable* AvatarDataTable;
-
+// ------------------------- Other
+	UPROPERTY()
+	FString PlayerStateContextString;
 
 // Functions
 // --------------------------------------------------
@@ -86,5 +92,5 @@ public:
 	void Battle_AvatarDefeated(ACharacter_Pathfinder* Avatar);
 
 	UFUNCTION(Server, Reliable)
-	void Server_UpdatePlayerStateVariables(const TArray<FAvatar_Struct>& UpdatedPlayerParty);
+	void Server_UpdatePlayerStateVariables(const TArray<FNetscapeExplorer_Struct>& UpdatedPlayerParty);
 };

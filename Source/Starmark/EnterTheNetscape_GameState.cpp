@@ -45,7 +45,7 @@ void AEnterTheNetscape_GameState::SetTurnOrder_Implementation(const TArray<APlay
 					for (int j = 0; j < AvatarTurnOrder.Num(); j++) {
 						ACharacter_Pathfinder* AvatarInTurnOrder = Cast<ACharacter_Pathfinder>(AvatarTurnOrder[j]);
 
-						if (CurrentAvatar->AvatarData.BaseStats.Speed >= AvatarInTurnOrder->AvatarData.BaseStats.Speed &&
+						if (CurrentAvatar->AvatarData.BattleStats.Agility >= AvatarInTurnOrder->AvatarData.BattleStats.Agility &&
 							!AvatarTurnOrder.Contains(CurrentAvatar)) {
 							AvatarTurnOrder.Insert(CurrentAvatar, j);
 							break;
@@ -70,7 +70,7 @@ void AEnterTheNetscape_GameState::SetTurnOrder_Implementation(const TArray<APlay
 				for (int j = 0; j < SlowedAvatarsInTurnOrder.Num(); j++) {
 					ACharacter_Pathfinder* AvatarInTurnOrder = Cast<ACharacter_Pathfinder>(SlowedAvatarsInTurnOrder[j]);
 
-					if (CurrentAvatar->AvatarData.BaseStats.Speed >= AvatarInTurnOrder->AvatarData.BaseStats.Speed &&
+					if (CurrentAvatar->AvatarData.BattleStats.Agility >= AvatarInTurnOrder->AvatarData.BattleStats.Agility &&
 						!SlowedAvatarsInTurnOrder.Contains(CurrentAvatar)) {
 						SlowedAvatarsInTurnOrder.Insert(CurrentAvatar, j);
 						break;

@@ -34,7 +34,7 @@ void AActor_AbilitiesLibrary::SwitchOnAbilityEffect_Implementation(E_Ability_Fun
 	{
 		case(E_Ability_Functions::Regenerate):
 		{
-			const int Healing = FMath::CeilToInt(Avatar->AvatarData.BaseStats.HealthPoints * 0.15);
+			const int Healing = FMath::CeilToInt(Avatar->AvatarData.BattleStats.MaximumHealthPoints * 0.15);
 			AEnterTheNetscape_PlayerState* PlayerStateReference = Cast<AEnterTheNetscape_PlayerState>(Avatar->PlayerControllerReference->PlayerState);
 
 			PlayerStateReference->Server_AddHealth(Avatar, Healing);
