@@ -102,8 +102,7 @@ void AEnterTheNetscape_PlayerState::Server_UpdatePlayerData_Implementation()
 			UE_LOG(LogTemp, Warning, TEXT("Server_UpdatePlayerData / IsValid(PlayerProfileReference) returns: %s"), IsValid(PlayerProfileReference) ? TEXT("true") : TEXT("false"));
 			UE_LOG(LogTemp, Warning, TEXT("Server_UpdatePlayerData / ReplicatedPlayerName is: %s"), *ReplicatedPlayerName);
 			
-			// Update player controller with team
-			UE_LOG(LogTemp, Warning, TEXT("Server_UpdatePlayerData / ReplicatedPlayerName is: %s"), *GetNetOwningPlayer()->GetPlayerController(GetWorld())->GetName());
+
 			/*
 			const APawn* Pawn = GetPawn();
 			while (Pawn == nullptr) {
@@ -112,7 +111,8 @@ void AEnterTheNetscape_PlayerState::Server_UpdatePlayerData_Implementation()
 			AController* Controller = Pawn->GetController();
 			Cast<APlayerController_Battle>(Controller)->PlayerParty = GameInstanceReference->CurrentProfileReference->CurrentExplorerTeam;
 			*/
-			
+			// Update player controller with team
+			UE_LOG(LogTemp, Warning, TEXT("Server_UpdatePlayerData / ReplicatedPlayerName is: %s"), *GetNetOwningPlayer()->GetPlayerController(GetWorld())->GetName());
 			Cast<APlayerController_Battle>(GetNetOwningPlayer()->GetPlayerController(GetWorld()))->PlayerProfileReference = GameInstanceReference->CurrentProfileReference;
 
 			SetPlayerName(GameInstanceReference->PlayerName);

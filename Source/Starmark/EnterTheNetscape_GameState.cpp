@@ -45,7 +45,7 @@ void AEnterTheNetscape_GameState::SetTurnOrder_Implementation(const TArray<APlay
 					for (int j = 0; j < AvatarTurnOrder.Num(); j++) {
 						ACharacter_Pathfinder* AvatarInTurnOrder = Cast<ACharacter_Pathfinder>(AvatarTurnOrder[j]);
 
-						if (CurrentAvatar->AvatarData.BattleStats.Agility >= AvatarInTurnOrder->AvatarData.BattleStats.Agility &&
+						if ((CurrentAvatar->AvatarData.BattleStats.Agility + CurrentAvatar->AvatarData.SocialStats.Empathy) >= (AvatarInTurnOrder->AvatarData.BattleStats.Agility + AvatarInTurnOrder->AvatarData.SocialStats.Empathy) &&
 							!AvatarTurnOrder.Contains(CurrentAvatar)) {
 							AvatarTurnOrder.Insert(CurrentAvatar, j);
 							break;
@@ -70,7 +70,7 @@ void AEnterTheNetscape_GameState::SetTurnOrder_Implementation(const TArray<APlay
 				for (int j = 0; j < SlowedAvatarsInTurnOrder.Num(); j++) {
 					ACharacter_Pathfinder* AvatarInTurnOrder = Cast<ACharacter_Pathfinder>(SlowedAvatarsInTurnOrder[j]);
 
-					if (CurrentAvatar->AvatarData.BattleStats.Agility >= AvatarInTurnOrder->AvatarData.BattleStats.Agility &&
+					if ((CurrentAvatar->AvatarData.BattleStats.Agility + CurrentAvatar->AvatarData.SocialStats.Empathy) >= (AvatarInTurnOrder->AvatarData.BattleStats.Agility + AvatarInTurnOrder->AvatarData.SocialStats.Empathy) &&
 						!SlowedAvatarsInTurnOrder.Contains(CurrentAvatar)) {
 						SlowedAvatarsInTurnOrder.Insert(CurrentAvatar, j);
 						break;
@@ -201,7 +201,11 @@ void AEnterTheNetscape_GameState::AvatarEndTurn_Implementation()
 	// Assign currently controlled avatars based on the dynamic turn order
 	for (int i = DynamicAvatarTurnOrder.Num() - 1; i >= 0; i--) {
 		if (IsValid(DynamicAvatarTurnOrder[i])) {
-			DynamicAvatarTurnOrder[i]->PlayerControllerReference->CurrentSelectedAvatar = DynamicAvatarTurnOrder[i];
+			if (DynamicAvatarTurnOrder[i]->PlayerControllerReference->IsValidLowLevel()) {
+				DynamicAvatarTurnOrder[i]->PlayerControllerReference->CurrentSelectedAvatar = DynamicAvatarTurnOrder[i];
+			} else {
+				UE_LOG(LogTemp, Warning, TEXT("AvatarEndTurn / Next entity in turn order does not have a player controller."));
+			}
 
 			DynamicAvatarTurnOrder[i]->CurrentSelectedAttack.Name = "None";
 			DynamicAvatarTurnOrder[i]->CurrentSelectedAttack.AttachAttackTraceActorToMouse = false;

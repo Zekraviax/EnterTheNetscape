@@ -300,7 +300,7 @@ struct STARMARK_API FNetscapeExplorer_SocialStats
 
 
 USTRUCT(BlueprintType)
-struct STARMARK_API FAvatar_Size
+struct STARMARK_API FEntity_Size
 {
 	GENERATED_BODY()
 
@@ -310,16 +310,21 @@ struct STARMARK_API FAvatar_Size
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int SizeY;
 
-	FAvatar_Size()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int SizeZ;
+
+	FEntity_Size()
 	{
 		SizeX = 1;
 		SizeY = 1;
+		SizeZ = 1;
 	}
 
-	FAvatar_Size(int InSizeX, int InSizeY)
+	FEntity_Size(int InSizeX, int InSizeY, int InSizeZ)
 	{
 		SizeX = InSizeX;
 		SizeY = InSizeY;
+		SizeZ = InSizeZ;
 	}
 };
 
@@ -540,7 +545,7 @@ struct STARMARK_API FNetscapeExplorer_Struct : public FTableRowBase
 	UMaterial* DefaultImage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Appearance")
-	FAvatar_Size Size;
+	FEntity_Size Size;
 
 	// 3D Model
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Appearance")

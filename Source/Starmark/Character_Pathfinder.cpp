@@ -380,22 +380,49 @@ void ACharacter_Pathfinder::LaunchAttack_Implementation(AActor* Target)
 }
 
 
-void ACharacter_Pathfinder::SetTilesOccupiedBySize()
+void ACharacter_Pathfinder::SetTilesOccupiedBySize(bool ClearTiles)
 {
 	TArray<AActor*> OverlappingActors;
 	FVector Start = GetActorLocation();
 
+	// Clear out tiles that were overlapped
+	if (ClearTiles) {
+		TArray<AActor*> GridTilesArray;
+
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor_GridTile::StaticClass(), GridTilesArray);
+		for (AActor* TileInArray : GridTilesArray) {
+			AActor_GridTile* ActorAsGridTile = Cast<AActor_GridTile>(TileInArray);
+
+			if (ActorAsGridTile->OccupyingActor == this) {
+				ActorAsGridTile->OccupyingActor = nullptr;
+
+				if (ActorAsGridTile->Properties.Contains(E_GridTile_Properties::E_Occupied)) {
+					ActorAsGridTile->Properties.Remove(E_GridTile_Properties::E_Occupied);
+				}
+
+				if (ActorAsGridTile->Properties.Num() <= 0) {
+					ActorAsGridTile->Properties.AddUnique(E_GridTile_Properties::E_None);
+				}
+			}
+		}
+	}
+
+	// wat dis do?
 	for (int i = 0; i < AvatarData.OccupiedTiles.Num(); i++) {
 		BoxComponent->SetWorldLocation(FVector(Start.X + (200 * AvatarData.OccupiedTiles[i].X), Start.Y + (200 * AvatarData.OccupiedTiles[i].Y), 0.f));
 		BoxComponent->GetOverlappingActors(OverlappingActors, AActor_GridTile::StaticClass());
 	}
 
+	// Set overlapping tiles to 'Occupied'
 	for (int j = 0; j < OverlappingActors.Num(); j++) {
 		Cast<AActor_GridTile>(OverlappingActors[j])->Properties.AddUnique(E_GridTile_Properties::E_Occupied);
+		Cast<AActor_GridTile>(OverlappingActors[j])->OccupyingActor = this;
+
 		UE_LOG(LogTemp, Warning, TEXT("SetTilesOccupiedBySize / Set Tile to be occupied."));
 
-		if (Cast<AActor_GridTile>(OverlappingActors[j])->Properties.Contains(E_GridTile_Properties::E_None))
+		if (Cast<AActor_GridTile>(OverlappingActors[j])->Properties.Contains(E_GridTile_Properties::E_None)) {
 			Cast<AActor_GridTile>(OverlappingActors[j])->Properties.Remove(E_GridTile_Properties::E_None);
+		}
 	}
 
 	BoxComponent->SetWorldLocation(Start);

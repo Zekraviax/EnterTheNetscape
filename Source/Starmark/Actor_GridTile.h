@@ -56,7 +56,7 @@ public:
 	UMaterialInstanceDynamic* DynamicMaterial;
 
 	// Occupying Actor
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AActor* OccupyingActor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

@@ -26,9 +26,12 @@ public:
 // Variables
 // --------------------------------------------------
 
-// ------------------------- Avatar
+// ------------------------- Data Tables
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UDataTable* AvatarDataTable;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UDataTable* AttacksDataTable;
 
 // ------------------------- Battle
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -70,6 +73,11 @@ public:
 
 	UPROPERTY()
 	int MultiplayerUniqueIDCounter;
+
+// ------------------------- Multiplayer
+	UPROPERTY()
+	FString GameModeContextString;
+
 
 // Functions
 // --------------------------------------------------

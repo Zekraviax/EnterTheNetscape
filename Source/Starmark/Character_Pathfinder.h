@@ -133,7 +133,7 @@ public:
 	void LaunchAttack(AActor* Target);
 
 	UFUNCTION(BlueprintCallable)
-	void SetTilesOccupiedBySize();
+	void SetTilesOccupiedBySize(bool ClearTiles);
 
 	UFUNCTION(BlueprintCallable)
 	void UpdateAvatarDataInPlayerParty();
