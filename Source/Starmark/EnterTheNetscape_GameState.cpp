@@ -186,8 +186,7 @@ void AEnterTheNetscape_GameState::AvatarEndTurn_Implementation()
 	// Set all GridTiles to default colours and colourability
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor_GridTile::StaticClass(), GridTilesArray);
 	for (int j = 0; j < GridTilesArray.Num(); j++) {
-		Cast<AActor_GridTile>(GridTilesArray[j])->ChangeColourOnMouseHover = true;
-		Cast<AActor_GridTile>(GridTilesArray[j])->UpdateTileColour(E_GridTile_ColourChangeContext::Normal);
+		Cast<AActor_GridTile>(GridTilesArray[j])->SetTileHighlightProperties(false, true, E_GridTile_ColourChangeContext::Normal);
 	}
 
 

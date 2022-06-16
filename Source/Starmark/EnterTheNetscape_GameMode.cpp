@@ -302,10 +302,10 @@ void AEnterTheNetscape_GameMode::Server_LaunchAttack_Implementation(ACharacter_P
 
 		// To-Do: Get either the Physical or Special stats, based on the move
 		// Standard Attack Damage Formula
-		CurrentDamage = FMath::CeilToInt(Attacker->AvatarData.BattleStats.Strength * AttackData.BasePower);
-		UE_LOG(LogTemp, Warning, TEXT("Server_LaunchAttack / Attacker's Attack * Attack's Base Power is: %d"), CurrentDamage);
-		CurrentDamage = FMath::CeilToInt(CurrentDamage / TargetAsCharacter->AvatarData.BattleStats.Endurance);
-		UE_LOG(LogTemp, Warning, TEXT("Server_LaunchAttack / Current Damage / Defender's Defence is: %d"), CurrentDamage);
+		CurrentDamage = FMath::CeilToInt(Attacker->AvatarData.BattleStats.Strength + AttackData.BasePower);
+		UE_LOG(LogTemp, Warning, TEXT("Server_LaunchAttack / Attacker's Attack + Attack's Base Power is: %d"), CurrentDamage);
+		CurrentDamage = FMath::CeilToInt(CurrentDamage - TargetAsCharacter->AvatarData.BattleStats.Endurance);
+		UE_LOG(LogTemp, Warning, TEXT("Server_LaunchAttack / Current Damage - Defender's Defence is: %d"), CurrentDamage);
 
 		// Get the averages of the attacker' and defender's combat stats and use them in the damage calculation
 		// Clamp the value between 0.5 and 1.5 so we can use it as a multiplier
@@ -321,6 +321,7 @@ void AEnterTheNetscape_GameMode::Server_LaunchAttack_Implementation(ACharacter_P
 		PlayerStateReference->Server_SubtractHealth_Implementation(TargetAsCharacter, CurrentDamage);
 
 		// Restore half of the heal if the attacker has Vampirism
+		/*
 		FAvatar_StatusEffect* VampirismStatus = StatusEffectsDataTable->FindRow<FAvatar_StatusEffect>("Vampirism", ContextString);
 		for (int i = 0; i < TargetAsCharacter->CurrentStatusEffectsArray.Num(); i++) {
 			if (TargetAsCharacter->CurrentStatusEffectsArray[i] == *VampirismStatus) {
@@ -329,6 +330,7 @@ void AEnterTheNetscape_GameMode::Server_LaunchAttack_Implementation(ACharacter_P
 				break;
 			}
 		}
+		*/
 	}
 
 

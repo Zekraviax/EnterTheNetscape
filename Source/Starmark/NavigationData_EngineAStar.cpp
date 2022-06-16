@@ -82,8 +82,11 @@ FPathFindingResult ANavigationData_EngineAStar::FindPath(const FNavAgentProperti
 			TArray<FIntPoint> Path;
 			EGraphAStarResult AStarResult = AStar->Pathfinder->FindPath(StartPositionOnGrid, EndPositionOnGrid, QueryFilter, Path);
 
-			if (AStarResult == EGraphAStarResult::SearchFail || AStarResult == EGraphAStarResult::InfiniteLoop) {
+			if (AStarResult == EGraphAStarResult::SearchFail || AStarResult == EGraphAStarResult::InfiniteLoop || AStarResult == EGraphAStarResult::GoalUnreachable) {
 				UE_LOG(LogTemp, Warning, TEXT("NaviationData_EngineAStar / A* failed to find path: %d"), AStarResult);
+				UE_LOG(LogTemp, Warning, TEXT("NaviationData_EngineAStar / Did search reach limit?: %s"), NavPath->DidSearchReachedLimit() ? TEXT("true") : TEXT("false"));
+				//NavPath.
+				
 
 				Result.Result = ENavigationQueryResult::Fail;
 				return Result;

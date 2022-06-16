@@ -46,6 +46,9 @@ public:
 	UStaticMeshComponent* Floor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UStaticMeshComponent* TileHighlightPlane;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UBoxComponent* GridTileHitbox;
 
 // ------------------------- Tile
@@ -53,7 +56,14 @@ public:
 	TArray<E_GridTile_Properties> Properties;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UMaterialInterface* TileHighlightMaterial;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UMaterialInstanceDynamic* DynamicMaterial;
+
+	// List of randomly chosen base baterials
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<UMaterialInterface*> RandomlyChosenMaterialsArray;
 
 	// Occupying Actor
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -83,5 +93,5 @@ public:
 	void OnMouseBeginHover(ACharacter_Pathfinder* CurrentAvatar);
 
 	UFUNCTION(BlueprintCallable)
-	void UpdateTileColour(E_GridTile_ColourChangeContext ColourChangeContext);
+	void SetTileHighlightProperties(bool IsVisible, bool ShouldChangeColourOnMouseOver, E_GridTile_ColourChangeContext ColourChangeContext);
 };

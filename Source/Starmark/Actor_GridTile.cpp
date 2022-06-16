@@ -13,13 +13,19 @@ AActor_GridTile::AActor_GridTile()
 	PrimaryActorTick.bCanEverTick = false;
 
 	// Initialize Components
+	// Base Tile
 	Floor = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Floor"));
 	Floor->SetupAttachment(RootComponent);
 	Floor->SetRelativeTransform(FTransform(FRotator(0, 0, 0), FVector::ZeroVector, FVector(1.f, 1.f, 1.f)));
 
+	// Highlight Tile
+	TileHighlightPlane = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TileHighlightPlane"));
+	TileHighlightPlane->SetupAttachment(Floor);
+	TileHighlightPlane->SetRelativeTransform(FTransform(FRotator(0, 0, 0), FVector(0, 0, 1), FVector(1.f, 1.f, 1.f)));
+
 	// Hitbox
 	GridTileHitbox = CreateDefaultSubobject<UBoxComponent>(TEXT("GridTileHitbox"));
-	GridTileHitbox->SetupAttachment(RootComponent);
+	GridTileHitbox->SetupAttachment(Floor);
 	GridTileHitbox->SetRelativeScale3D(FVector(3.f, 1.f, 1.f));
 	// Set 'Simulation Generates Hit Events'
 	GridTileHitbox->SetNotifyRigidBodyCollision(true);
@@ -30,8 +36,12 @@ void AActor_GridTile::BeginPlay()
 {
 	Super::BeginPlay();
 
-	DynamicMaterial = UMaterialInstanceDynamic::Create(Floor->GetMaterial(0), this);
-	Floor->SetMaterial(0, DynamicMaterial);
+	UMaterialInstanceDynamic* FloorDynamicMaterial = UMaterialInstanceDynamic::Create(RandomlyChosenMaterialsArray[FMath::RandRange(0, RandomlyChosenMaterialsArray.Num() - 1)], this);
+	Floor->SetMaterial(0, FloorDynamicMaterial);
+
+	DynamicMaterial = UMaterialInstanceDynamic::Create(TileHighlightMaterial, this);
+	TileHighlightPlane->SetMaterial(0, DynamicMaterial);
+	TileHighlightPlane->SetVisibility(false);
 }
 
 // Called every frame
@@ -83,9 +93,16 @@ void AActor_GridTile::OnMouseBeginHover(ACharacter_Pathfinder* CurrentAvatar)
 }
 
 
-void AActor_GridTile::UpdateTileColour(E_GridTile_ColourChangeContext ColourChangeContext)
+void AActor_GridTile::SetTileHighlightProperties(bool IsVisible, bool ShouldChangeColourOnMouseOver, E_GridTile_ColourChangeContext ColourChangeContext)
 {
-	if (DynamicMaterial->IsValidLowLevel()) {
+	if (TileHighlightPlane->IsValidLowLevel()) {
+		// Set visibility
+		TileHighlightPlane->SetVisibility(IsVisible);
+
+		// Set colour changing
+		ChangeColourOnMouseHover = ShouldChangeColourOnMouseOver;
+
+		// Change colour
 		switch (ColourChangeContext)
 		{
 		case (E_GridTile_ColourChangeContext::Normal):

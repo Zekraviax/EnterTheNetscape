@@ -75,14 +75,34 @@ void AEnterTheNetscape_PlayerState::Server_UpdatePlayerData_Implementation()
 					}
 
 					for (const FName ExplorerRowName : ExplorersDataTableRowNames) {
-						FNetscapeExplorer_Struct* Explorer = ExplorersDataTable->FindRow<FNetscapeExplorer_Struct>(ExplorerRowName, PlayerStateContextString);
-						if (Explorer) {
-							DefaultProfile->Explorers.Add(*Explorer);
+						FNetscapeExplorer_Struct* ExplorerDataTableRow = ExplorersDataTable->FindRow<FNetscapeExplorer_Struct>(ExplorerRowName, PlayerStateContextString);
+						FNetscapeExplorer_Struct Explorer = *ExplorerDataTableRow;
 
-							if (DefaultProfile->CurrentExplorerTeam.Num() < 4) {
-								Explorer->IndexInPlayerLibrary = DefaultProfile->CurrentExplorerTeam.Num();
-								DefaultProfile->CurrentExplorerTeam.Add(*Explorer);
-							}
+						DefaultProfile->Explorers.Add(*ExplorerDataTableRow);
+
+						if (DefaultProfile->CurrentExplorerTeam.Num() < 4) {
+							Explorer.IndexInPlayerLibrary = DefaultProfile->CurrentExplorerTeam.Num();
+
+							// Apply formulae to stats
+							// Battle Stats
+							// Total Battle Stat = Base Battle Stat x (Social Stat/Number) + Level
+	
+							Explorer.BattleStats.Strength = (ExplorersDataTable->FindRow<FNetscapeExplorer_Struct>(ExplorerRowName, PlayerStateContextString)->BattleStats.Strength * (Explorer.SocialStats.Courage / 2)) + 1;
+							Explorer.BattleStats.Endurance = (ExplorersDataTable->FindRow<FNetscapeExplorer_Struct>(ExplorerRowName, PlayerStateContextString)->BattleStats.Endurance * (Explorer.SocialStats.Diligence / 2)) + 1;
+							Explorer.BattleStats.Agility = (ExplorersDataTable->FindRow<FNetscapeExplorer_Struct>(ExplorerRowName, PlayerStateContextString)->BattleStats.Agility * (Explorer.SocialStats.Empathy / 2)) + 1;
+							Explorer.BattleStats.Magic = (ExplorersDataTable->FindRow<FNetscapeExplorer_Struct>(ExplorerRowName, PlayerStateContextString)->BattleStats.Magic * (Explorer.SocialStats.Insight / 2)) + 1;
+							Explorer.BattleStats.Luck = (ExplorersDataTable->FindRow<FNetscapeExplorer_Struct>(ExplorerRowName, PlayerStateContextString)->BattleStats.Luck * (Explorer.SocialStats.Wit / 2)) + 1;
+
+							// Health Points
+							Explorer.BattleStats.MaximumHealthPoints += Explorer.BattleStats.Endurance;
+
+							// Mana Points
+							Explorer.BattleStats.MaximumManaPoints += Explorer.BattleStats.Magic;
+
+							// Tile Moves
+							Explorer.MaximumTileMoves = 2 + FMath::RoundToInt(Explorer.BattleStats.Agility / 5);
+
+							DefaultProfile->CurrentExplorerTeam.Add(Explorer);
 						}
 					}
 

@@ -292,8 +292,7 @@ void APlayerController_Battle::Player_OnAvatarTurnChanged_Implementation()
 
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor_GridTile::StaticClass(), GridTilesArray);
 	for (int j = 0; j < GridTilesArray.Num(); j++) {
-		Cast<AActor_GridTile>(GridTilesArray[j])->UpdateTileColour(E_GridTile_ColourChangeContext::Normal);
-		Cast<AActor_GridTile>(GridTilesArray[j])->ChangeColourOnMouseHover = true;
+		Cast<AActor_GridTile>(GridTilesArray[j])->SetTileHighlightProperties(false, true, E_GridTile_ColourChangeContext::Normal);
 	}
 }
 

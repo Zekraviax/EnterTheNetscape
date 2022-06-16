@@ -222,8 +222,7 @@ void ACharacter_Pathfinder::ShowAttackRange()
 		for (int i = 0; i < ActorsArray.Num(); i++) {
 			if (ActorsArray[i]->GetActorLocation().Equals(OriginCoordinates, 100.f)) {
 				if (Cast<AActor_GridTile>(ActorsArray[i])) {
-					Cast<AActor_GridTile>(ActorsArray[i])->ChangeColourOnMouseHover = false;
-					Cast<AActor_GridTile>(ActorsArray[i])->UpdateTileColour(E_GridTile_ColourChangeContext::WithinAttackRange);
+					Cast<AActor_GridTile>(ActorsArray[i])->SetTileHighlightProperties(true, false, E_GridTile_ColourChangeContext::WithinAttackRange);
 
 					if (CurrentSelectedAttack.AttackPattern == EBattle_AttackPatterns::SingleTile)
 						ValidAttackTargetsArray.Add(ActorsArray[i]);
@@ -232,8 +231,7 @@ void ACharacter_Pathfinder::ShowAttackRange()
 				}
 			} else {
 				if (Cast<AActor_GridTile>(ActorsArray[i])) {
-					Cast<AActor_GridTile>(ActorsArray[i])->ChangeColourOnMouseHover = true;
-					Cast<AActor_GridTile>(ActorsArray[i])->UpdateTileColour(E_GridTile_ColourChangeContext::Normal);
+					Cast<AActor_GridTile>(ActorsArray[i])->SetTileHighlightProperties(false, true, E_GridTile_ColourChangeContext::Normal);
 				}
 			}
 		}
@@ -315,13 +313,11 @@ void ACharacter_Pathfinder::ShowAttackRange()
 					ValidAttackTargetsArray.Add(ActorsArray[i]);
 
 					if (Cast<AActor_GridTile>(ActorsArray[i])) {
-						Cast<AActor_GridTile>(ActorsArray[i])->ChangeColourOnMouseHover = false;
-						Cast<AActor_GridTile>(ActorsArray[i])->UpdateTileColour(E_GridTile_ColourChangeContext::WithinAttackRange);
+						Cast<AActor_GridTile>(ActorsArray[i])->SetTileHighlightProperties(true, false, E_GridTile_ColourChangeContext::WithinAttackRange);
 					}
 				} else {
 					if (Cast<AActor_GridTile>(ActorsArray[i])) {
-						Cast<AActor_GridTile>(ActorsArray[i])->ChangeColourOnMouseHover = true;
-						Cast<AActor_GridTile>(ActorsArray[i])->UpdateTileColour(E_GridTile_ColourChangeContext::Normal);
+						Cast<AActor_GridTile>(ActorsArray[i])->SetTileHighlightProperties(false, true, E_GridTile_ColourChangeContext::Normal);
 					}
 				}
 			}

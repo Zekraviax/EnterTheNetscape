@@ -283,18 +283,18 @@ struct STARMARK_API FNetscapeExplorer_SocialStats
 	int Empathy;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Talent;
+	int Insight;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Charisma;
+	int Wit;
 
 	FNetscapeExplorer_SocialStats()
 	{
 		Courage = 1;
 		Diligence = 1;
 		Empathy = 1;
-		Talent = 1;
-		Charisma = 1;
+		Insight = 1;
+		Wit = 1;
 	}
 };
 
