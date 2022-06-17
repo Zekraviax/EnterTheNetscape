@@ -542,7 +542,10 @@ struct STARMARK_API FNetscapeExplorer_Struct : public FTableRowBase
 
 // ------------------------- Appearance
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Appearance")
-	UMaterial* DefaultImage;
+	UMaterial* CurrentUiImage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Appearance")
+	TArray<UTexture2D*> UiImages;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Appearance")
 	FEntity_Size Size;
@@ -568,8 +571,8 @@ struct STARMARK_API FNetscapeExplorer_Struct : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Appearance")
 	int DyableColourCount;
 
-// ------------------------- Other Data Tables
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Other DataTables")
+// ------------------------- Data Tables
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DataTables")
 	TArray<FDataTableRowHandle> Attacks;
 
 // ------------------------- Lore
@@ -599,7 +602,7 @@ struct STARMARK_API FNetscapeExplorer_Struct : public FTableRowBase
 		CurrentTileMoves = 2;
 		MaximumActionPoints = 1;
 		CurrentActionPoints = 1;
-		DefaultImage = nullptr;
+		CurrentUiImage = nullptr;
 		SkeletalMesh = nullptr;
 		DyableMaterial = nullptr;
 		DyableColourCount = 0;

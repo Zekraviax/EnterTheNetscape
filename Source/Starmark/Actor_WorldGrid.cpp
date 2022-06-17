@@ -15,8 +15,7 @@ bool AActor_WorldGrid::IsValidGridCell(const FIntPoint& Location) const
 bool AActor_WorldGrid::IsGridCellWalkable(const FIntPoint& Location) const
 {
 	// Check if the tile has any properties that make it un-traversable
-	AActor_GridTile* GridTile = nullptr;
-	GridTile = GetWorldTileActorAtGridCoordinates(Location);
+	AActor_GridTile* GridTile = GetWorldTileActorAtGridCoordinates(Location);
 	
 	if (!IsValid(GridTile))
 		return false;

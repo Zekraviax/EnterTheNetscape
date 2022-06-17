@@ -83,7 +83,7 @@ void UWidgetComponent_Avatar::ApplyNewAvatarData(FNetscapeExplorer_Struct NewAva
 		NetscapeExplorerName->SetText(FText::FromString("Empty Slot"));
 	} else {
 		AvatarData = NewAvatarData;
-		AvatarMaterial = AvatarData.DefaultImage;
+		//AvatarMaterial = AvatarData.DefaultImage;
 		NetscapeExplorerName->SetText(FText::FromString(AvatarData.NetscapeExplorerName));
 
 		UpdateWidgetMaterials();
