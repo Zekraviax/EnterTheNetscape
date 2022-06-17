@@ -8,16 +8,12 @@ bool AActor_WorldGrid::IsValidGridCell(const FIntPoint& Location) const
 {
 	bool FoundATile = GetWorldTileActorAtGridCoordinates(Location);
 
-	return (Location.X >= 0 && Location.Y >= 0) && (Location.X < MapSize.X && Location.Y < MapSize.Y) && FoundATile;
+	return (Location.X < MapSize.X && Location.Y < MapSize.Y) && FoundATile;
 }
 
 
 bool AActor_WorldGrid::IsGridCellWalkable(const FIntPoint& Location) const
 {
-	// Check if the tile coordinates are in the grid array
-	//if (!GridTileCoordinates.Contains(Location))
-	//	return false;
-
 	// Check if the tile has any properties that make it un-traversable
 	AActor_GridTile* GridTile = nullptr;
 	GridTile = GetWorldTileActorAtGridCoordinates(Location);
@@ -41,7 +37,7 @@ bool AActor_WorldGrid::ConvertWorldTileToGridCoordinates(const FVector& WorldPos
 	GridPos.Y = (WorldPos.Y - MyLocation.Y) / GridTileSize.Y;
 
 	// Returns a bool, but also outputs the grid coordinates
-	return (GridPos.X >= 0 && GridPos.Y >= 0 && GridPos.X < MapSize.X && GridPos.Y < MapSize.Y);
+	return (GridPos.X < MapSize.X && GridPos.Y < MapSize.Y);
 }
 
 

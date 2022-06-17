@@ -119,13 +119,10 @@ FPathFindingResult ARecastNavMesh_GraphAStar::FindPath(const FNavAgentProperties
 
 	ACharacter_Pathfinder* AvatarReference = Cast<APlayerController_Battle>(RecastNavMesh->GetWorld()->GetFirstPlayerController())->CurrentSelectedAvatar;
 
-	if (NavMeshPath)
-	{
+	if (NavMeshPath) {
 		Result.Path = Query.PathInstanceToFill;
 		NavMeshPath->ResetForRepath();
-	}
-	else
-	{
+	} else {
 		Result.Path = Self->CreatePathInstance<FNavMeshPath>(Query);
 		NavPath = Result.Path.Get();
 		NavMeshPath = NavPath ? NavPath->CastPath<FNavMeshPath>() : nullptr;

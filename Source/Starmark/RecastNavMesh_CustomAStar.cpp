@@ -38,24 +38,8 @@ FPathFindingResult ARecastNavMesh_CustomAStar::FindPath(const FNavAgentPropertie
 	Result.Path = Query.PathInstanceToFill.IsValid() ? Query.PathInstanceToFill : Self->CreatePathInstance<FNavigationPath>(Query);
 
 	FNavigationPath* NavPath = Query.PathInstanceToFill.Get();
-	//FNavMeshPath* NavMeshPath = NavPath ? NavPath->CastPath<FNavMeshPath>() : nullptr;
 
-	////
-	//if (NavMeshPath) {
-	//	Result.Path = Query.PathInstanceToFill;
-	//	NavMeshPath->ResetForRepath();
-	//} else {
-	//	Result.Path = Self->CreatePathInstance<FNavMeshPath>(Query);
-	//	NavPath = Result.Path.Get();
-	//	NavMeshPath = NavPath ? NavPath->CastPath<FNavMeshPath>() : nullptr;
-	//}
-
-	//const FNavigationQueryFilter* NavFilter = Query.QueryFilter.Get();
-	if (NavPath != nullptr)
-	{
-		//
-		//NavMeshPath->ApplyFlags(Query.NavDataFlags);
-
+	if (NavPath != nullptr) {
 		if (Query.QueryFilter.IsValid()) {
 			// Array of neighbours of the tile that is currently being checked
 			TArray<AActor_GridTile*> TileNeighbours;
@@ -145,66 +129,21 @@ FPathFindingResult ARecastNavMesh_CustomAStar::FindPath(const FNavAgentPropertie
 						}
 					}
 
-					// test
-					//Result.Path->GetPathPoints().Add(FNavPathPoint(CurrentTile->GetActorLocation()));
-
 					// Add each neighbour to the frontier/priority queue if...
 					// is equal to the last entry in the CameFromMap
 					for (AActor_GridTile* NextTile : TileNeighbours) {
-						//
-						//int NewCost = CostSoFarMap[CurrentTile] + 1;
-
-						//if (*CostSoFarMap.Find(NextTile) == CostSoFarMap.end().Value() || NewCost < *CostSoFarMap.Find(NextTile)) {
-						/*
-						//
-						CostSoFarMap.Add(NextTile, NewCost);
-
-						//
-						PriorityQueue.Add(NextTile, NewCost);
-						*/
-
 						CameFromMap.Add(NextTile, CurrentTile);
 						Frontier.Add(NextTile);
-						//}
 					}
 				}
 			}
 
-			// Remove the Z location from the tile's location
-
-
-			/*
-			// Construct the path
-			TArray<FVector> ConstructedPath;
-			AActor_GridTile* CurrentTile = GoalTile;
-
-			// Start from the end of the path and work our way backwards,
-			// adding one element at a time to the path array until we reach the start
-			while (CurrentTile->GetActorLocation() != StartLocation) {
-				CurrentTile->DynamicMaterial->SetVectorParameterValue("Colour", FLinearColor::Blue);
-
-				ConstructedPath.Insert(CurrentTile->GetActorLocation(), ConstructedPath.Num());
-				CurrentTile = Cast<AActor_GridTile>(*CameFromMap.Find(CurrentTile));
-
-				//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("Path Length: %d"), ConstructedPath.Num()));
-				UE_LOG(LogTemp, Warning, TEXT("RecastNavMesh_CustomAStar / Path Length: %d"), ConstructedPath.Num());
-			}
-
-			Algo::Reverse(ConstructedPath);
-
-			for (int i = 0; i < ConstructedPath.Num(); i++) {
-				Result.Path->GetPathPoints().Add(FNavPathPoint(ConstructedPath[i]));
-				GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("Path Length: %d"), ConstructedPath.Num()));
-			}
-			*/
-
-			// Garbage collection
-			//delete CurrentTile;
-
-			//
 			Result.Path->MarkReady();
 			Result.Result = ENavigationQueryResult::Success;
 		}
+	} else {
+		// Handle errors here
+
 	}
 
 	return Result;
