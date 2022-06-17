@@ -1,6 +1,8 @@
 #include "Widget_HUD_Battle.h"
 
 
+#include "Blueprint/WidgetTree.h"
+#include "Character_Pathfinder.h"
 #include "Kismet/GameplayStatics.h"
 #include "PlayerController_Battle.h"
 #include "WidgetComponent_AvatarAttack.h"
@@ -41,6 +43,37 @@ void UWidget_HUD_Battle::UpdateTurnOrderText(FString NewText)
 
 		UpdateAvatarAttacksComponents();
 	}
+}
+
+
+void UWidget_HUD_Battle::SetUiIconsInTurnOrder(TArray<ACharacter_Pathfinder*> TurnOrderArray, int IndexOfCurrentlyActingEntity)
+{
+	EntityIconsInTurnOrder->ClearChildren();
+
+	for (ACharacter_Pathfinder* Character : TurnOrderArray) {
+		if (Character->AvatarData.UiImages.Num() > 0) {
+			UImage* CharacterIcon = WidgetTree->ConstructWidget<UImage>(UImage::StaticClass());
+			CharacterIcon->SetBrushFromTexture(Character->AvatarData.UiImages[0]);
+			CharacterIcon->SetBrushSize(FVector2D(100.f, 100.f));
+			EntityIconsInTurnOrder->AddChild(CharacterIcon);
+		}
+	}
+
+	SetCurrentActingEntityInfo(TurnOrderArray[0]);
+}
+
+
+void UWidget_HUD_Battle::SetCurrentActingEntityInfo(ACharacter_Pathfinder* CurrentActingEntity)
+{
+	if (CurrentActingEntity->AvatarData.UiImages.Num() > 0) {
+		CurrentEntityIcon->SetBrushFromTexture(CurrentActingEntity->AvatarData.UiImages[0]);
+	}
+
+	HealthText->SetText((FText::FromString("%s / %s"), FText::FromString(FString::FromInt(CurrentActingEntity->AvatarData.CurrentHealthPoints)), FText::FromString(FString::FromInt(CurrentActingEntity->AvatarData.BattleStats.MaximumHealthPoints))));
+	ManaText->SetText((FText::FromString("%s / %s"), FText::FromString(FString::FromInt(CurrentActingEntity->AvatarData.CurrentManaPoints)), FText::FromString(FString::FromInt(CurrentActingEntity->AvatarData.BattleStats.MaximumManaPoints))));
+
+	HealthBar->SetPercent(CurrentActingEntity->AvatarData.BattleStats.MaximumHealthPoints / CurrentActingEntity->AvatarData.CurrentHealthPoints);
+	ManaBar->SetPercent(CurrentActingEntity->AvatarData.BattleStats.MaximumManaPoints / CurrentActingEntity->AvatarData.CurrentManaPoints);
 }
 
 

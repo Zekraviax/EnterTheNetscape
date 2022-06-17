@@ -64,6 +64,7 @@ void AEnterTheNetscape_PlayerState::Server_UpdatePlayerData_Implementation()
 			if (!GameInstanceReference->CurrentProfileReference->IsValidLowLevel()) {
 				// If the player doesn't have a profile loaded, attempt to load a default profile.
 				GameInstanceReference->CurrentProfileReference = Cast<UPlayer_SaveData>(UGameplayStatics::LoadGameFromSlot("DefaultProfile", 0));
+				UGameplayStatics::DeleteGameInSlot("DefaultProfile", 0);
 
 				// Check if a default profile exists. If not, create one.
 				if (!GameInstanceReference->CurrentProfileReference->IsValidLowLevel()) {
@@ -86,7 +87,6 @@ void AEnterTheNetscape_PlayerState::Server_UpdatePlayerData_Implementation()
 							// Apply formulae to stats
 							// Battle Stats
 							// Total Battle Stat = Base Battle Stat x (Social Stat/Number) + Level
-	
 							Explorer.BattleStats.Strength = (ExplorersDataTable->FindRow<FNetscapeExplorer_Struct>(ExplorerRowName, PlayerStateContextString)->BattleStats.Strength * (Explorer.SocialStats.Courage / 2)) + 1;
 							Explorer.BattleStats.Endurance = (ExplorersDataTable->FindRow<FNetscapeExplorer_Struct>(ExplorerRowName, PlayerStateContextString)->BattleStats.Endurance * (Explorer.SocialStats.Diligence / 2)) + 1;
 							Explorer.BattleStats.Agility = (ExplorersDataTable->FindRow<FNetscapeExplorer_Struct>(ExplorerRowName, PlayerStateContextString)->BattleStats.Agility * (Explorer.SocialStats.Empathy / 2)) + 1;

@@ -4,6 +4,8 @@
 #include "Blueprint/UserWidget.h"
 
 #include "Components/Button.h"
+#include "Components/Image.h"
+#include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 #include "Components/UniformGridPanel.h"
 #include "Components/VerticalBox.h"
@@ -47,6 +49,24 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UVerticalBox* CombatLog;
 
+	UPROPERTY(meta = (BindWidget))
+	UVerticalBox* EntityIconsInTurnOrder;
+
+	UPROPERTY(meta = (BindWidget))
+	UImage* CurrentEntityIcon;
+
+	UPROPERTY(meta = (BindWidget))
+	UProgressBar* HealthBar;
+
+	UPROPERTY(meta = (BindWidget))
+	UProgressBar* ManaBar;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* HealthText;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* ManaText;
+
 // ------------------------- References
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	APlayerController_Battle* PlayerControllerReference;
@@ -60,6 +80,12 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void UpdateTurnOrderText(FString NewText);
+
+	UFUNCTION()
+	void SetUiIconsInTurnOrder(TArray<ACharacter_Pathfinder*> TurnOrderArray, int IndexOfCurrentlyActingEntity);
+
+	UFUNCTION()
+	void SetCurrentActingEntityInfo(ACharacter_Pathfinder* CurrentActingEntity);
 
 // ------------------------- Commands
 	UFUNCTION(BlueprintCallable)

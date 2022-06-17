@@ -6,6 +6,7 @@
 #include "Character_NonAvatarEntity.h"
 #include "Character_Pathfinder.h"
 #include "Engine/World.h"
+#include "EnterTheNetscape_GameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "PlayerController_Battle.h"
 #include "EnterTheNetscape_PlayerState.h"
@@ -147,6 +148,15 @@ void AEnterTheNetscape_GameState::AvatarBeginTurn_Implementation()
 	for (int j = 0; j < PlayerArray.Num(); j++) {
 		APlayerController_Battle* PlayerController = Cast<APlayerController_Battle>(PlayerArray[j]->GetPawn()->GetController());
 		PlayerController->Player_OnAvatarTurnChanged();
+	}
+
+	// Update HUD
+	if (GameModeReference == nullptr) {
+		GameModeReference = Cast<AEnterTheNetscape_GameMode>(GetWorld()->GetAuthGameMode());
+	}
+
+	for (APlayerController_Battle* Controller : GameModeReference->PlayerControllerReferences) {
+		Controller->Local_GetEntitiesInTurnOrder(DynamicAvatarTurnOrder, CurrentAvatarTurnIndex);
 	}
 }
 

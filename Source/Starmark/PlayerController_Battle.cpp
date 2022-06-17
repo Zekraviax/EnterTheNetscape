@@ -98,6 +98,12 @@ void APlayerController_Battle::Local_GetTurnOrderText(const FString & NewTurnOrd
 }
 
 
+void APlayerController_Battle::Local_GetEntitiesInTurnOrder(TArray<ACharacter_Pathfinder*> TurnOrderArray, int IndexOfCurrentlyActingEntity)
+{
+	BattleWidgetReference->SetUiIconsInTurnOrder(TurnOrderArray, IndexOfCurrentlyActingEntity);
+}
+
+
 // ------------------------- Avatar
 void APlayerController_Battle::OnRepNotify_CurrentSelectedAvatar_Implementation()
 {

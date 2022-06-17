@@ -125,6 +125,9 @@ public:
 	UFUNCTION()
 	void Local_GetTurnOrderText(const FString& NewTurnOrderText) const;
 
+	UFUNCTION()
+	void Local_GetEntitiesInTurnOrder(TArray<ACharacter_Pathfinder*> TurnOrderArray, int IndexOfCurrentlyActingEntity);
+
 // ------------------------- Avatar
 	UFUNCTION(BlueprintCallable, Client, Reliable)
 	void OnRepNotify_CurrentSelectedAvatar();

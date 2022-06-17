@@ -60,12 +60,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	UWidgetComponent_AvatarBattleData* AvatarBattleDataComponent_Reference;
 
-// ------------------------- Avatar
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, Category = "Avatar")
+// ------------------------- Entity
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, Category = "Entity")
 	FNetscapeExplorer_Struct AvatarData;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Entity")
 	bool RotateAvatarTowardsMouse = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Entity")
+	FDataTableRowHandle EntityDataTableRow;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Entity")
+	bool FetchDataFromDataTable;
 
 // ------------------------- Battle
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Battle")
@@ -104,6 +110,9 @@ public:
 // ------------------------- Other
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	APlayerController_Battle* PlayerControllerReference;
+
+	UPROPERTY()
+	FString CharacterContextString;
 
 // Functions
 // --------------------------------------------------

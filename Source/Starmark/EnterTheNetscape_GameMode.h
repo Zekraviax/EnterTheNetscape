@@ -12,6 +12,7 @@
 // Forward Declarations
 class AActor_AttackEffectsLibrary;
 class ACharacter_Pathfinder;
+class AEnterTheNetscape_GameState;
 class APlayerController_Battle;
 class APlayerPawn_Static;
 class APlayerPawn_Flying;
@@ -25,6 +26,10 @@ class STARMARK_API AEnterTheNetscape_GameMode : public AGameMode
 public:
 // Variables
 // --------------------------------------------------
+
+// ------------------------- References
+	UPROPERTY()
+	AEnterTheNetscape_GameState* GameStateReference;
 
 // ------------------------- Data Tables
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -74,7 +79,7 @@ public:
 	UPROPERTY()
 	int MultiplayerUniqueIDCounter;
 
-// ------------------------- Multiplayer
+// ------------------------- Other
 	UPROPERTY()
 	FString GameModeContextString;
 

@@ -7,9 +7,10 @@
 
 // Forward Declarations
 class ACharacter_Pathfinder;
-class UWidget_HUD_Battle;
+class AEnterTheNetscape_GameMode;
 class APlayerController_Battle;
 class UWidgetComponent_LobbyPlayerVals;
+class UWidget_HUD_Battle;
 
 
 UCLASS()
@@ -20,6 +21,10 @@ class STARMARK_API AEnterTheNetscape_GameState : public AGameState
 public:
 // Variables
 // --------------------------------------------------
+
+// ------------------------- References
+	UPROPERTY()
+	AEnterTheNetscape_GameMode* GameModeReference;
 
 // ------------------------- Battle
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)

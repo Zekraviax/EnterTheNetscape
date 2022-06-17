@@ -102,7 +102,13 @@ void ACharacter_Pathfinder::Tick(float DeltaSeconds)
 // ------------------------- Base
 void ACharacter_Pathfinder::BeginPlayWorkaroundFunction_Implementation(UWidget_HUD_Battle* BattleHUDReference)
 {
-	FString ContextString;
+	/*
+	if (FetchDataFromDataTable) {
+		if (EntityDataTableRow->IsValidLowLevel()) {
+			AvatarData = *EntityDataTableRow.DataTable->FindRow<FNetscapeExplorer_Struct>(EntityDataTableRow.RowName, CharacterContextString);
+		}
+	}
+	*/
 
 	// Snap Actor to Grid
 	// The Z Value needs to be retained or else the character will probably clip through the floor
