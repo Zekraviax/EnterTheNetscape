@@ -193,12 +193,11 @@ void AEnterTheNetscape_GameState::AvatarEndTurn_Implementation()
 		}
 	}
 
-	// Set all GridTiles to default colours and colourability
+	// Set all GridTiles to default colours and visibility
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor_GridTile::StaticClass(), GridTilesArray);
 	for (int j = 0; j < GridTilesArray.Num(); j++) {
 		Cast<AActor_GridTile>(GridTilesArray[j])->SetTileHighlightProperties(false, true, E_GridTile_ColourChangeContext::Normal);
 	}
-
 
 	// Update the dynamic turn order
 	if (DynamicAvatarTurnOrder.Num() > 0) {
@@ -212,13 +211,19 @@ void AEnterTheNetscape_GameState::AvatarEndTurn_Implementation()
 		if (IsValid(DynamicAvatarTurnOrder[i])) {
 			if (DynamicAvatarTurnOrder[i]->PlayerControllerReference->IsValidLowLevel()) {
 				DynamicAvatarTurnOrder[i]->PlayerControllerReference->CurrentSelectedAvatar = DynamicAvatarTurnOrder[i];
+
+				// Clean up entities' controllers
+				DynamicAvatarTurnOrder[i]->PlayerControllerReference->TileHighlightMode = E_PlayerCharacter_HighlightModes::E_MovePath;
 			} else {
 				UE_LOG(LogTemp, Warning, TEXT("AvatarEndTurn / Next entity in turn order does not have a player controller."));
 			}
 
+			// Clean up all entities
 			DynamicAvatarTurnOrder[i]->CurrentSelectedAttack.Name = "None";
 			DynamicAvatarTurnOrder[i]->CurrentSelectedAttack.AttachAttackTraceActorToMouse = false;
 			DynamicAvatarTurnOrder[i]->ValidAttackTargetsArray.Empty();
+			DynamicAvatarTurnOrder[i]->AttackTraceActor->SetVisibility(false);
+			DynamicAvatarTurnOrder[i]->AttackTraceActor->SetHiddenInGame(true);
 		}
 	}
 

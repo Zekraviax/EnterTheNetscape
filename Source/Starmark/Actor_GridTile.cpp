@@ -31,6 +31,7 @@ AActor_GridTile::AActor_GridTile()
 	GridTileHitbox->SetNotifyRigidBodyCollision(true);
 }
 
+
 // Called when the game starts or when spawned
 void AActor_GridTile::BeginPlay()
 {
@@ -42,7 +43,9 @@ void AActor_GridTile::BeginPlay()
 	DynamicMaterial = UMaterialInstanceDynamic::Create(TileHighlightMaterial, this);
 	TileHighlightPlane->SetMaterial(0, DynamicMaterial);
 	TileHighlightPlane->SetVisibility(false);
+	TileHighlightPlane->SetHiddenInGame(true);
 }
+
 
 // Called every frame
 void AActor_GridTile::Tick(float DeltaTime)
@@ -64,13 +67,15 @@ void AActor_GridTile::UpdateGridTileState()
 	}
 
 	// If the TraversalProperties array is empty, add the default Property
-	if (Properties.Num() <= 0)
+	if (Properties.Num() <= 0) {
 		Properties.AddUnique(E_GridTile_Properties::E_None);
+	}
 }
 
 
 void AActor_GridTile::OnMouseBeginHover(ACharacter_Pathfinder* CurrentAvatar)
 {
+	/*
 	// Set AttackTraceActor to this tile's location if it isn't centered around the player
 	if (IsValid(CurrentAvatar)) {
 		if (CurrentAvatar->CurrentSelectedAttack.AttachAttackTraceActorToMouse) {
@@ -90,6 +95,7 @@ void AActor_GridTile::OnMouseBeginHover(ACharacter_Pathfinder* CurrentAvatar)
 			}
 		}
 	}
+	*/
 }
 
 
@@ -98,6 +104,7 @@ void AActor_GridTile::SetTileHighlightProperties(bool IsVisible, bool ShouldChan
 	if (TileHighlightPlane->IsValidLowLevel()) {
 		// Set visibility
 		TileHighlightPlane->SetVisibility(IsVisible);
+		TileHighlightPlane->SetHiddenInGame(!IsVisible);
 
 		// Set colour changing
 		ChangeColourOnMouseHover = ShouldChangeColourOnMouseOver;
