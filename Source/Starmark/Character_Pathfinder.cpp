@@ -205,51 +205,6 @@ void ACharacter_Pathfinder::ShowAttackRange()
 
 	AttackTraceActor->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	AttackTraceActor->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
-	AttackTraceActor->SetVisibility(true);
-	AttackTraceActor->SetHiddenInGame(false);
-
-	// Center the attack component on a single tile
-	if (CurrentSelectedAttack.AttackTargetsInRange == EBattle_AttackTargetsInRange::Self ||
-		CurrentSelectedAttack.AttackPattern == EBattle_AttackPatterns::SingleTile) {
-
-		/*
-
-		FVector OriginCoordinates = FVector::ZeroVector;
-		ValidAttackTargetsArray.Empty();
-
-		// Get the current mouse/avatar position
-		if (CurrentSelectedAttack.AttachAttackTraceActorToMouse)
-			OriginCoordinates = PlayerControllerReference->CursorLocationSnappedToGrid;
-		else
-			OriginCoordinates = GetActorLocation().GridSnap(200.f);
-
-		// Get all of the tiles and avatars around the origin coordinates
-		TArray<AActor*> GridTilesArray, AvatarsArray, ActorsArray;
-
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor_GridTile::StaticClass(), GridTilesArray);
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACharacter_Pathfinder::StaticClass(), AvatarsArray);
-
-		ActorsArray.Append(GridTilesArray);
-		ActorsArray.Append(AvatarsArray);
-
-		for (int i = 0; i < ActorsArray.Num(); i++) {
-			if (ActorsArray[i]->GetActorLocation().Equals(OriginCoordinates, 100.f)) {
-				if (Cast<AActor_GridTile>(ActorsArray[i])) {
-					Cast<AActor_GridTile>(ActorsArray[i])->SetTileHighlightProperties(true, false, E_GridTile_ColourChangeContext::WithinAttackRange);
-
-					if (CurrentSelectedAttack.AttackPattern == EBattle_AttackPatterns::SingleTile)
-						ValidAttackTargetsArray.Add(ActorsArray[i]);
-				} else if (Cast<ACharacter_Pathfinder>(ActorsArray[i])) {
-					ValidAttackTargetsArray.Add(ActorsArray[i]);
-				}
-			} else {
-				if (Cast<AActor_GridTile>(ActorsArray[i])) {
-					Cast<AActor_GridTile>(ActorsArray[i])->SetTileHighlightProperties(false, true, E_GridTile_ColourChangeContext::Normal);
-				}
-			}
-		}
-		*/
-	}
 
 	if (CurrentSelectedAttack.AttackPattern == EBattle_AttackPatterns::WideWall) {
 		// Set the StaticMesh

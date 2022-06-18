@@ -4,6 +4,7 @@
 #include "Blueprint/UserWidget.h"
 
 #include "Components/Button.h"
+#include "Components/HorizontalBox.h"
 #include "Components/Image.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
@@ -50,7 +51,7 @@ public:
 	UVerticalBox* CombatLog;
 
 	UPROPERTY(meta = (BindWidget))
-	UVerticalBox* EntityIconsInTurnOrder;
+	UHorizontalBox* EntityIconsInTurnOrder;
 
 	UPROPERTY(meta = (BindWidget))
 	UImage* CurrentEntityIcon;
@@ -66,6 +67,9 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* ManaText;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* CurrentEntityNameText;
 
 // ------------------------- References
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

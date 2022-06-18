@@ -78,7 +78,7 @@ void UWidget_HUD_Battle::SetCurrentActingEntityInfo(ACharacter_Pathfinder* Curre
 	HealthBar->SetPercent(float(CurrentActingEntity->AvatarData.CurrentHealthPoints) / float(CurrentActingEntity->AvatarData.BattleStats.MaximumHealthPoints));
 	ManaBar->SetPercent(float(CurrentActingEntity->AvatarData.CurrentManaPoints) / float(CurrentActingEntity->AvatarData.BattleStats.MaximumManaPoints));
 
-	CurrentEntityNameText->SetText(FText::FromString(CurrentActingEntity->AvatarData.Nickname.ToUpper() + "'S TURN"));
+	CurrentEntityNameText->SetText(FText::FromString("%s'S TURN")), *CurrentActingEntity->AvatarData.Nickname.ToUpper();
 }
 
 
