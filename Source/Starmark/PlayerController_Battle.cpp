@@ -268,9 +268,9 @@ void APlayerController_Battle::Player_OnAvatarTurnChanged_Implementation()
 {
 	TArray<AActor*> GridTilesArray;
 
-	if (IsValid(BattleWidgetReference)) {
-		BattleWidgetReference->EndTurnCommandButton->SetIsEnabled(IsCurrentlyActingPlayer);
-	}
+	//if (IsValid(BattleWidgetReference)) {
+	//	BattleWidgetReference->EndTurnCommand->SetIsEnabled(IsCurrentlyActingPlayer);
+	//}
 
 	SetBattleWidgetVariables();
 

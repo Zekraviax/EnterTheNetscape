@@ -4,6 +4,7 @@
 #include "Blueprint/UserWidget.h"
 
 #include "Components/Button.h"
+#include "Components/GridPanel.h"
 #include "Components/HorizontalBox.h"
 #include "Components/Image.h"
 #include "Components/ProgressBar.h"
@@ -36,16 +37,19 @@ public:
 	UTextBlock* TurnAndRoundCounterTextBlock;
 
 	UPROPERTY(meta = (BindWidget))
+	UGridPanel* CommandsBox;
+
+	UPROPERTY(meta = (BindWidget))
 	UUniformGridPanel* AvatarAttacksBox;
 
 	UPROPERTY(meta = (BindWidget))
 	UWidgetComponent_AvatarBattleData* AvatarBattleDataWidget;
 
-	UPROPERTY(meta = (BindWidget))
+	//UPROPERTY(meta = (BindWidget))
 	UButton* SwitchCommandButton;
 
-	UPROPERTY(meta = (BindWidget))
-	UButton* EndTurnCommandButton;
+	//UPROPERTY(meta = (BindWidget))
+	UButton* EndTurnCommand;
 
 	UPROPERTY(meta = (BindWidget))
 	UVerticalBox* CombatLog;
