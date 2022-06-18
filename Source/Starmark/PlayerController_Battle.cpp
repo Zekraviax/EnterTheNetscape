@@ -156,10 +156,12 @@ void APlayerController_Battle::Server_GetDataFromProfile_Implementation()
 }
 
 
-void APlayerController_Battle::OnPrimaryClick(AActor* ClickedActor)
+void APlayerController_Battle::OnPrimaryClick(AActor* ClickedActor, TArray<AActor*> ValidTargetsArray)
 {
 	TArray<AActor*> AttackEffectsLibraries;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor_AttackEffectsLibrary::StaticClass(), AttackEffectsLibraries);
+
+	CurrentSelectedAvatar->ValidAttackTargetsArray = ValidTargetsArray;
 
 	if (ClickedActor->IsValidLowLevel()) {
 		// The Hat Trick functions should take priority over other moves
@@ -190,16 +192,21 @@ void APlayerController_Battle::OnPrimaryClick(AActor* ClickedActor)
 			}
 
 
-		} else if (CurrentSelectedAvatar->CurrentSelectedAttack.Name != "Default" &&
-			CurrentSelectedAvatar->CurrentSelectedAttack.Name != "None" &&
-			CurrentSelectedAvatar->CurrentSelectedAttack.Name != "---" &&
-			CurrentSelectedAvatar->ValidAttackTargetsArray.Num() > 0) {
+		} else if (CurrentSelectedAvatar->CurrentSelectedAttack.Name != "Default" && CurrentSelectedAvatar->CurrentSelectedAttack.Name != "None" && CurrentSelectedAvatar->CurrentSelectedAttack.Name != "---" && ValidTargetsArray.Num() > 0) {
 
 			// Subtract attack's MP cost
 			CurrentSelectedAvatar->AvatarData.CurrentManaPoints -= CurrentSelectedAvatar->CurrentSelectedAttack.ManaCost;
 
 			if (ClickedActor &&
 				CurrentSelectedAvatar->CurrentSelectedAttack.AttackTargetsInRange == EBattle_AttackTargetsInRange::AttackClickedAvatar) {
+				// Find an entity amongst the valid targets
+				for (AActor* Actor : ValidTargetsArray) {
+					if (Cast<ACharacter_Pathfinder>(Actor)) {
+						ClickedActor = Cast<ACharacter_Pathfinder>(Actor);
+						break;
+					}
+				}
+
 				// If we're attacking, and we clicked on a valid target in-range, launch an attack
 				UE_LOG(LogTemp, Warning, TEXT("OnPrimaryClick / Launch attack against ClickedActor"));
 				UE_LOG(LogTemp, Warning, TEXT("OnPrimaryClick / ClickedActor is: %s"), *ClickedActor->GetFullName());
@@ -221,35 +228,6 @@ void APlayerController_Battle::OnPrimaryClick(AActor* ClickedActor)
 				}
 
 				Client_SendEndOfTurnCommandToServer();
-			} else if (CurrentSelectedAvatar->CurrentSelectedAttack.AttackTargetsInRange == EBattle_AttackTargetsInRange::SelectAllGridTiles) {
-				UE_LOG(LogTemp, Warning, TEXT("OnPrimaryClick / Select all valid grid tiles in range: %d"), CurrentSelectedAvatar->ValidAttackTargetsArray.Num());
-
-				for (int i = 0; i < CurrentSelectedAvatar->ValidAttackTargetsArray.Num(); i++) {
-					if (Cast<AActor_GridTile>(CurrentSelectedAvatar->ValidAttackTargetsArray[i])) {
-						UE_LOG(LogTemp, Warning, TEXT("OnPrimaryClick / GridTile is: %s"), *CurrentSelectedAvatar->ValidAttackTargetsArray[i]->GetFullName());
-						CurrentSelectedAvatar->LaunchAttack_Implementation(Cast<AActor_GridTile>(CurrentSelectedAvatar->ValidAttackTargetsArray[i]));
-					}
-				}
-
-				Client_SendEndOfTurnCommandToServer();
-			} else if (CurrentSelectedAvatar->CurrentSelectedAttack.AttackTargetsInRange == EBattle_AttackTargetsInRange::SelectAllGridTilesAndSelectAllAvatars) {
-				for (int i = 0; i < CurrentSelectedAvatar->ValidAttackTargetsArray.Num(); i++) {
-					if (Cast<AActor_GridTile>(CurrentSelectedAvatar->ValidAttackTargetsArray[i])) {
-						UE_LOG(LogTemp, Warning, TEXT("OnPrimaryClick / Target GridTile is: %s"), *CurrentSelectedAvatar->ValidAttackTargetsArray[i]->GetFullName());
-						CurrentSelectedAvatar->LaunchAttack_Implementation(Cast<AActor_GridTile>(CurrentSelectedAvatar->ValidAttackTargetsArray[i]));
-					}
-					else if (Cast<ACharacter_Pathfinder>(CurrentSelectedAvatar->ValidAttackTargetsArray[i])) {
-						UE_LOG(LogTemp, Warning, TEXT("OnPrimaryClick / Target Actor is: %s"), *CurrentSelectedAvatar->ValidAttackTargetsArray[i]->GetFullName());
-						CurrentSelectedAvatar->LaunchAttack_Implementation(Cast<ACharacter_Pathfinder>(CurrentSelectedAvatar->ValidAttackTargetsArray[i]));
-					}
-				}
-
-				Client_SendEndOfTurnCommandToServer();
-			} else if (CurrentSelectedAvatar->CurrentSelectedAttack.AttackTargetsInRange == EBattle_AttackTargetsInRange::Self) {
-				CurrentSelectedAvatar->LaunchAttack_Implementation(CurrentSelectedAvatar);
-
-				if (CurrentSelectedAvatar->CurrentSelectedAttack.EndAvatarTurnOnUse)
-					Client_SendEndOfTurnCommandToServer();
 			}
 		}
 	}

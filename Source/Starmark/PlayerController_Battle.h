@@ -140,7 +140,7 @@ public:
 	void Server_SetReadyToStartMultiplayerBattle();
 
 	UFUNCTION(BlueprintCallable)
-	void OnPrimaryClick(AActor* ClickedActor);
+	void OnPrimaryClick(AActor* ClickedActor, TArray<AActor*> ValidTargetsArray);
 
 	UFUNCTION(BlueprintNativeEvent)
 	void SendMoveCommandToServer(FVector MoveLocation);

@@ -312,20 +312,20 @@ void AEnterTheNetscape_GameMode::Server_LaunchAttack_Implementation(ACharacter_P
 
 
 	// Apply move effects after the damage has been dealt
-	for (int i = 0; i < AttackData.AttackEffectsOnTarget.Num(); i++) {
-		if (!AttackEffectsLibrary_Reference && AttackEffectsLibrary_Class)
+	if (!AttackEffectsLibrary_Reference && AttackEffectsLibrary_Class) {
+		for (int i = 0; i < AttackData.AttackEffectsOnTarget.Num(); i++) {
 			AttackEffectsLibrary_Reference = GetWorld()->SpawnActor<AActor_AttackEffectsLibrary>(AttackEffectsLibrary_Class, FVector::ZeroVector, FRotator::ZeroRotator, SpawnInfo);
+			AttackEffectsLibrary_Reference->SwitchOnAttackEffect(AttackData.AttackEffectsOnTarget[i], Attacker, Target);
 
-		AttackEffectsLibrary_Reference->SwitchOnAttackEffect(AttackData.AttackEffectsOnTarget[i], Attacker, Target);
+			if (AttackData.Name == "Drown") {
+				Cast<AEnterTheNetscape_GameState>(GetWorld()->GetGameState())->SetTurnOrder(PlayerControllerReferences);
 
-		if (AttackData.Name == "Drown") {
-			Cast<AEnterTheNetscape_GameState>(GetWorld()->GetGameState())->SetTurnOrder(PlayerControllerReferences);
+				// Re-set the turn order text
+				Server_AssembleTurnOrderText();
 
-			// Re-set the turn order text
-			Server_AssembleTurnOrderText();
-
-			// Call the EndTurn function again (?)
-			Cast<AEnterTheNetscape_GameState>(GetWorld()->GetGameState())->AvatarEndTurn();
+				// Call the EndTurn function again (?)
+				Cast<AEnterTheNetscape_GameState>(GetWorld()->GetGameState())->AvatarEndTurn();
+			}
 		}
 	}
 }
