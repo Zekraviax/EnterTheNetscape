@@ -40,7 +40,7 @@ public:
 	UGridPanel* CommandsBox;
 
 	UPROPERTY(meta = (BindWidget))
-	UUniformGridPanel* AvatarAttacksBox;
+	UGridPanel* AvatarAttacksBox;
 
 	UPROPERTY(meta = (BindWidget))
 	UWidgetComponent_AvatarBattleData* AvatarBattleDataWidget;
@@ -95,10 +95,16 @@ public:
 	UFUNCTION()
 	void SetCurrentActingEntityInfo(ACharacter_Pathfinder* CurrentActingEntity);
 
+	UFUNCTION()
+	void ResetBattleHud();
+
 // ------------------------- Commands
 	UFUNCTION(BlueprintCallable)
 	void MoveCommand();
 
 	UFUNCTION(BlueprintCallable)
 	void EndCommand();
+
+	UFUNCTION(BlueprintCallable)
+	void AttackCommand();
 };

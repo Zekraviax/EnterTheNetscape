@@ -7,20 +7,27 @@
 #include "Kismet/GameplayStatics.h"
 #include "PlayerController_Battle.h"
 #include "WidgetComponent_AvatarAttack.h"
+//#include "Widget"
 
 
 // ------------------------- Widget
 void UWidget_HUD_Battle::UpdateAvatarAttacksComponents()
 {
 	if (IsValid(this)) {
-		if (AvatarAttacksBox) {
+		if (AvatarAttacksBox->IsValidLowLevel()) {
 			for (int i = 0; i < AvatarAttacksBox->GetChildrenCount(); i++) {
+				/*
+				if (Cast<>()) {
+
+				}
+				*/
+
 				if (PlayerControllerReference->CurrentSelectedAvatar->CurrentKnownAttacks.IsValidIndex(i)) {
 					if (PlayerControllerReference->CurrentSelectedAvatar->CurrentKnownAttacks[i].Name == "Default" ||
 						PlayerControllerReference->CurrentSelectedAvatar->CurrentKnownAttacks[i].Name == "None") {
 						AvatarAttacksBox->GetChildAt(i)->SetVisibility(ESlateVisibility::Hidden);
 					} else {
-						Cast<UWidgetComponent_AvatarAttack>(AvatarAttacksBox->GetChildAt(i))->AttackNameText->SetText(FText::FromString(PlayerControllerReference->CurrentSelectedAvatar->CurrentKnownAttacks[i].Name));
+						Cast<UWidgetComponent_AvatarAttack>(AvatarAttacksBox->GetChildAt(i))->AttackNameText->SetText(FText::FromString(PlayerControllerReference->CurrentSelectedAvatar->CurrentKnownAttacks[i].Name.ToUpper()));
 
 						Cast<UWidgetComponent_AvatarAttack>(AvatarAttacksBox->GetChildAt(i))->PlayerControllerReference = PlayerControllerReference;
 						Cast<UWidgetComponent_AvatarAttack>(AvatarAttacksBox->GetChildAt(i))->AvatarAttackIndex = i;
@@ -82,6 +89,13 @@ void UWidget_HUD_Battle::SetCurrentActingEntityInfo(ACharacter_Pathfinder* Curre
 }
 
 
+void UWidget_HUD_Battle::ResetBattleHud()
+{
+	CommandsBox->SetVisibility(ESlateVisibility::Visible);
+	AvatarAttacksBox->SetVisibility(ESlateVisibility::Collapsed);
+}
+
+
 // ------------------------- Commands
 void UWidget_HUD_Battle::MoveCommand()
 {
@@ -92,4 +106,11 @@ void UWidget_HUD_Battle::MoveCommand()
 void UWidget_HUD_Battle::EndCommand()
 {
 	PlayerControllerReference->SendEndOfTurnCommandToServer_Implementation();
+}
+
+
+void UWidget_HUD_Battle::AttackCommand()
+{
+	CommandsBox->SetVisibility(ESlateVisibility::Collapsed);
+	AvatarAttacksBox->SetVisibility(ESlateVisibility::Visible);
 }

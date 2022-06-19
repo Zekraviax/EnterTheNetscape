@@ -3,14 +3,16 @@
 #include "Actor_AbilitiesLibrary.h"
 #include "Actor_GridTile.h"
 #include "Actor_StatusEffectsLibrary.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Character_NonAvatarEntity.h"
 #include "Character_Pathfinder.h"
 #include "Engine/World.h"
+#include "EnterTheNetscape_PlayerState.h"
+#include "EnterTheNetscape_GameMode.h"
 #include "EnterTheNetscape_GameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "PlayerController_Battle.h"
-#include "EnterTheNetscape_PlayerState.h"
-#include "EnterTheNetscape_GameMode.h"
+#include "Widget_HUD_Battle.h"
 
 
 void AEnterTheNetscape_GameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -224,6 +226,14 @@ void AEnterTheNetscape_GameState::AvatarEndTurn_Implementation()
 			DynamicAvatarTurnOrder[i]->ValidAttackTargetsArray.Empty();
 			DynamicAvatarTurnOrder[i]->AttackTraceActor->SetVisibility(false);
 			DynamicAvatarTurnOrder[i]->AttackTraceActor->SetHiddenInGame(true);
+
+			// Reset the players' hud
+			TArray<UUserWidget*> FoundBattleHudWidgets;
+			UWidgetBlueprintLibrary::GetAllWidgetsOfClass(this, FoundBattleHudWidgets, UWidget_HUD_Battle::StaticClass(), true);
+			for (UUserWidget* FoundWidget : FoundBattleHudWidgets) {
+				UWidget_HUD_Battle* HUD = Cast<UWidget_HUD_Battle>(FoundWidget);
+				HUD->ResetBattleHud();
+			}
 		}
 	}
 
