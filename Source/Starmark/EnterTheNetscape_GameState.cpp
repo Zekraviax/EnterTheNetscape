@@ -3,6 +3,7 @@
 #include "Actor_AbilitiesLibrary.h"
 #include "Actor_GridTile.h"
 #include "Actor_StatusEffectsLibrary.h"
+#include "AIController_EnemyEntity.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Character_NonAvatarEntity.h"
 #include "Character_Pathfinder.h"
@@ -144,6 +145,18 @@ void AEnterTheNetscape_GameState::AvatarBeginTurn_Implementation()
 
 			// Call the ability function
 			Avatar->AvatarData.Ability.AbilityLibraryActor->SwitchOnAbilityEffect(Avatar->AvatarData.Ability.Function, Avatar, Avatar);
+		}
+
+		// If the currently acting entity is an enemy, activate their AI functions
+		if (Avatar->AvatarData.Factions.Contains(EEntity_Factions::Enemy1)) {
+			AAIController_EnemyEntity* EnemyController = Cast<AAIController_EnemyEntity>(Avatar->GetController());
+
+			if (EnemyController->SelfEntityReference != Avatar) {
+				EnemyController->SelfEntityReference = Avatar;
+				EnemyController->Possess(Avatar);
+			}
+
+			EnemyController->StepOne_ChooseTarget();
 		}
 	}
 

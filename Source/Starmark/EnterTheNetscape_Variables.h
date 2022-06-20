@@ -72,6 +72,14 @@ enum class E_GridTile_Properties : uint8
 
 //------------------------- Battle
 UENUM(BlueprintType)
+enum class EEntity_Factions : uint8 
+{
+	Player1,
+	Enemy1,
+};
+
+
+UENUM(BlueprintType)
 enum class EBattle_AttackPatterns : uint8
 {
 	Circle,
@@ -539,6 +547,9 @@ struct STARMARK_API FNetscapeExplorer_Struct : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Battle")
 	FAvatar_ItemStruct HeldItem;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Battle")
+	TArray<EEntity_Factions> Factions;
 
 // ------------------------- Appearance
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Appearance")
