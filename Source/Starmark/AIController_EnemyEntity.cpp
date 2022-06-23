@@ -20,3 +20,9 @@ void AAIController_EnemyEntity::StepOne_ChooseTarget()
 
 	this->StepTwo_MoveToTarget();
 }
+
+
+void AAIController_EnemyEntity::StepFour_LaunchAttack()
+{
+
+}

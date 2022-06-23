@@ -3,6 +3,7 @@
 #include "Actor_AttackEffectsLibrary.h"
 #include "Actor_GridTile.h"
 #include "Character_Pathfinder.h"
+#include "Kismet/GameplayStatics.h"
 #include "PlayerController_Battle.h"
 #include "PlayerPawn_Flying.h"
 #include "EnterTheNetscape_GameInstance.h"
@@ -294,8 +295,10 @@ void AEnterTheNetscape_GameMode::Server_LaunchAttack_Implementation(ACharacter_P
 		UE_LOG(LogTemp, Warning, TEXT("Server_LaunchAttack / Calculated damage is: %d"), CurrentDamage);
 
 		// Subtract Health
-		AEnterTheNetscape_PlayerState* PlayerStateReference = Cast<AEnterTheNetscape_PlayerState>(Attacker->PlayerControllerReference->PlayerState);
-		PlayerStateReference->Server_SubtractHealth_Implementation(TargetAsCharacter, CurrentDamage);
+		//AEnterTheNetscape_PlayerState* PlayerStateReference = Cast<AEnterTheNetscape_PlayerState>(Attacker->PlayerControllerReference->PlayerState);
+		//PlayerStateReference->Server_SubtractHealth_Implementation(TargetAsCharacter, CurrentDamage);
+		//GetWorld()->State
+		Cast<AEnterTheNetscape_PlayerState>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->PlayerState)->Server_SubtractHealth_Implementation(TargetAsCharacter, CurrentDamage);
 
 		// Restore half of the heal if the attacker has Vampirism
 		/*

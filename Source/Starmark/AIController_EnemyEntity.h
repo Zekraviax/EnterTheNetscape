@@ -2,6 +2,9 @@
 
 #include "CoreMinimal.h"
 #include "AIController_Avatar.h"
+
+#include "EnterTheNetscape_Variables.h"
+
 #include "AIController_EnemyEntity.generated.h"
 
 
@@ -26,6 +29,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ACharacter_Pathfinder* CurrentTarget;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FAvatar_AttackStruct CurrentAttack;
+
 // Functions
 // --------------------------------------------------
 
@@ -35,6 +41,14 @@ public:
 	void StepOne_ChooseTarget();
 
 	// Step 2: Move towards target (ominously)
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "blueprints")
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Blueprints")
 	void StepTwo_MoveToTarget();
+
+	// Step 3: Choose attack and check whether the chosen target is in attack range (intelligently)
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Blueprints")
+	void StepThree_CheckIfTargetIsInRange();
+
+	// Step 4: Launch attack (aggressively)
+	UFUNCTION(BlueprintCallable)
+	void StepFour_LaunchAttack();
 };
