@@ -72,6 +72,9 @@ public:
 	UFUNCTION(BlueprintCallable, Server, Unreliable)
 	void Chirp_Scratch(ACharacter_Pathfinder* Attacker, ACharacter_Pathfinder* Defender);
 
+	UFUNCTION(BlueprintCallable, Server, Unreliable)
+	void Chirp_Peck(ACharacter_Pathfinder* Attacker, ACharacter_Pathfinder* Defender);
+
 // ------------------------- Spirit
 	UFUNCTION(BlueprintCallable, Server, Unreliable)
 	void Spirit_Cut(ACharacter_Pathfinder* Attacker, ACharacter_Pathfinder* Defender);

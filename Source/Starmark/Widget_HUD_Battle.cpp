@@ -28,7 +28,6 @@ void UWidget_HUD_Battle::UpdateAvatarAttacksComponents()
 		}
 	}
 
-	//AttackButtonsArray[i]->GetName().Contains(FString::FromInt(i)
 	if (IsValid(this)) {
 		if (AvatarAttacksBox->IsValidLowLevel()) {
 			for (int j = 0; j < PlayerControllerReference->CurrentSelectedAvatar->CurrentKnownAttacks.Num(); j++) {

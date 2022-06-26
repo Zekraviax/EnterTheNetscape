@@ -123,6 +123,7 @@ enum class EBattle_AttackEffects : uint8
 	Jasper_Bonk,
 	// Chirp
 	Chirp_Scratch,
+	Chirp_Peck,
 	// Spirit
 	// Sugar
 	Sugar_Bash,

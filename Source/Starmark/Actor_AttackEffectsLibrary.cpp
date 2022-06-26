@@ -80,6 +80,13 @@ void AActor_AttackEffectsLibrary::Chirp_Scratch_Implementation(ACharacter_Pathfi
 }
 
 
+void AActor_AttackEffectsLibrary::Chirp_Peck_Implementation(ACharacter_Pathfinder* Attacker, ACharacter_Pathfinder* Defender)
+{
+	int Damage = Attacker->AvatarData.BattleStats.Strength + Attacker->AvatarData.BattleStats.Agility;
+	Cast<AEnterTheNetscape_PlayerState>(GetWorld()->GetFirstPlayerController()->PlayerState)->Server_SubtractHealth(Defender, Damage);
+}
+
+
 // -------------------------------------------------- Spirit
 void AActor_AttackEffectsLibrary::Spirit_Cut_Implementation(ACharacter_Pathfinder* Attacker, ACharacter_Pathfinder* Defender)
 {
