@@ -2,6 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameState.h"
+
+#include "Engine/DataTable.h"
+#include "EnterTheNetscape_Variables.h"
+
 #include "EnterTheNetscape_GameState.generated.h"
 
 
@@ -43,6 +47,14 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
 	bool AvatarDiedThisTurn = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UDataTable* StatusEffectsDataTable;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
+	FString GameStateContextString;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FAvatar_StatusEffect StunStatus;
 	
 // Functions
 // --------------------------------------------------

@@ -37,6 +37,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int AvatarAttackIndex;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int SlotNumber;
+
 // Functions
 // --------------------------------------------------
 

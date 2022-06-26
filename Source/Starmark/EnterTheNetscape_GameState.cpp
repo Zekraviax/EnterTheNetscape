@@ -10,7 +10,6 @@
 #include "Engine/World.h"
 #include "EnterTheNetscape_PlayerState.h"
 #include "EnterTheNetscape_GameMode.h"
-#include "EnterTheNetscape_GameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "PlayerController_Battle.h"
 #include "Widget_HUD_Battle.h"
@@ -147,16 +146,24 @@ void AEnterTheNetscape_GameState::AvatarBeginTurn_Implementation()
 			Avatar->AvatarData.Ability.AbilityLibraryActor->SwitchOnAbilityEffect(Avatar->AvatarData.Ability.Function, Avatar, Avatar);
 		}
 
-		// If the currently acting entity is an enemy, activate their AI functions
-		if (Avatar->AvatarData.Factions.Contains(EEntity_Factions::Enemy1)) {
-			AAIController_EnemyEntity* EnemyController = Cast<AAIController_EnemyEntity>(Avatar->GetController());
 
-			if (EnemyController->SelfEntityReference != Avatar) {
-				EnemyController->SelfEntityReference = Avatar;
-				EnemyController->Possess(Avatar);
+		// Check that the currently acting entity isn't stunned
+		if (StunStatus.Name != "Stunned") {
+			StunStatus = *StatusEffectsDataTable->FindRow<FAvatar_StatusEffect>("Stunned", GameStateContextString);
+		}
+
+		if (!Avatar->CurrentStatusEffectsArray.Contains(StunStatus)) {
+			// If the currently acting entity is an enemy, activate their AI functions
+			if (Avatar->AvatarData.Factions.Contains(EEntity_Factions::Enemy1)) {
+				AAIController_EnemyEntity* EnemyController = Cast<AAIController_EnemyEntity>(Avatar->GetController());
+
+				if (EnemyController->SelfEntityReference != Avatar) {
+					EnemyController->SelfEntityReference = Avatar;
+					EnemyController->Possess(Avatar);
+				}
+
+				EnemyController->StepOne_ChooseTarget();
 			}
-
-			EnemyController->StepOne_ChooseTarget();
 		}
 	}
 
@@ -184,8 +191,8 @@ void AEnterTheNetscape_GameState::AvatarEndTurn_Implementation()
 
 	CurrentAvatarTurnIndex++;
 
-	// Check if an Avatar died this turn
-	// If true, check for reserve Avatars before ending the turn
+	// To-Do: Check if an Explorer died this turn
+	// If true, check for reserve Explorer before ending the turn
 
 	// Reset Round if all Avatars have acted
 	if (CurrentAvatarTurnIndex >= AvatarTurnOrder.Num())
@@ -225,7 +232,17 @@ void AEnterTheNetscape_GameState::AvatarEndTurn_Implementation()
 	for (int i = DynamicAvatarTurnOrder.Num() - 1; i >= 0; i--) {
 		if (IsValid(DynamicAvatarTurnOrder[i])) {
 			if (DynamicAvatarTurnOrder[i]->PlayerControllerReference->IsValidLowLevel()) {
-				DynamicAvatarTurnOrder[i]->PlayerControllerReference->CurrentSelectedAvatar = DynamicAvatarTurnOrder[i];
+
+				// Check that the currently acting entity isn't stunned
+				if (StunStatus.Name != "Stunned") {
+					StunStatus = *StatusEffectsDataTable->FindRow<FAvatar_StatusEffect>("Stunned", GameStateContextString);
+				}
+
+				if (!DynamicAvatarTurnOrder[i]->CurrentStatusEffectsArray.Contains(StunStatus)) {
+					DynamicAvatarTurnOrder[i]->PlayerControllerReference->CurrentSelectedAvatar = DynamicAvatarTurnOrder[i];
+				} else {
+
+				}
 
 				// Clean up entities' controllers
 				DynamicAvatarTurnOrder[i]->PlayerControllerReference->TileHighlightMode = E_PlayerCharacter_HighlightModes::E_MovePath;

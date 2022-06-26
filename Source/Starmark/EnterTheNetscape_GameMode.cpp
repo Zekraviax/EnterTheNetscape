@@ -122,6 +122,7 @@ void AEnterTheNetscape_GameMode::Server_MultiplayerBattleCheckAllPlayersReady_Im
 		
 		// Set first Avatar's controller as the currently acting player
 		GameStateReference->AvatarTurnOrder[0]->PlayerControllerReference->IsCurrentlyActingPlayer = true;
+		GameStateReference->AvatarTurnOrder[0]->PlayerControllerReference->BattleWidgetReference->UpdateAvatarAttacksComponents();
 	}
 }
 
@@ -255,7 +256,7 @@ void AEnterTheNetscape_GameMode::Server_LaunchAttack_Implementation(ACharacter_P
 		}
 	}
 
-	if (IsValid(TargetAsCharacter) && AttackData.AttackCategory == EBattle_AttackCategories::Offensive) {
+	if (IsValid(TargetAsCharacter) && AttackData.AttackCategory == EBattle_AttackCategories::Offensive && AttackData.AttackEffectsOnTarget.Num() < 1) {
 		int CurrentDamage = 1;
 		
 		// Check for the No Friendly Fire attack ability
@@ -295,9 +296,6 @@ void AEnterTheNetscape_GameMode::Server_LaunchAttack_Implementation(ACharacter_P
 		UE_LOG(LogTemp, Warning, TEXT("Server_LaunchAttack / Calculated damage is: %d"), CurrentDamage);
 
 		// Subtract Health
-		//AEnterTheNetscape_PlayerState* PlayerStateReference = Cast<AEnterTheNetscape_PlayerState>(Attacker->PlayerControllerReference->PlayerState);
-		//PlayerStateReference->Server_SubtractHealth_Implementation(TargetAsCharacter, CurrentDamage);
-		//GetWorld()->State
 		Cast<AEnterTheNetscape_PlayerState>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->PlayerState)->Server_SubtractHealth_Implementation(TargetAsCharacter, CurrentDamage);
 
 		// Restore half of the heal if the attacker has Vampirism
@@ -320,6 +318,7 @@ void AEnterTheNetscape_GameMode::Server_LaunchAttack_Implementation(ACharacter_P
 			AttackEffectsLibrary_Reference = GetWorld()->SpawnActor<AActor_AttackEffectsLibrary>(AttackEffectsLibrary_Class, FVector::ZeroVector, FRotator::ZeroRotator, SpawnInfo);
 			AttackEffectsLibrary_Reference->SwitchOnAttackEffect(AttackData.AttackEffectsOnTarget[i], Attacker, Target);
 
+			/*
 			if (AttackData.Name == "Drown") {
 				Cast<AEnterTheNetscape_GameState>(GetWorld()->GetGameState())->SetTurnOrder(PlayerControllerReferences);
 
@@ -329,6 +328,7 @@ void AEnterTheNetscape_GameMode::Server_LaunchAttack_Implementation(ACharacter_P
 				// Call the EndTurn function again (?)
 				Cast<AEnterTheNetscape_GameState>(GetWorld()->GetGameState())->AvatarEndTurn();
 			}
+			*/
 		}
 	}
 }

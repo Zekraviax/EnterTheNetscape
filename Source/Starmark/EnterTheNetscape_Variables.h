@@ -119,6 +119,14 @@ enum class EBattle_AttackTargetsInRange : uint8
 UENUM(BlueprintType)
 enum class EBattle_AttackEffects : uint8
 {
+	// Jasper
+	Jasper_Bonk,
+	// Chirp
+	Chirp_Scratch,
+	// Spirit
+	// Sugar
+	Sugar_Bash,
+	Sugar_Concuss,
 	// Status Effects
 	AddParalyzeStatus,
 	AddBurnStatus,

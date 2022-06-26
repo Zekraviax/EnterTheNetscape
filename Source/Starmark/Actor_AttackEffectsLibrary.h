@@ -44,15 +44,6 @@ public:
 	UPROPERTY()
 	AActor_StatusEffectsLibrary* StatusEffectsLibrary_Reference;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<ACharacter_NonAvatarEntity> RockWall_Class;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<ACharacter_HatTrick> HatTrick_Class;	
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<ACharacter_NonAvatarEntity> NonAvatarEntity_Class;
-
 // ------------------------- Data Tables
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UDataTable* StatusEffectsDataTable;
@@ -62,64 +53,33 @@ public:
 	TArray<AActor_GridTile*> HatTilesArray;
 
 // ------------------------- Other
+	//UPROPERTY()
 	const FActorSpawnParameters SpawnInfo;
+
+	UPROPERTY()
+	FString AttackEffectsLibraryContextString;
 
 // Functions
 // --------------------------------------------------
 	UFUNCTION(BlueprintCallable, Server, Unreliable)
 	void SwitchOnAttackEffect(EBattle_AttackEffects AttackEffect, ACharacter_Pathfinder* Attacker, AActor* Target);
 
+// ------------------------- Jasper
 	UFUNCTION(BlueprintCallable, Server, Unreliable)
-	void RepeatingSwitchOnAttackEffect(FAvatar_AttackStruct Attack, ACharacter_Pathfinder* Attacker, AActor* Target);
+	void Jasper_Bonk(ACharacter_Pathfinder* Defender);
 
-// ------------------------- Status Effects
+// ------------------------- Chirp
 	UFUNCTION(BlueprintCallable, Server, Unreliable)
-	void Attack_AddParalyze(ACharacter_Pathfinder* Attacker, ACharacter_Pathfinder* Defender);
+	void Chirp_Scratch(ACharacter_Pathfinder* Attacker, ACharacter_Pathfinder* Defender);
 
+// ------------------------- Spirit
 	UFUNCTION(BlueprintCallable, Server, Unreliable)
-	void Attack_AddBurn(ACharacter_Pathfinder* Attacker, ACharacter_Pathfinder* Defender);
+	void Spirit_Cut(ACharacter_Pathfinder* Attacker, ACharacter_Pathfinder* Defender);
 
+// ------------------------- Sugar
 	UFUNCTION(BlueprintCallable, Server, Unreliable)
-	void Attack_AddDrowning(ACharacter_Pathfinder* Attacker, ACharacter_Pathfinder* Defender);
-
-	UFUNCTION(BlueprintCallable, Server, Unreliable)
-	void Attack_AddStoneSkin(ACharacter_Pathfinder* Attacker, ACharacter_Pathfinder* Defender);
-
-	UFUNCTION(BlueprintCallable, Server, Unreliable)
-	void Attack_AddBleed(ACharacter_Pathfinder* Attacker, ACharacter_Pathfinder* Defender);
+	void Sugar_Bash(ACharacter_Pathfinder* Attacker, ACharacter_Pathfinder* Defender);
 
 	UFUNCTION(BlueprintCallable, Server, Unreliable)
-	void Attack_AddSoak(ACharacter_Pathfinder* Attacker, ACharacter_Pathfinder* Defender);
-
-	UFUNCTION(BlueprintCallable, Server, Unreliable)
-	void Attack_AddSpellbound(ACharacter_Pathfinder* Attacker, ACharacter_Pathfinder* Defender);
-
-// ------------------------- Other
-	UFUNCTION(BlueprintCallable, Server, Unreliable)
-	void Attack_KnockbackTarget(ACharacter_Pathfinder* Attacker, ACharacter_Pathfinder* Defender);
-
-	UFUNCTION(BlueprintCallable, Server, Unreliable)
-	void Attack_RefundMana(ACharacter_Pathfinder* Attacker);
-
-	UFUNCTION(BlueprintCallable, Server, Unreliable)
-	void Attack_TransferMana(ACharacter_Pathfinder* Attacker, ACharacter_Pathfinder* Defender);
-
-// ------------------------- Grid Tile Effects
-	UFUNCTION(BlueprintCallable, Server, Unreliable)
-	void Spawn_RockWall(AActor_GridTile* TargetTile);
-
-	UFUNCTION(BlueprintCallable, Server, Unreliable)
-	void Spawn_Hurricane(AActor_GridTile* TargetTile);
-
-	UFUNCTION(BlueprintCallable, Server, Unreliable)
-	void Spawn_Hats(AActor_GridTile* TargetTile = nullptr);
-
-	UFUNCTION(BlueprintCallable, Server, Unreliable)
-	void AddProperty_StoneRoad(AActor_GridTile* TargetTile);
-
-	UFUNCTION(BlueprintCallable, Server, Unreliable)
-	void AddProperty_Shadow(AActor_GridTile* TargetTile);
-
-	UFUNCTION(BlueprintCallable, Server, Unreliable)
-	void AddProperty_Fire(AActor_GridTile* TargetTile);
+	void Sugar_Concuss(ACharacter_Pathfinder* Attacker, ACharacter_Pathfinder* Defender);
 };

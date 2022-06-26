@@ -80,7 +80,7 @@ void APlayerController_Battle::SetBattleWidgetVariables()
 
 		// To-Do: Fix these
 		BattleWidgetReference->AvatarBattleDataWidget->UpdateAvatarData(CurrentSelectedAvatar->AvatarData);
-		BattleWidgetReference->UpdateAvatarAttacksComponents();
+		//BattleWidgetReference->UpdateAvatarAttacksComponents();
 		BattleWidgetReference->AvatarBattleDataWidget->GetAvatarStatusEffects(CurrentSelectedAvatar->CurrentStatusEffectsArray);
 	}
 }
@@ -185,13 +185,6 @@ void APlayerController_Battle::OnPrimaryClick(AActor* ClickedActor, TArray<AActo
 					UE_LOG(LogTemp, Warning, TEXT("OnPrimaryClick / Add selected tile to HatTilesArray"));
 				}
 			}
-
-			if (AttackEffectsLibrary_Reference->HatTilesArray.Num() >= 3) {
-				AttackEffectsLibrary_Reference->Spawn_Hats();
-				UE_LOG(LogTemp, Warning, TEXT("OnPrimaryClick / Spawn hats for Hat Trick."));
-			}
-
-
 		} else if (CurrentSelectedAvatar->CurrentSelectedAttack.Name != "Default" && CurrentSelectedAvatar->CurrentSelectedAttack.Name != "None" && CurrentSelectedAvatar->CurrentSelectedAttack.Name != "---" && ValidTargetsArray.Num() > 0) {
 
 			// Subtract attack's MP cost
@@ -267,11 +260,6 @@ void APlayerController_Battle::SendEndOfTurnCommandToServer_Implementation()
 void APlayerController_Battle::Player_OnAvatarTurnChanged_Implementation()
 {
 	TArray<AActor*> GridTilesArray;
-
-	//if (IsValid(BattleWidgetReference)) {
-	//	BattleWidgetReference->EndTurnCommand->SetIsEnabled(IsCurrentlyActingPlayer);
-	//}
-
 	SetBattleWidgetVariables();
 
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor_GridTile::StaticClass(), GridTilesArray);
