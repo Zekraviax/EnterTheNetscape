@@ -48,9 +48,17 @@ void AActor_AttackEffectsLibrary::SwitchOnAttackEffect_Implementation(EBattle_At
 		if (Cast<ACharacter_Pathfinder>(Target))
 			Chirp_Scratch(Attacker, Cast<ACharacter_Pathfinder>(Target));
 		break;
+	case (EBattle_AttackEffects::Chirp_Peck):
+		if (Cast<ACharacter_Pathfinder>(Target))
+			Chirp_Scratch(Attacker, Cast<ACharacter_Pathfinder>(Target));
+		break;
 	case (EBattle_AttackEffects::Sugar_Bash):
 		if (Cast<ACharacter_Pathfinder>(Target))
 			Sugar_Bash(Attacker, Cast<ACharacter_Pathfinder>(Target));
+		break;
+	case (EBattle_AttackEffects::Sugar_Concuss):
+		if (Cast<ACharacter_Pathfinder>(Target))
+			Sugar_Concuss(Attacker, Cast<ACharacter_Pathfinder>(Target));
 		break;
 	default:
 		break;

@@ -55,6 +55,10 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FAvatar_StatusEffect StunStatus;
+
+	UPROPERTY()
+	FTimerHandle StunTimerHandle;
+
 	
 // Functions
 // --------------------------------------------------
@@ -71,4 +75,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Server, Reliable)
 	void EndOfBattle();
+
+	UFUNCTION(BlueprintCallable, Server, Reliable)
+	void StunDelayedSkipTurn();
 };

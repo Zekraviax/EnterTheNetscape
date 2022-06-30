@@ -185,8 +185,12 @@ void APlayerController_Battle::OnPrimaryClick(AActor* ClickedActor, TArray<AActo
 					UE_LOG(LogTemp, Warning, TEXT("OnPrimaryClick / Add selected tile to HatTilesArray"));
 				}
 			}
-		} else if (CurrentSelectedAvatar->CurrentSelectedAttack.Name != "Default" && CurrentSelectedAvatar->CurrentSelectedAttack.Name != "None" && CurrentSelectedAvatar->CurrentSelectedAttack.Name != "---" && ValidTargetsArray.Num() > 0) {
+		} else if (CurrentSelectedAvatar->CurrentSelectedAttack.AttackEffectsOnTarget.Contains(EBattle_AttackEffects::Chirp_Peck)) {
 
+		} else if (CurrentSelectedAvatar->CurrentSelectedAttack.Name != "Default" && 
+					CurrentSelectedAvatar->CurrentSelectedAttack.Name != "None" && 
+					CurrentSelectedAvatar->CurrentSelectedAttack.Name != "---" && 
+					ValidTargetsArray.Num() > 0) {
 			// Subtract attack's MP cost
 			CurrentSelectedAvatar->AvatarData.CurrentManaPoints -= CurrentSelectedAvatar->CurrentSelectedAttack.ManaCost;
 
