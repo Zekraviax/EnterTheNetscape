@@ -113,9 +113,8 @@ void AEnterTheNetscape_GameState::AvatarBeginTurn_Implementation()
 		//			Avatar->CurrentStatusEffectsArray.RemoveAt(i);
 		//	} else {
 		//		// On Status Effect Start-of-turn effects
-		//		if (Avatar->CurrentStatusEffectsArray[i].Name == "Paralyzed") {
-		//			Avatar->AvatarData.CurrentTileMoves = Avatar->AvatarData.MaximumTileMoves / 2;
-		//			break;
+		//		if (Avatar->CurrentStatusEffectsArray[i].Name == "Stunned") {
+		//			// Do nothing yet
 		//		} else if (IsValid(Avatar->CurrentStatusEffectsArray[i].SpecialFunctionsActor)) {
 		//			Avatar->CurrentStatusEffectsArray[i].SpecialFunctionsActor->OnStatusEffectStartOfTurn(Avatar, Avatar->CurrentStatusEffectsArray[i]);
 		//		}
@@ -234,22 +233,13 @@ void AEnterTheNetscape_GameState::AvatarEndTurn_Implementation()
 	for (int i = DynamicAvatarTurnOrder.Num() - 1; i >= 0; i--) {
 		if (IsValid(DynamicAvatarTurnOrder[i])) {
 			if (DynamicAvatarTurnOrder[i]->PlayerControllerReference->IsValidLowLevel()) {
-				// Check that the currently acting entity isn't stunned
-				//if (StunStatus.Name != "Stunned") {
-				//	StunStatus = *StatusEffectsDataTable->FindRow<FAvatar_StatusEffect>("Stunned", GameStateContextString);
-				//}
+
 				for (int x = DynamicAvatarTurnOrder[i]->CurrentStatusEffectsArray.Num() - 1; x >= 0; x--) {
 					if (DynamicAvatarTurnOrder[i]->CurrentStatusEffectsArray[x].Name == "Stunned") {
 						GetWorldTimerManager().SetTimer(StunTimerHandle, this, &AEnterTheNetscape_GameState::StunDelayedSkipTurn, 1.f);
 						DynamicAvatarTurnOrder[i]->CurrentStatusEffectsArray.RemoveAt(x);
 					}
 				}
-
-				//if (!DynamicAvatarTurnOrder[i]->CurrentStatusEffectsArray.Contains(StunStatus)) {
-				//	DynamicAvatarTurnOrder[i]->PlayerControllerReference->CurrentSelectedAvatar = DynamicAvatarTurnOrder[i];
-				//} else {
-				//	
-				//}
 
 				// Clean up entities' controllers
 				DynamicAvatarTurnOrder[i]->PlayerControllerReference->TileHighlightMode = E_PlayerCharacter_HighlightModes::E_MovePath;

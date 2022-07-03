@@ -95,7 +95,7 @@ public:
 	UFUNCTION()
 	void SetCurrentActingEntityInfo(ACharacter_Pathfinder* CurrentActingEntity);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void ResetBattleHud();
 
 // ------------------------- Commands

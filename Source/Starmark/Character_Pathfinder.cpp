@@ -220,6 +220,31 @@ void ACharacter_Pathfinder::ShowAttackRange()
 
 		AttackTraceActor->SetRelativeLocation(WideWallLocation);
 		AttackTraceActor->SetRelativeScale3D(WideWallScale);
+	}		
+	// Four-Way and Eight-Way Line Traces
+	else if (CurrentSelectedAttack.AttackPattern == EBattle_AttackPatterns::FourWayCross || CurrentSelectedAttack.AttackPattern == EBattle_AttackPatterns::EightWayCross) {
+		// Set the StaticMesh
+		for (int i = 0; i < AttackTraceStaticMeshes.Num(); i++) {
+			if (AttackTraceStaticMeshes[i]->GetName().Contains("Rectangle")) {
+				AttackTraceActor->SetStaticMesh(AttackTraceStaticMeshes[i]);
+				break;
+			}
+		}
+
+		// Adjust the Rotation Snap degree
+		if (CurrentSelectedAttack.AttackPattern == EBattle_AttackPatterns::EightWayCross)
+			AttackRotationSnapToDegrees = 45;
+		else
+			AttackRotationSnapToDegrees = 90;
+
+		int DefaultRectangleLocationX = 350; // Add 100 for every tile range
+		int DefaultRectangleScale = CurrentSelectedAttack.BaseRange - 1;
+
+		FVector RectangleLocation = FVector(200, 0, -100);
+		FVector RectangleScale = FVector(1, 0.1, DefaultRectangleScale);
+
+		AttackTraceActor->SetRelativeLocation(RectangleLocation);
+		AttackTraceActor->SetRelativeScale3D(RectangleScale);
 	}
 }
 
@@ -260,10 +285,10 @@ void ACharacter_Pathfinder::SetTilesOccupiedBySize(bool ClearTiles)
 	}
 
 	// wat dis do?
-	for (int i = 0; i < AvatarData.OccupiedTiles.Num(); i++) {
-		BoxComponent->SetWorldLocation(FVector(Start.X + (200 * AvatarData.OccupiedTiles[i].X), Start.Y + (200 * AvatarData.OccupiedTiles[i].Y), 0.f));
-		BoxComponent->GetOverlappingActors(OverlappingActors, AActor_GridTile::StaticClass());
-	}
+	//for (int i = 0; i < AvatarData.OccupiedTiles.Num(); i++) {
+	//	BoxComponent->SetWorldLocation(FVector(Start.X + (200 * AvatarData.OccupiedTiles[i].X), Start.Y + (200 * AvatarData.OccupiedTiles[i].Y), 0.f));
+	//	BoxComponent->GetOverlappingActors(OverlappingActors, AActor_GridTile::StaticClass());
+	//}
 
 	// Set overlapping tiles to 'Occupied'
 	for (int j = 0; j < OverlappingActors.Num(); j++) {

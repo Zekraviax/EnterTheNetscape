@@ -80,7 +80,6 @@ void APlayerController_Battle::SetBattleWidgetVariables()
 
 		// To-Do: Fix these
 		BattleWidgetReference->AvatarBattleDataWidget->UpdateAvatarData(CurrentSelectedAvatar->AvatarData);
-		//BattleWidgetReference->UpdateAvatarAttacksComponents();
 		BattleWidgetReference->AvatarBattleDataWidget->GetAvatarStatusEffects(CurrentSelectedAvatar->CurrentStatusEffectsArray);
 	}
 }
@@ -185,7 +184,21 @@ void APlayerController_Battle::OnPrimaryClick(AActor* ClickedActor, TArray<AActo
 					UE_LOG(LogTemp, Warning, TEXT("OnPrimaryClick / Add selected tile to HatTilesArray"));
 				}
 			}
-		} else if (CurrentSelectedAvatar->CurrentSelectedAttack.AttackEffectsOnTarget.Contains(EBattle_AttackEffects::Chirp_Peck)) {
+		} else if (CurrentSelectedAvatar->CurrentSelectedAttack.AttackEffectsOnTarget.Contains(EBattle_AttackEffects::Spirit_DashAttack)) {
+			if (ValidTargetsArray.Contains(ClickedActor)) {
+				// First teleport the user, then attack every enemy in range
+				if (Cast<AActor_GridTile>(ClickedActor)) {
+					CurrentSelectedAvatar->LaunchAttack_Implementation(Cast<AActor_GridTile>(ClickedActor));
+				}
+
+				for (int i = 0; i < ValidTargetsArray.Num(); i++) {
+					if (Cast<ACharacter_Pathfinder>(ValidTargetsArray[i])) {
+						CurrentSelectedAvatar->LaunchAttack_Implementation(Cast<ACharacter_Pathfinder>(ValidTargetsArray[i]));
+					}
+				}
+
+				Client_SendEndOfTurnCommandToServer();
+			}
 
 		} else if (CurrentSelectedAvatar->CurrentSelectedAttack.Name != "Default" && 
 					CurrentSelectedAvatar->CurrentSelectedAttack.Name != "None" && 

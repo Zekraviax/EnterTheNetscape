@@ -52,6 +52,13 @@ void AActor_AttackEffectsLibrary::SwitchOnAttackEffect_Implementation(EBattle_At
 		if (Cast<ACharacter_Pathfinder>(Target))
 			Chirp_Scratch(Attacker, Cast<ACharacter_Pathfinder>(Target));
 		break;
+	case (EBattle_AttackEffects::Spirit_Cut):
+		if (Cast<ACharacter_Pathfinder>(Target))
+			Spirit_Cut(Attacker, Cast<ACharacter_Pathfinder>(Target));
+		break;
+	case (EBattle_AttackEffects::Spirit_DashAttack):
+		Spirit_DashAttack(Attacker, Target);
+		break;
 	case (EBattle_AttackEffects::Sugar_Bash):
 		if (Cast<ACharacter_Pathfinder>(Target))
 			Sugar_Bash(Attacker, Cast<ACharacter_Pathfinder>(Target));
@@ -99,6 +106,17 @@ void AActor_AttackEffectsLibrary::Chirp_Peck_Implementation(ACharacter_Pathfinde
 void AActor_AttackEffectsLibrary::Spirit_Cut_Implementation(ACharacter_Pathfinder* Attacker, ACharacter_Pathfinder* Defender)
 {
 
+}
+
+
+void AActor_AttackEffectsLibrary::Spirit_DashAttack_Implementation(ACharacter_Pathfinder* Attacker, AActor* Target)
+{
+	if (Cast<ACharacter_Pathfinder>(Target)) {
+		int Damage = Attacker->AvatarData.BattleStats.Agility;
+		Cast<AEnterTheNetscape_PlayerState>(GetWorld()->GetFirstPlayerController()->PlayerState)->Server_SubtractHealth(Cast<ACharacter_Pathfinder>(Target), Damage);
+	} else if (Cast<AActor_GridTile>(Target)) {
+		Attacker->SetActorLocation(Target->GetActorLocation());
+	}
 }
 
 
