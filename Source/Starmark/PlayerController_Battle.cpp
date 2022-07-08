@@ -11,6 +11,7 @@
 #include "EnterTheNetscape_GameState.h"
 #include "EnterTheNetscape_PlayerState.h"
 #include "Kismet/GameplayStatics.h"
+#include "Math/Vector.h"
 #include "NavigationSystem.h"
 #include "Player_SaveData.h"
 #include "Widget_HUD_Battle.h"
@@ -184,20 +185,36 @@ void APlayerController_Battle::OnPrimaryClick(AActor* ClickedActor, TArray<AActo
 					UE_LOG(LogTemp, Warning, TEXT("OnPrimaryClick / Add selected tile to HatTilesArray"));
 				}
 			}
+		// Spirit's Dash Attack
 		} else if (CurrentSelectedAvatar->CurrentSelectedAttack.AttackEffectsOnTarget.Contains(EBattle_AttackEffects::Spirit_DashAttack)) {
 			if (ValidTargetsArray.Contains(ClickedActor)) {
-				// First teleport the user, then attack every enemy in range
-				if (Cast<AActor_GridTile>(ClickedActor)) {
-					CurrentSelectedAvatar->LaunchAttack_Implementation(Cast<AActor_GridTile>(ClickedActor));
-				}
-
+				float largestDistance = 0.f;
+				// Set the clicked actor to be the furtherest tile from Spirit
 				for (int i = 0; i < ValidTargetsArray.Num(); i++) {
-					if (Cast<ACharacter_Pathfinder>(ValidTargetsArray[i])) {
-						CurrentSelectedAvatar->LaunchAttack_Implementation(Cast<ACharacter_Pathfinder>(ValidTargetsArray[i]));
+					if (Cast<AActor_GridTile>(ValidTargetsArray[i])) {
+						AActor_GridTile* CurrentTile = Cast<AActor_GridTile>(ValidTargetsArray[i]);
+						// get distance
+						if (FVector::Dist(CurrentTile->GetActorLocation(), this->CurrentSelectedAvatar->GetActorLocation()) > largestDistance) {
+							largestDistance = FVector::Dist(CurrentTile->GetActorLocation(), this->CurrentSelectedAvatar->GetActorLocation());
+							ClickedActor = CurrentTile;
+						}
 					}
 				}
 
-				Client_SendEndOfTurnCommandToServer();
+				if (Cast<AActor_GridTile>(ClickedActor)->OccupyingActor == nullptr) {
+					// First teleport the user, then attack every enemy in range
+					if (Cast<AActor_GridTile>(ClickedActor)) {
+						CurrentSelectedAvatar->LaunchAttack_Implementation(Cast<AActor_GridTile>(ClickedActor));
+					}
+
+					for (int i = 0; i < ValidTargetsArray.Num(); i++) {
+						if (Cast<ACharacter_Pathfinder>(ValidTargetsArray[i])) {
+							CurrentSelectedAvatar->LaunchAttack_Implementation(Cast<ACharacter_Pathfinder>(ValidTargetsArray[i]));
+						}
+					}
+
+					Client_SendEndOfTurnCommandToServer();
+				}
 			}
 
 		} else if (CurrentSelectedAvatar->CurrentSelectedAttack.Name != "Default" && 
