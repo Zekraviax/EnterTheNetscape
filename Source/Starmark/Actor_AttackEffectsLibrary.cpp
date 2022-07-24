@@ -2,6 +2,7 @@
 
 
 #include "Actor_GridTile.h"
+#include "Actor_RangedAttackProjectile.h"
 #include "Actor_StatusEffectsLibrary.h"
 #include "Character_Pathfinder.h"
 #include "Character_NonAvatarEntity.h"
@@ -88,7 +89,6 @@ void AActor_AttackEffectsLibrary::Chirp_Scratch_Implementation(ACharacter_Pathfi
 
 	FAvatar_StatusEffect* BleedStatus = StatusEffectsDataTable->FindRow<FAvatar_StatusEffect>("Bleeding", AttackEffectsLibraryContextString);
 	if (IsValid(StatusEffectsLibrary_Class)) {
-		FActorSpawnParameters SpawnInfo;
 		StatusEffectsLibrary_Reference = GetWorld()->SpawnActor<AActor_StatusEffectsLibrary>(StatusEffectsLibrary_Class, FVector::ZeroVector, FRotator::ZeroRotator, SpawnInfo);
 		StatusEffectsLibrary_Reference->OnStatusEffectApplied(Defender, *BleedStatus);
 	}
@@ -117,6 +117,20 @@ void AActor_AttackEffectsLibrary::Spirit_DashAttack_Implementation(ACharacter_Pa
 	} else if (Cast<AActor_GridTile>(Target)) {
 		Attacker->SetActorLocation(Target->GetActorLocation());
 	}
+}
+
+
+void AActor_AttackEffectsLibrary::Spirit_Blunderbuss_Implementation(ACharacter_Pathfinder* Attacker, AActor* Target)
+{
+	// Spawn projectile
+	if (!RangedProjectileActor_Reference->IsValidLowLevel() && RangedProjectileActor_Class) {
+		RangedProjectileActor_Reference = GetWorld()->SpawnActor<AActor_RangedAttackProjectile>(RangedProjectileActor_Class, Attacker->GetActorLocation(), Attacker->GetActorRotation(), SpawnInfo);
+	}
+
+	// Set owner
+	RangedProjectileActor_Reference->EntityOwner = Attacker;
+
+	// Launch projectile
 }
 
 
