@@ -44,6 +44,6 @@ void AActor_RangedAttackProjectile::BeginOverlapEntity(ACharacter_Pathfinder* Ov
 		// End the turn (?)
 
 		// Destroy this
-
+		ConditionalBeginDestroy();
 	}
 }

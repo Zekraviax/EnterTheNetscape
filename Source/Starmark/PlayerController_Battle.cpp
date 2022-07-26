@@ -219,7 +219,7 @@ void APlayerController_Battle::OnPrimaryClick(AActor* ClickedActor, TArray<AActo
 		}
 		// Spirit's Blunderbuss
 		else if (CurrentSelectedAvatar->CurrentSelectedAttack.AttackEffectsOnTarget.Contains(EBattle_AttackEffects::Spirit_Blunderbuss)) {
-			// Spawn a projectile
+			CurrentSelectedAvatar->LaunchAttack_Implementation(Cast<AActor_GridTile>(ClickedActor));
 		}
 		// Chirp's Swoop
 		else if (CurrentSelectedAvatar->CurrentSelectedAttack.AttackEffectsOnTarget.Contains(EBattle_AttackEffects::Chirp_Swoop)) {

@@ -60,6 +60,9 @@ void AActor_AttackEffectsLibrary::SwitchOnAttackEffect_Implementation(EBattle_At
 	case (EBattle_AttackEffects::Spirit_DashAttack):
 		Spirit_DashAttack(Attacker, Target);
 		break;
+	case (EBattle_AttackEffects::Spirit_Blunderbuss):
+		Spirit_Blunderbuss(Attacker, Target);
+		break;
 	case (EBattle_AttackEffects::Sugar_Bash):
 		if (Cast<ACharacter_Pathfinder>(Target))
 			Sugar_Bash(Attacker, Cast<ACharacter_Pathfinder>(Target));
@@ -131,6 +134,43 @@ void AActor_AttackEffectsLibrary::Spirit_Blunderbuss_Implementation(ACharacter_P
 	RangedProjectileActor_Reference->EntityOwner = Attacker;
 
 	// Launch projectile
+	float XValue = 0;
+	float YValue = 0;
+	float ZValue = 0;
+
+	UE_LOG(LogTemp, Warning, TEXT("Spirit_Blunderbuss_Implementation / Actor rotation is: %f %f %f"), Attacker->GetActorRotation().Roll, GetActorRotation().Pitch, Attacker->GetActorRotation().Yaw);
+	UE_LOG(LogTemp, Warning, TEXT("Spirit_Blunderbuss_Implementation / Actor forward vector is: %f %f %f"), Attacker->GetActorForwardVector().X, Attacker->GetActorForwardVector().Y, Attacker->GetActorForwardVector().Z);
+
+	//if (Attacker->GetActorRotation().Roll >= 1.f) {
+	//	XValue = 10.f;
+	//} else if (Attacker->GetActorRotation().Roll <= -1.f) {
+	//	XValue = -10.f;
+	//}
+
+	//if (Attacker->GetActorRotation().Pitch >= 1.f) {
+	//	YValue = 10.f;
+	//} else if (Attacker->GetActorRotation().Pitch <= -1.f) {
+	//	YValue = -10.f;
+	//}
+
+	if (Attacker->GetActorForwardVector().X >= 0.1f) {
+		XValue = 10.f;
+	}
+	else if (Attacker->GetActorForwardVector().X <= -0.1f) {
+		XValue = -10.f;
+	}
+
+	if (Attacker->GetActorForwardVector().Y >= 0.1f) {
+		YValue = 10.f;
+	}
+	else if (Attacker->GetActorForwardVector().Y <= -0.1f) {
+		YValue = -10.f;
+	}
+
+	ZValue = Attacker->GetActorForwardVector().Z;
+
+	UE_LOG(LogTemp, Warning, TEXT("Spirit_Blunderbuss_Implementation / projectile velocity is: %f %f %f"), XValue, YValue, ZValue);
+	RangedProjectileActor_Reference->VelocityEachTick = FVector(XValue, YValue, ZValue);
 }
 
 

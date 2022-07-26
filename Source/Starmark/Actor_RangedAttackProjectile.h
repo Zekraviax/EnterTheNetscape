@@ -34,11 +34,11 @@ public:
 	ACharacter_Pathfinder* EntityOwner;
 
 // ------------------------- 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FVector TargetLocation;
 
-	UPROPERTY()
-	FVector MovementEachTick;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FVector VelocityEachTick;
 
 // Functions
 // --------------------------------------------------

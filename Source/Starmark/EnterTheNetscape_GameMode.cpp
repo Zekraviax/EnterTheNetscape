@@ -255,60 +255,6 @@ void AEnterTheNetscape_GameMode::Server_LaunchAttack_Implementation(ACharacter_P
 		}
 	}
 
-	//if (IsValid(TargetAsCharacter) && AttackData.AttackCategory == EBattle_AttackCategories::Offensive && AttackData.AttackEffectsOnTarget.Num() < 1) {
-	//	int CurrentDamage = 1;
-	//	
-	//	// Check for the No Friendly Fire attack ability
-	//	if (AttackData.AttackEffectsOnTarget.Contains(EBattle_AttackEffects::NoFriendlyFire)) {
-	//		if (Attacker->MultiplayerControllerUniqueID == TargetAsCharacter->MultiplayerControllerUniqueID) {
-	//			return;
-	//		}
-	//	}
-
-	//	// Calculate damage for moves with variable base damage
-	//	if (AttackData.AttackEffectsOnTarget.Contains(EBattle_AttackEffects::LowerTargetHealthEqualsHigherDamageDealt)) {
-	//		float VariableBasePower = (float)TargetAsCharacter->AvatarData.CurrentHealthPoints / (float)TargetAsCharacter->AvatarData.BattleStats.MaximumHealthPoints;
-	//		VariableBasePower = 0.9 - VariableBasePower;
-	//		VariableBasePower = VariableBasePower * 100.f;
-	//		VariableBasePower += 10;
-
-	//		if (VariableBasePower < 1)
-	//			VariableBasePower = 1;
-
-	//		AttackData.BasePower = FMath::CeilToInt(VariableBasePower);
-	//	}
-
-	//	// To-Do: Get either the Physical or Special stats, based on the move
-	//	// Standard Attack Damage Formula
-	//	CurrentDamage = FMath::CeilToInt(Attacker->AvatarData.BattleStats.Strength + AttackData.BasePower);
-	//	UE_LOG(LogTemp, Warning, TEXT("Server_LaunchAttack / Attacker's Attack + Attack's Base Power is: %d"), CurrentDamage);
-	//	CurrentDamage = FMath::CeilToInt(CurrentDamage - TargetAsCharacter->AvatarData.BattleStats.Endurance);
-	//	UE_LOG(LogTemp, Warning, TEXT("Server_LaunchAttack / Current Damage - Defender's Defence is: %d"), CurrentDamage);
-
-	//	// Get the averages of the attacker' and defender's combat stats and use them in the damage calculation
-	//	// Clamp the value between 0.5 and 1.5 so we can use it as a multiplier
-
-	//	// Ensure that at least 1 damage is dealt
-	//	if (CurrentDamage < 1)
-	//		CurrentDamage = 1;
-
-	//	UE_LOG(LogTemp, Warning, TEXT("Server_LaunchAttack / Calculated damage is: %d"), CurrentDamage);
-
-	//	// Subtract Health
-	//	Cast<AEnterTheNetscape_PlayerState>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->PlayerState)->Server_SubtractHealth_Implementation(TargetAsCharacter, CurrentDamage);
-
-	//	// Restore half of the heal if the attacker has Vampirism
-	//	FAvatar_StatusEffect* VampirismStatus = StatusEffectsDataTable->FindRow<FAvatar_StatusEffect>("Vampirism", ContextString);
-	//	for (int i = 0; i < TargetAsCharacter->CurrentStatusEffectsArray.Num(); i++) {
-	//		if (TargetAsCharacter->CurrentStatusEffectsArray[i] == *VampirismStatus) {
-	//			//CurrentDamage += CurrentDamage * 0.5;
-	//			PlayerStateReference->Server_AddHealth(Attacker, FMath::CeilToInt(CurrentDamage * 0.5));
-	//			break;
-	//		}
-	//	}
-	//}
-
-
 	// Apply move effects after the damage has been dealt
 	if (!AttackEffectsLibrary_Reference && AttackEffectsLibrary_Class) {
 		AttackEffectsLibrary_Reference = GetWorld()->SpawnActor<AActor_AttackEffectsLibrary>(AttackEffectsLibrary_Class, FVector::ZeroVector, FRotator::ZeroRotator, SpawnInfo);
@@ -316,18 +262,6 @@ void AEnterTheNetscape_GameMode::Server_LaunchAttack_Implementation(ACharacter_P
 
 	for (int i = 0; i < AttackData.AttackEffectsOnTarget.Num(); i++) {
 		AttackEffectsLibrary_Reference->SwitchOnAttackEffect(AttackData.AttackEffectsOnTarget[i], Attacker, Target);
-
-		/*
-		if (AttackData.Name == "Drown") {
-			Cast<AEnterTheNetscape_GameState>(GetWorld()->GetGameState())->SetTurnOrder(PlayerControllerReferences);
-
-			// Re-set the turn order text
-			Server_AssembleTurnOrderText();
-
-			// Call the EndTurn function again (?)
-			Cast<AEnterTheNetscape_GameState>(GetWorld()->GetGameState())->AvatarEndTurn();
-		}
-		*/
 	}
 }
 
