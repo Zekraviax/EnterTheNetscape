@@ -51,7 +51,10 @@ void AActor_AttackEffectsLibrary::SwitchOnAttackEffect_Implementation(EBattle_At
 		break;
 	case (EBattle_AttackEffects::Chirp_Peck):
 		if (Cast<ACharacter_Pathfinder>(Target))
-			Chirp_Scratch(Attacker, Cast<ACharacter_Pathfinder>(Target));
+			Chirp_Peck(Attacker, Cast<ACharacter_Pathfinder>(Target));
+		break;
+	case (EBattle_AttackEffects::Chirp_Swoop):
+		Chirp_Swoop(Attacker, Target);
 		break;
 	case (EBattle_AttackEffects::Spirit_Cut):
 		if (Cast<ACharacter_Pathfinder>(Target))
@@ -70,6 +73,10 @@ void AActor_AttackEffectsLibrary::SwitchOnAttackEffect_Implementation(EBattle_At
 	case (EBattle_AttackEffects::Sugar_Concuss):
 		if (Cast<ACharacter_Pathfinder>(Target))
 			Sugar_Concuss(Attacker, Cast<ACharacter_Pathfinder>(Target));
+		break;
+	case (EBattle_AttackEffects::Sugar_Sting):
+		if (Cast<ACharacter_Pathfinder>(Target))
+			Sugar_Sting(Attacker, Cast<ACharacter_Pathfinder>(Target));
 		break;
 	default:
 		break;
@@ -102,6 +109,17 @@ void AActor_AttackEffectsLibrary::Chirp_Peck_Implementation(ACharacter_Pathfinde
 {
 	int Damage = Attacker->AvatarData.BattleStats.Strength + Attacker->AvatarData.BattleStats.Agility;
 	Cast<AEnterTheNetscape_PlayerState>(GetWorld()->GetFirstPlayerController()->PlayerState)->Server_SubtractHealth(Defender, Damage);
+}
+
+
+void AActor_AttackEffectsLibrary::Chirp_Swoop_Implementation(ACharacter_Pathfinder* Attacker, AActor* Target)
+{
+	if (Cast<ACharacter_Pathfinder>(Target)) {
+		int Damage = Attacker->AvatarData.BattleStats.Strength;
+		Cast<AEnterTheNetscape_PlayerState>(GetWorld()->GetFirstPlayerController()->PlayerState)->Server_SubtractHealth(Cast<ACharacter_Pathfinder>(Target), Damage);
+	} else if (Cast<AActor_GridTile>(Target)) {
+		Attacker->SetActorLocation(Target->GetActorLocation());
+	}
 }
 
 
@@ -138,32 +156,18 @@ void AActor_AttackEffectsLibrary::Spirit_Blunderbuss_Implementation(ACharacter_P
 	float YValue = 0;
 	float ZValue = 0;
 
-	UE_LOG(LogTemp, Warning, TEXT("Spirit_Blunderbuss_Implementation / Actor rotation is: %f %f %f"), Attacker->GetActorRotation().Roll, GetActorRotation().Pitch, Attacker->GetActorRotation().Yaw);
+	//UE_LOG(LogTemp, Warning, TEXT("Spirit_Blunderbuss_Implementation / Actor rotation is: %f %f %f"), Attacker->GetActorRotation().Roll, GetActorRotation().Pitch, Attacker->GetActorRotation().Yaw);
 	UE_LOG(LogTemp, Warning, TEXT("Spirit_Blunderbuss_Implementation / Actor forward vector is: %f %f %f"), Attacker->GetActorForwardVector().X, Attacker->GetActorForwardVector().Y, Attacker->GetActorForwardVector().Z);
-
-	//if (Attacker->GetActorRotation().Roll >= 1.f) {
-	//	XValue = 10.f;
-	//} else if (Attacker->GetActorRotation().Roll <= -1.f) {
-	//	XValue = -10.f;
-	//}
-
-	//if (Attacker->GetActorRotation().Pitch >= 1.f) {
-	//	YValue = 10.f;
-	//} else if (Attacker->GetActorRotation().Pitch <= -1.f) {
-	//	YValue = -10.f;
-	//}
 
 	if (Attacker->GetActorForwardVector().X >= 0.1f) {
 		XValue = 10.f;
-	}
-	else if (Attacker->GetActorForwardVector().X <= -0.1f) {
+	} else if (Attacker->GetActorForwardVector().X <= -0.1f) {
 		XValue = -10.f;
 	}
 
 	if (Attacker->GetActorForwardVector().Y >= 0.1f) {
 		YValue = 10.f;
-	}
-	else if (Attacker->GetActorForwardVector().Y <= -0.1f) {
+	} else if (Attacker->GetActorForwardVector().Y <= -0.1f) {
 		YValue = -10.f;
 	}
 
@@ -181,6 +185,7 @@ void AActor_AttackEffectsLibrary::Sugar_Bash_Implementation(ACharacter_Pathfinde
 	Cast<AEnterTheNetscape_PlayerState>(GetWorld()->GetFirstPlayerController()->PlayerState)->Server_SubtractHealth(Defender, Damage);
 }
 
+
 void AActor_AttackEffectsLibrary::Sugar_Concuss_Implementation(ACharacter_Pathfinder* Attacker, ACharacter_Pathfinder* Defender)
 {
 	int Damage = Attacker->AvatarData.BattleStats.Strength;
@@ -194,4 +199,11 @@ void AActor_AttackEffectsLibrary::Sugar_Concuss_Implementation(ACharacter_Pathfi
 		StunnedStatus->MaximumTurns,
 		StunnedStatus->TurnsRemaining)
 	);
+}
+
+
+void AActor_AttackEffectsLibrary::Sugar_Sting_Implementation(ACharacter_Pathfinder * Attacker, ACharacter_Pathfinder * Defender)
+{
+	int Damage = Attacker->AvatarData.BattleStats.Strength + 2;
+	Cast<AEnterTheNetscape_PlayerState>(GetWorld()->GetFirstPlayerController()->PlayerState)->Server_SubtractHealth(Defender, Damage);
 }

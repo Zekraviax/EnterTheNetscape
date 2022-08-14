@@ -88,6 +88,9 @@ public:
 	UFUNCTION(BlueprintCallable, Server, Unreliable)
 	void Chirp_Peck(ACharacter_Pathfinder* Attacker, ACharacter_Pathfinder* Defender);
 
+	UFUNCTION(BlueprintCallable, Server, Unreliable)
+	void Chirp_Swoop(ACharacter_Pathfinder* Attacker, AActor* Target);
+
 // ------------------------- Spirit
 	UFUNCTION(BlueprintCallable, Server, Unreliable)
 	void Spirit_Cut(ACharacter_Pathfinder* Attacker, ACharacter_Pathfinder* Defender);
@@ -104,4 +107,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Server, Unreliable)
 	void Sugar_Concuss(ACharacter_Pathfinder* Attacker, ACharacter_Pathfinder* Defender);
+
+	UFUNCTION(BlueprintCallable, Server, Unreliable)
+	void Sugar_Sting(ACharacter_Pathfinder* Attacker, ACharacter_Pathfinder* Defender);
 };

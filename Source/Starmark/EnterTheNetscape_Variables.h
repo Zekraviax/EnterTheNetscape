@@ -125,6 +125,7 @@ enum class EBattle_AttackEffects : uint8
 	Chirp_Scratch,
 	Chirp_Peck,
 	Chirp_Swoop,
+	Chirp_Backstab,
 	// Spirit
 	Spirit_Cut,
 	Spirit_DashAttack,
@@ -132,6 +133,7 @@ enum class EBattle_AttackEffects : uint8
 	// Sugar
 	Sugar_Bash,
 	Sugar_Concuss,
+	Sugar_Sting,
 	// Status Effects
 	AddParalyzeStatus,
 	AddBurnStatus,

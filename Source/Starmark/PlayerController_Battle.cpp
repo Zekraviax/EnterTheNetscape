@@ -225,7 +225,7 @@ void APlayerController_Battle::OnPrimaryClick(AActor* ClickedActor, TArray<AActo
 		else if (CurrentSelectedAvatar->CurrentSelectedAttack.AttackEffectsOnTarget.Contains(EBattle_AttackEffects::Chirp_Swoop)) {
 			if (ValidTargetsArray.Contains(ClickedActor)) {
 				float largestDistance = 0.f;
-				// Set the clicked actor to be the furtherest tile from Spirit
+				// Set the clicked actor to be the furtherest tile from Chirp
 				for (int i = 0; i < ValidTargetsArray.Num(); i++) {
 					if (Cast<AActor_GridTile>(ValidTargetsArray[i])) {
 						AActor_GridTile* CurrentTile = Cast<AActor_GridTile>(ValidTargetsArray[i]);
@@ -252,6 +252,7 @@ void APlayerController_Battle::OnPrimaryClick(AActor* ClickedActor, TArray<AActo
 					Client_SendEndOfTurnCommandToServer();
 				}
 			}
+		// All other attacks
 		} else if (CurrentSelectedAvatar->CurrentSelectedAttack.Name != "Default" && 
 					CurrentSelectedAvatar->CurrentSelectedAttack.Name != "None" && 
 					CurrentSelectedAvatar->CurrentSelectedAttack.Name != "---" && 
