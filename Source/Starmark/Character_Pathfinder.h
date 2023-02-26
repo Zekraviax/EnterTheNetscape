@@ -37,19 +37,19 @@ public:
 
 // ------------------------- Components
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	UDecalComponent* ActorSelected;
+	UDecalComponent* ActorHighlightedDecal;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-	UMaterialInstanceDynamic* ActorSelected_DynamicMaterial;
+	UMaterialInterface* ActorHighlightMaterial;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	UMaterialInstanceDynamic* ActorHighlightedDecalDynamicMaterial;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* ActorSelectedPlane;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	UBoxComponent* BoxComponent;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-	FLinearColor ActorSelected_DynamicMaterial_Colour;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	UWidgetComponent* AvatarBattleData_Component;
@@ -137,6 +137,15 @@ public:
 // ------------------------- Battle
 	UFUNCTION(BlueprintCallable)
 	void ShowAttackRange();
+
+	UFUNCTION(BlueprintCallable)
+	void SetActorHighlightProperties(bool IsVisible, E_GridTile_ColourChangeContext ColourChangeContext);
+
+	// Used to highlight valid actors when an attack is selected but not confirmed
+	// Used to get valid targets when confirming an attack
+	// Returns an array of actors
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void GetValidActorsForAttack(FAvatar_AttackStruct Attack, AActor* CurrentlyHoveredActor);
 
 	UFUNCTION(BlueprintCallable, Client, Reliable)
 	void LaunchAttack(AActor* Target);

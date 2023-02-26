@@ -71,8 +71,8 @@ FPathFindingResult ANavigationData_EngineAStar::FindPath(const FNavAgentProperti
 			AStar->WorldGridReference->ConvertWorldTileToGridCoordinates(Query.StartLocation, StartPositionOnGrid);
 			AStar->WorldGridReference->ConvertWorldTileToGridCoordinates(Query.EndLocation, EndPositionOnGrid);
 
-			UE_LOG(LogTemp, Warning, TEXT("NaviationData_EngineAStar / Start position on grid: %s"), *StartPositionOnGrid.ToString());
-			UE_LOG(LogTemp, Warning, TEXT("NaviationData_EngineAStar / End position on grid: %s"), *EndPositionOnGrid.ToString());
+			//UE_LOG(LogTemp, Warning, TEXT("NaviationData_EngineAStar / Start position on grid: %s"), *StartPositionOnGrid.ToString());
+			//UE_LOG(LogTemp, Warning, TEXT("NaviationData_EngineAStar / End position on grid: %s"), *EndPositionOnGrid.ToString());
 
 			WorldGridGraphQueryFiler QueryFilter;
 			QueryFilter.SetWorldGrid(AStar->WorldGridReference);
@@ -84,9 +84,9 @@ FPathFindingResult ANavigationData_EngineAStar::FindPath(const FNavAgentProperti
 
 			//  || AStarResult == EGraphAStarResult::GoalUnreachable
 			if (AStarResult == EGraphAStarResult::SearchFail || AStarResult == EGraphAStarResult::InfiniteLoop) {
-				UE_LOG(LogTemp, Warning, TEXT("NaviationData_EngineAStar / A* failed to find path: %d"), AStarResult);
-				UE_LOG(LogTemp, Warning, TEXT("NaviationData_EngineAStar / Did search reach limit?: %s"), NavPath->DidSearchReachedLimit() ? TEXT("true") : TEXT("false"));
-				UE_LOG(LogTemp, Warning, TEXT("NaviationData_EngineAStar / Path length: %s"), *FString::FromInt(Path.Num()));
+				//UE_LOG(LogTemp, Warning, TEXT("NaviationData_EngineAStar / A* failed to find path: %d"), AStarResult);
+				//UE_LOG(LogTemp, Warning, TEXT("NaviationData_EngineAStar / Did search reach limit?: %s"), NavPath->DidSearchReachedLimit() ? TEXT("true") : TEXT("false"));
+				//UE_LOG(LogTemp, Warning, TEXT("NaviationData_EngineAStar / Path length: %s"), *FString::FromInt(Path.Num()));
 				
 
 				Result.Result = ENavigationQueryResult::Fail;
@@ -106,12 +106,11 @@ FPathFindingResult ANavigationData_EngineAStar::FindPath(const FNavAgentProperti
 
 				NavPath->GetPathPoints().Add(FNavPathPoint(AStar->WorldGridReference->ConvertGridCoordinatesToWorldTile(Point)));
 
-				UE_LOG(LogTemp, Warning, TEXT("NaviationData_EngineAStar / A* path coordinate converted to world tile: %s"), *AStar->WorldGridReference->ConvertGridCoordinatesToWorldTile(Point).ToString());
+				//UE_LOG(LogTemp, Warning, TEXT("NaviationData_EngineAStar / A* path coordinate converted to world tile: %s"), *AStar->WorldGridReference->ConvertGridCoordinatesToWorldTile(Point).ToString());
 			}
 
-			UE_LOG(LogTemp, Warning, TEXT("NaviationData_EngineAStar / A* path length: %d"), Path.Num());
+			//UE_LOG(LogTemp, Warning, TEXT("NaviationData_EngineAStar / A* path length: %d"), Path.Num());
 
-			//
 			NavPath->MarkReady();
 			Result.Result = ENavigationQueryResult::Success;
 		} else {

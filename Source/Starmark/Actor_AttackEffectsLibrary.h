@@ -91,6 +91,9 @@ public:
 	UFUNCTION(BlueprintCallable, Server, Unreliable)
 	void Chirp_Swoop(ACharacter_Pathfinder* Attacker, AActor* Target);
 
+	UFUNCTION(BlueprintCallable, Server, Unreliable)
+	void Chirp_Backstab(ACharacter_Pathfinder* Attacker, ACharacter_Pathfinder* Defender);
+
 // ------------------------- Spirit
 	UFUNCTION(BlueprintCallable, Server, Unreliable)
 	void Spirit_Cut(ACharacter_Pathfinder* Attacker, ACharacter_Pathfinder* Defender);

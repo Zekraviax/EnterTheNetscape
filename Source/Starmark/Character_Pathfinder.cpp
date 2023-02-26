@@ -6,6 +6,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Engine/EngineTypes.h"
 #include "Engine/World.h"
+#include "EnterTheNetscape_GameState.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Kismet/GameplayStatics.h"
@@ -31,27 +32,19 @@ ACharacter_Pathfinder::ACharacter_Pathfinder()
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;
 
 	// Actor Selected Decal (Don't delete this)
-	ActorSelected = CreateDefaultSubobject<UDecalComponent>("ActorSelected");
-	ActorSelected->SetupAttachment(RootComponent);
-	ActorSelected->SetVisibility(false);
-	ActorSelected->SetHiddenInGame(true);
-	ActorSelected->DecalSize = FVector(32.0f, 64.0f, 64.0f);
-	ActorSelected->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f).Quaternion());
-	ActorSelected->SetRelativeLocation(FVector(0.f, 0.f, -90.f));
+	ActorHighlightedDecal = CreateDefaultSubobject<UDecalComponent>("ActorHighlightedDecal");
+	ActorHighlightedDecal->SetupAttachment(RootComponent);
+	ActorHighlightedDecal->SetVisibility(true);
+	ActorHighlightedDecal->SetHiddenInGame(false);
+	ActorHighlightedDecal->DecalSize = FVector(32.0f, 64.0f, 64.0f);
+	//ActorHighlightedDecal->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f).Quaternion());
+	ActorHighlightedDecal->SetRelativeScale3D(FVector(1.25f, 1.f, 2.f));
 
 	// Actor Selected Plane
 	ActorSelectedPlane = CreateDefaultSubobject<UStaticMeshComponent>("ActorSelectedPlane");
 	ActorSelectedPlane->SetupAttachment(RootComponent);
 	ActorSelectedPlane->SetVisibility(true);
 	ActorSelectedPlane->SetHiddenInGame(false);
-
-	// AvatarBattleData WidgetComponent
-	/*
-	AvatarBattleData_Component = CreateDefaultSubobject<UWidgetComponent>("AvatarBattleData_Component");
-	AvatarBattleData_Component->SetupAttachment(RootComponent);
-	AvatarBattleData_Component->SetVisibility(true);
-	AvatarBattleData_Component->SetHiddenInGame(true);
-	*/
 
 	// Attack Trace Actor Component
 	AttackTraceActor = CreateDefaultSubobject<UStaticMeshComponent>("AttackTraceActor");
@@ -115,10 +108,14 @@ void ACharacter_Pathfinder::BeginPlayWorkaroundFunction_Implementation(UWidget_H
 	AvatarData.CurrentTileMoves = AvatarData.MaximumTileMoves;
 
 	// Set default selected attack
-	if (CurrentKnownAttacks.Num() > 0)
-		CurrentSelectedAttack = CurrentKnownAttacks[0];
+	//if (CurrentKnownAttacks.Num() > 0)
+	//	CurrentSelectedAttack = CurrentKnownAttacks[0];
 
 	IndexInPlayerParty = 0;
+
+	// Highlight dynamic material
+	ActorHighlightedDecalDynamicMaterial = UMaterialInstanceDynamic::Create(ActorHighlightMaterial, this);
+	ActorHighlightedDecal->SetMaterial(0, ActorHighlightedDecalDynamicMaterial);
 }
 
 
@@ -137,12 +134,16 @@ void ACharacter_Pathfinder::OnAvatarCursorOverBegin()
 	AvatarBattleDataComponent_Reference->UpdateAvatarData(AvatarData);
 
 	AvatarBattleData_Component->SetHiddenInGame(false);
+
+	ActorHighlightedDecal->SetVisibility(true);
 }
 
 
 void ACharacter_Pathfinder::OnAvatarCursorOverEnd()
 {
 	AvatarBattleData_Component->SetHiddenInGame(true);
+
+	ActorHighlightedDecal->SetVisibility(false);
 }
 
 
@@ -168,83 +169,161 @@ void ACharacter_Pathfinder::OnAvatarClicked()
 
 void ACharacter_Pathfinder::SetAttackTraceActorLocationSnappedToGrid()
 {
-	// Get all tiles and overlapping tiles
-	TArray<AActor*> GridTilesArray;
-	TArray<UPrimitiveComponent*> OverlappingActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor_GridTile::StaticClass(), GridTilesArray);
+	//// Get all tiles and overlapping tiles
+	//TArray<AActor*> GridTilesArray;
+	//TArray<UPrimitiveComponent*> OverlappingActors;
+	//UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor_GridTile::StaticClass(), GridTilesArray);
 
-	// Check for tiles that overlap the AttackTraceActor
-	for (int i = 0; i < GridTilesArray.Num(); i++) {
-		AActor_GridTile* GridTile = Cast<AActor_GridTile>(GridTilesArray[i]);
+	//// Check for tiles that overlap the AttackTraceActor
+	//for (int i = 0; i < GridTilesArray.Num(); i++) {
+	//	AActor_GridTile* GridTile = Cast<AActor_GridTile>(GridTilesArray[i]);
 
-		GridTile->GetOverlappingComponents(OverlappingActors);
-		if (OverlappingActors.Contains(AttackTraceActor)) {
-			GridTile->ChangeColourOnMouseHover = false;
-			GridTile->DynamicMaterial->SetVectorParameterValue(FName("Colour"), FLinearColor(1.f, 0.2f, 0.0f));
-		} else {
-			GridTile->ChangeColourOnMouseHover = true;
-			GridTile->DynamicMaterial->SetVectorParameterValue(FName("Colour"), FLinearColor(1.f, 1.f, 1.f));
-		}
-	}
+	//	GridTile->GetOverlappingComponents(OverlappingActors);
+	//	if (OverlappingActors.Contains(AttackTraceActor)) {
+	//		GridTile->ChangeColourOnMouseHover = false;
+	//		GridTile->DynamicMaterial->SetVectorParameterValue(FName("Colour"), FLinearColor(1.f, 0.2f, 0.0f));
+	//	} else {
+	//		GridTile->ChangeColourOnMouseHover = true;
+	//		GridTile->DynamicMaterial->SetVectorParameterValue(FName("Colour"), FLinearColor(1.f, 1.f, 1.f));
+	//	}
+	//}
 }
 
 // ------------------------- Battle
 void ACharacter_Pathfinder::ShowAttackRange()
 {
-	AttackTraceActor->SetRelativeScale3D(FVector(0.1f, 0.1f, 0.1f));
-	AttackTraceActor->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	AttackTraceActor->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
+	//AttackTraceActor->SetRelativeScale3D(FVector(0.1f, 0.1f, 0.1f));
+	//AttackTraceActor->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	//AttackTraceActor->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
 
-	// Turn off all highlights
-	TArray<AActor*> GridTilesArray;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor_GridTile::StaticClass(), GridTilesArray);
-	for (AActor* GridTileInArray : GridTilesArray) {
-		AActor_GridTile* Tile = Cast<AActor_GridTile>(GridTileInArray);
-		Tile->SetTileHighlightProperties(false, true, E_GridTile_ColourChangeContext::Normal);
+	//// Turn off all highlights
+	//TArray<AActor*> GridTilesArray;
+	//UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor_GridTile::StaticClass(), GridTilesArray);
+	//for (AActor* GridTileInArray : GridTilesArray) {
+	//	AActor_GridTile* Tile = Cast<AActor_GridTile>(GridTileInArray);
+	//	Tile->SetTileHighlightProperties(false, true, E_GridTile_ColourChangeContext::Normal);
+	//}
+
+	//AttackTraceActor->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	//AttackTraceActor->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
+
+	//if (CurrentSelectedAttack.AttackPattern == EBattle_AttackPatterns::WideWall) {
+	//	// Set the StaticMesh
+	//	for (int i = 0; i < AttackTraceStaticMeshes.Num(); i++) {
+	//		if (AttackTraceStaticMeshes[i]->GetName().Contains("Rectangle")) {
+	//			AttackTraceActor->SetStaticMesh(AttackTraceStaticMeshes[i]);
+	//			break;
+	//		}
+	//	}
+
+	//	FVector WideWallLocation = FVector(150, 0, -100);
+	//	FVector WideWallScale = FVector(0.5f, 2.f, 0.2f);
+
+	//	AttackTraceActor->SetRelativeLocation(WideWallLocation);
+	//	AttackTraceActor->SetRelativeScale3D(WideWallScale);
+	//}		
+	//// Four-Way and Eight-Way Line Traces
+	//else if (CurrentSelectedAttack.AttackPattern == EBattle_AttackPatterns::FourWayCross || CurrentSelectedAttack.AttackPattern == EBattle_AttackPatterns::EightWayCross) {
+	//	// Set the StaticMesh
+	//	for (int i = 0; i < AttackTraceStaticMeshes.Num(); i++) {
+	//		if (AttackTraceStaticMeshes[i]->GetName().Contains("Rectangle")) {
+	//			AttackTraceActor->SetStaticMesh(AttackTraceStaticMeshes[i]);
+	//			break;
+	//		}
+	//	}
+
+	//	// Adjust the Rotation Snap degree
+	//	if (CurrentSelectedAttack.AttackPattern == EBattle_AttackPatterns::EightWayCross)
+	//		AttackRotationSnapToDegrees = 45;
+	//	else
+	//		AttackRotationSnapToDegrees = 90;
+
+	//	int DefaultRectangleLocationX = 350; // Add 100 for every tile range
+	//	int DefaultRectangleScale = CurrentSelectedAttack.BaseRange - 1;
+
+	//	FVector RectangleLocation = FVector(200, 0, -100);
+	//	FVector RectangleScale = FVector(1, 0.1, DefaultRectangleScale);
+
+	//	AttackTraceActor->SetRelativeLocation(RectangleLocation);
+	//	AttackTraceActor->SetRelativeScale3D(RectangleScale);
+	//}
+}
+
+
+void ACharacter_Pathfinder::SetActorHighlightProperties(bool IsVisible, E_GridTile_ColourChangeContext ColourChangeContext)
+{
+	if (ActorHighlightedDecal->IsValidLowLevel() && ActorHighlightedDecalDynamicMaterial->IsValidLowLevel()) {
+		ActorHighlightedDecal->SetVisibility(IsVisible);
+
+		switch (ColourChangeContext)
+		{
+		case (E_GridTile_ColourChangeContext::Normal):
+			// Heirarcy of colours based on factors such as tile properties
+			// Lowest priority: White (no properties that change colour)
+			ActorHighlightedDecalDynamicMaterial->SetVectorParameterValue("Colour", FLinearColor(1.f, 1.f, 1.f, 1.f));
+			break;
+		case (E_GridTile_ColourChangeContext::OnMouseHover):
+			ActorHighlightedDecalDynamicMaterial->SetVectorParameterValue("Colour", FLinearColor(0.f, 1.f, 0.f, 1.f));
+			break;
+		case (E_GridTile_ColourChangeContext::OnMouseHoverTileUnreachable):
+			ActorHighlightedDecalDynamicMaterial->SetVectorParameterValue("Colour", FLinearColor(1.f, 0.f, 0.f, 1.f));
+			break;
+		case (E_GridTile_ColourChangeContext::WithinAttackRange):
+			ActorHighlightedDecalDynamicMaterial->SetVectorParameterValue("Colour", FLinearColor(1.f, 0.2f, 0.f, 1.f));
+			break;
+		default:
+			break;
+		}
 	}
+}
 
-	AttackTraceActor->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	AttackTraceActor->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
 
-	if (CurrentSelectedAttack.AttackPattern == EBattle_AttackPatterns::WideWall) {
-		// Set the StaticMesh
-		for (int i = 0; i < AttackTraceStaticMeshes.Num(); i++) {
-			if (AttackTraceStaticMeshes[i]->GetName().Contains("Rectangle")) {
-				AttackTraceActor->SetStaticMesh(AttackTraceStaticMeshes[i]);
+void ACharacter_Pathfinder::GetValidActorsForAttack_Implementation(FAvatar_AttackStruct Attack, AActor* CurrentlyHoveredActor)
+{
+	if (Cast<AEnterTheNetscape_GameState>(GetWorld()->GetGameState())->DynamicAvatarTurnOrder.Num() > 0) {
+		if (this == Cast<AEnterTheNetscape_GameState>(GetWorld()->GetGameState())->DynamicAvatarTurnOrder[0]) {
+			TArray<FVector2D> ValidVectors;
+			TArray<AActor*> GridTilesArray, EntitiesArray;
+
+			UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor_GridTile::StaticClass(), GridTilesArray);
+			UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACharacter_Pathfinder::StaticClass(), EntitiesArray);
+
+			ValidAttackTargetsArray.Empty();
+
+			switch (Attack.AttackPattern)
+			{
+			case(EBattle_AttackPatterns::SingleTile):
+				if (Cast<AActor_GridTile>(CurrentlyHoveredActor) || Cast<ACharacter_Pathfinder>(CurrentlyHoveredActor)) {
+					ValidAttackTargetsArray.Add(CurrentlyHoveredActor);
+				}
+				break;
+			case(EBattle_AttackPatterns::FourWayCross):
+				ValidVectors.Add(FVector2D(this->GetActorLocation().X, this->GetActorLocation().Y));
+
+				for (int i = 1; i <= Attack.BaseRange; i++) {
+					ValidVectors.Add(FVector2D(this->GetActorLocation().X + (200 * i), this->GetActorLocation().Y));
+					ValidVectors.Add(FVector2D(this->GetActorLocation().X - (200 * i), this->GetActorLocation().Y));
+					ValidVectors.Add(FVector2D(this->GetActorLocation().X, this->GetActorLocation().Y + (200 * i)));
+					ValidVectors.Add(FVector2D(this->GetActorLocation().X, this->GetActorLocation().Y - (200 * i)));
+				}
+
+				for (AActor* GridTile : GridTilesArray) {
+					if (ValidVectors.Contains(FVector2D(GridTile->GetActorLocation().X, GridTile->GetActorLocation().Y))) {
+						ValidAttackTargetsArray.Add(GridTile);
+					}
+				}
+
+				for (AActor* Entity : EntitiesArray) {
+					if (ValidVectors.Contains(FVector2D(Entity->GetActorLocation().X, Entity->GetActorLocation().Y))) {
+						ValidAttackTargetsArray.Add(Entity);
+					}
+				}
+
+				break;
+			default:
 				break;
 			}
 		}
-
-		FVector WideWallLocation = FVector(150, 0, -100);
-		FVector WideWallScale = FVector(0.5f, 2.f, 0.2f);
-
-		AttackTraceActor->SetRelativeLocation(WideWallLocation);
-		AttackTraceActor->SetRelativeScale3D(WideWallScale);
-	}		
-	// Four-Way and Eight-Way Line Traces
-	else if (CurrentSelectedAttack.AttackPattern == EBattle_AttackPatterns::FourWayCross || CurrentSelectedAttack.AttackPattern == EBattle_AttackPatterns::EightWayCross) {
-		// Set the StaticMesh
-		for (int i = 0; i < AttackTraceStaticMeshes.Num(); i++) {
-			if (AttackTraceStaticMeshes[i]->GetName().Contains("Rectangle")) {
-				AttackTraceActor->SetStaticMesh(AttackTraceStaticMeshes[i]);
-				break;
-			}
-		}
-
-		// Adjust the Rotation Snap degree
-		if (CurrentSelectedAttack.AttackPattern == EBattle_AttackPatterns::EightWayCross)
-			AttackRotationSnapToDegrees = 45;
-		else
-			AttackRotationSnapToDegrees = 90;
-
-		int DefaultRectangleLocationX = 350; // Add 100 for every tile range
-		int DefaultRectangleScale = CurrentSelectedAttack.BaseRange - 1;
-
-		FVector RectangleLocation = FVector(200, 0, -100);
-		FVector RectangleScale = FVector(1, 0.1, DefaultRectangleScale);
-
-		AttackTraceActor->SetRelativeLocation(RectangleLocation);
-		AttackTraceActor->SetRelativeScale3D(RectangleScale);
 	}
 }
 
@@ -283,12 +362,6 @@ void ACharacter_Pathfinder::SetTilesOccupiedBySize(bool ClearTiles)
 			}
 		}
 	}
-
-	// wat dis do?
-	//for (int i = 0; i < AvatarData.OccupiedTiles.Num(); i++) {
-	//	BoxComponent->SetWorldLocation(FVector(Start.X + (200 * AvatarData.OccupiedTiles[i].X), Start.Y + (200 * AvatarData.OccupiedTiles[i].Y), 0.f));
-	//	BoxComponent->GetOverlappingActors(OverlappingActors, AActor_GridTile::StaticClass());
-	//}
 
 	// Set overlapping tiles to 'Occupied'
 	for (int j = 0; j < OverlappingActors.Num(); j++) {

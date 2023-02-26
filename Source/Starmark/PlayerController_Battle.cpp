@@ -67,8 +67,9 @@ void APlayerController_Battle::CreateBattleWidget()
 	if (BattleWidgetChildClass && IsLocalPlayerController() && !BattleWidgetReference) {
 		BattleWidgetReference = CreateWidget<UWidget_HUD_Battle>(this, BattleWidgetChildClass);
 
-		if (IsValid(BattleWidgetReference))
+		if (IsValid(BattleWidgetReference)) {
 			BattleWidgetReference->AddToViewport();
+		}
 	}
 }
 
@@ -76,8 +77,9 @@ void APlayerController_Battle::CreateBattleWidget()
 void APlayerController_Battle::SetBattleWidgetVariables()
 {
 	if (IsValid(BattleWidgetReference) && IsValid(CurrentSelectedAvatar)) {
-		if (BattleWidgetReference->PlayerControllerReference != this)
+		if (BattleWidgetReference->PlayerControllerReference != this) {
 			BattleWidgetReference->PlayerControllerReference = this;
+		}
 
 		// To-Do: Fix these
 		BattleWidgetReference->AvatarBattleDataWidget->UpdateAvatarData(CurrentSelectedAvatar->AvatarData);
@@ -224,18 +226,18 @@ void APlayerController_Battle::OnPrimaryClick(AActor* ClickedActor, TArray<AActo
 		// Chirp's Swoop
 		else if (CurrentSelectedAvatar->CurrentSelectedAttack.AttackEffectsOnTarget.Contains(EBattle_AttackEffects::Chirp_Swoop)) {
 			if (ValidTargetsArray.Contains(ClickedActor)) {
-				float largestDistance = 0.f;
-				// Set the clicked actor to be the furtherest tile from Chirp
-				for (int i = 0; i < ValidTargetsArray.Num(); i++) {
-					if (Cast<AActor_GridTile>(ValidTargetsArray[i])) {
-						AActor_GridTile* CurrentTile = Cast<AActor_GridTile>(ValidTargetsArray[i]);
-						// get distance
-						if (FVector::Dist(CurrentTile->GetActorLocation(), this->CurrentSelectedAvatar->GetActorLocation()) > largestDistance) {
-							largestDistance = FVector::Dist(CurrentTile->GetActorLocation(), this->CurrentSelectedAvatar->GetActorLocation());
-							ClickedActor = CurrentTile;
-						}
-					}
-				}
+				//float largestDistance = 0.f;
+				//// Set the clicked actor to be the furtherest tile from Chirp
+				//for (int i = 0; i < ValidTargetsArray.Num(); i++) {
+				//	if (Cast<AActor_GridTile>(ValidTargetsArray[i])) {
+				//		AActor_GridTile* CurrentTile = Cast<AActor_GridTile>(ValidTargetsArray[i]);
+				//		// get distance
+				//		if (FVector::Dist(CurrentTile->GetActorLocation(), this->CurrentSelectedAvatar->GetActorLocation()) > largestDistance) {
+				//			largestDistance = FVector::Dist(CurrentTile->GetActorLocation(), this->CurrentSelectedAvatar->GetActorLocation());
+				//			ClickedActor = CurrentTile;
+				//		}
+				//	}
+				//}
 
 				if (Cast<AActor_GridTile>(ClickedActor)->OccupyingActor == nullptr) {
 					// First teleport the user, then attack every enemy in range
@@ -253,15 +255,11 @@ void APlayerController_Battle::OnPrimaryClick(AActor* ClickedActor, TArray<AActo
 				}
 			}
 		// All other attacks
-		} else if (CurrentSelectedAvatar->CurrentSelectedAttack.Name != "Default" && 
-					CurrentSelectedAvatar->CurrentSelectedAttack.Name != "None" && 
-					CurrentSelectedAvatar->CurrentSelectedAttack.Name != "---" && 
-					ValidTargetsArray.Num() > 0) {
+		} else if (CurrentSelectedAvatar->CurrentSelectedAttack.Name != "Default" && CurrentSelectedAvatar->CurrentSelectedAttack.Name != "None" && CurrentSelectedAvatar->CurrentSelectedAttack.Name != "---" && ValidTargetsArray.Num() > 0) {
 			// Subtract attack's MP cost
 			CurrentSelectedAvatar->AvatarData.CurrentManaPoints -= CurrentSelectedAvatar->CurrentSelectedAttack.ManaCost;
 
-			if (ClickedActor &&
-				CurrentSelectedAvatar->CurrentSelectedAttack.AttackTargetsInRange == EBattle_AttackTargetsInRange::AttackClickedAvatar) {
+			if (ClickedActor && CurrentSelectedAvatar->CurrentSelectedAttack.AttackTargetsInRange == EBattle_AttackTargetsInRange::AttackClickedAvatar) {
 				// Find an entity amongst the valid targets
 				for (AActor* Actor : ValidTargetsArray) {
 					if (Cast<ACharacter_Pathfinder>(Actor)) {
@@ -352,10 +350,10 @@ void APlayerController_Battle::LocalAvatarUpdate(ACharacter_Pathfinder* AvatarRe
 {
 	ACharacter_Pathfinder* FoundActor = AvatarReference;
 
-	if (AvatarUniqueID == MultiplayerUniqueID)
-		FoundActor->ActorSelected_DynamicMaterial_Colour = FLinearColor::Green;
-	else
-		FoundActor->ActorSelected_DynamicMaterial_Colour = FLinearColor::Red;
+	//if (AvatarUniqueID == MultiplayerUniqueID)
+	//	FoundActor->ActorSelected_DynamicMaterial_Colour = FLinearColor::Green;
+	//else
+	//	FoundActor->ActorSelected_DynamicMaterial_Colour = FLinearColor::Red;
 
 	FoundActor->ActorSelectedPlane->SetHiddenInGame(!IsCurrentlyActing);
 	FoundActor->ActorSelectedDynamicMaterialColourUpdate();

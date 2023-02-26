@@ -20,7 +20,7 @@ void ACharacter_NonAvatarEntity::HurricaneOnSpawn()
 {
 	// Destroy unneeded components
 	ActorSelectedPlane->DestroyComponent();
-	ActorSelected->DestroyComponent();
+	ActorHighlightedDecal->DestroyComponent();
 	AttackTraceActor->DestroyComponent();
 	AvatarBattleData_Component->DestroyComponent();
 	GetMesh()->DestroyComponent();

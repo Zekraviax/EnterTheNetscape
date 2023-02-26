@@ -14,7 +14,7 @@
 AActor_AttackEffectsLibrary::AActor_AttackEffectsLibrary()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 }
 
@@ -55,6 +55,9 @@ void AActor_AttackEffectsLibrary::SwitchOnAttackEffect_Implementation(EBattle_At
 		break;
 	case (EBattle_AttackEffects::Chirp_Swoop):
 		Chirp_Swoop(Attacker, Target);
+		break;
+	case (EBattle_AttackEffects::Chirp_Backstab):
+		Chirp_Backstab(Attacker, Cast<ACharacter_Pathfinder>(Target));
 		break;
 	case (EBattle_AttackEffects::Spirit_Cut):
 		if (Cast<ACharacter_Pathfinder>(Target))
@@ -119,6 +122,25 @@ void AActor_AttackEffectsLibrary::Chirp_Swoop_Implementation(ACharacter_Pathfind
 		Cast<AEnterTheNetscape_PlayerState>(GetWorld()->GetFirstPlayerController()->PlayerState)->Server_SubtractHealth(Cast<ACharacter_Pathfinder>(Target), Damage);
 	} else if (Cast<AActor_GridTile>(Target)) {
 		Attacker->SetActorLocation(Target->GetActorLocation());
+	}
+}
+
+
+void AActor_AttackEffectsLibrary::Chirp_Backstab_Implementation(ACharacter_Pathfinder* Attacker, ACharacter_Pathfinder* Defender)
+{
+	// Get target's orientation
+	// Based on the direction they're facing, teleport Chirp to be 200 units behind them
+	FVector DefenderForwardVector = Defender->GetActorForwardVector();
+	FRotator DefenderRotation = Defender->GetActorRotation();
+
+	if (DefenderRotation.Pitch >= 0 && DefenderRotation.Yaw >= 0 && DefenderRotation.Pitch <= 90 && DefenderRotation.Yaw <= 90) {
+		// Facing top-right (default isometric perspective)
+
+	} else if (DefenderRotation.Pitch >= 90 && DefenderRotation.Yaw >= 90 && DefenderRotation.Pitch <= 180 && DefenderRotation.Yaw <= 180) {
+
+	} else if (DefenderRotation.Pitch >= 180 && DefenderRotation.Yaw >= 180 && DefenderRotation.Pitch <= 270 && DefenderRotation.Yaw <= 270) {
+
+	} else if (DefenderRotation.Pitch >= 270 && DefenderRotation.Yaw >= 270 && DefenderRotation.Pitch <= 360 && DefenderRotation.Yaw <= 360) {
 	}
 }
 
