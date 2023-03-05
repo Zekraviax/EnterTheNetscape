@@ -1,6 +1,7 @@
 #include "Character_Pathfinder.h"
 
 #include "Actor_GridTile.h"
+#include "Actor_WorldGrid.h"
 #include "AIController_Avatar.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -320,6 +321,53 @@ void ACharacter_Pathfinder::GetValidActorsForAttack_Implementation(FAvatar_Attac
 				}
 
 				break;
+			case(EBattle_AttackPatterns::Special):
+				switch (Attack.AttackEffectsOnTarget[0])
+				{
+				case(EBattle_AttackEffects::Spirit_CrescentSlash):
+					// Get the WorldGrid actor
+					TArray<AActor*> WorldGridArray;
+					UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor_WorldGrid::StaticClass(), WorldGridArray);
+					AActor_WorldGrid* WorldGridRef = Cast<AActor_WorldGrid>(WorldGridArray[0]);
+
+					ECharacter_FacingDirections CharacterFacingDirection = GetCharacterFacingDirection();
+
+					if (CharacterFacingDirection == ECharacter_FacingDirections::TopRight) {
+						ValidAttackTargetsArray.Add(WorldGridRef->FindCharacterAtCoordinates(FIntPoint(((GetActorLocation().X + 200) / 200), (GetActorLocation().Y / 200))));
+						ValidAttackTargetsArray.Add(WorldGridRef->FindCharacterAtCoordinates(FIntPoint((GetActorLocation().X / 200), ((GetActorLocation().Y - 200) / 200))));
+						ValidAttackTargetsArray.Add(WorldGridRef->FindCharacterAtCoordinates(FIntPoint((GetActorLocation().X / 200), ((GetActorLocation().Y + 200) / 200))));
+
+						ValidAttackTargetsArray.Add(WorldGridRef->FindGridTileAtCoordinates(FIntPoint(((GetActorLocation().X + 200) / 200), (GetActorLocation().Y / 200))));
+						ValidAttackTargetsArray.Add(WorldGridRef->FindGridTileAtCoordinates(FIntPoint((GetActorLocation().X / 200), ((GetActorLocation().Y - 200) / 200))));
+						ValidAttackTargetsArray.Add(WorldGridRef->FindGridTileAtCoordinates(FIntPoint((GetActorLocation().X / 200), ((GetActorLocation().Y + 200) / 200))));
+					} else if (CharacterFacingDirection == ECharacter_FacingDirections::BottomRight) {
+						ValidAttackTargetsArray.Add(WorldGridRef->FindCharacterAtCoordinates(FIntPoint(((GetActorLocation().X + 200) / 200), (GetActorLocation().Y / 200))));
+						ValidAttackTargetsArray.Add(WorldGridRef->FindCharacterAtCoordinates(FIntPoint(((GetActorLocation().X - 200) / 200), (GetActorLocation().Y / 200))));
+						ValidAttackTargetsArray.Add(WorldGridRef->FindCharacterAtCoordinates(FIntPoint((GetActorLocation().X / 200), ((GetActorLocation().Y + 200) / 200))));
+
+						ValidAttackTargetsArray.Add(WorldGridRef->FindGridTileAtCoordinates(FIntPoint(((GetActorLocation().X + 200) / 200), (GetActorLocation().Y / 200))));
+						ValidAttackTargetsArray.Add(WorldGridRef->FindGridTileAtCoordinates(FIntPoint(((GetActorLocation().X - 200) / 200), (GetActorLocation().Y / 200))));
+						ValidAttackTargetsArray.Add(WorldGridRef->FindGridTileAtCoordinates(FIntPoint((GetActorLocation().X / 200), ((GetActorLocation().Y + 200) / 200))));
+					} else if (CharacterFacingDirection == ECharacter_FacingDirections::BottomLeft) {
+						ValidAttackTargetsArray.Add(WorldGridRef->FindCharacterAtCoordinates(FIntPoint(((GetActorLocation().X - 200) / 200), (GetActorLocation().Y / 200))));
+						ValidAttackTargetsArray.Add(WorldGridRef->FindCharacterAtCoordinates(FIntPoint((GetActorLocation().X / 200), ((GetActorLocation().Y - 200) / 200))));
+						ValidAttackTargetsArray.Add(WorldGridRef->FindCharacterAtCoordinates(FIntPoint((GetActorLocation().X / 200), ((GetActorLocation().Y + 200) / 200))));
+
+						ValidAttackTargetsArray.Add(WorldGridRef->FindGridTileAtCoordinates(FIntPoint(((GetActorLocation().X - 200) / 200), (GetActorLocation().Y / 200))));
+						ValidAttackTargetsArray.Add(WorldGridRef->FindGridTileAtCoordinates(FIntPoint((GetActorLocation().X / 200), ((GetActorLocation().Y - 200) / 200))));
+						ValidAttackTargetsArray.Add(WorldGridRef->FindGridTileAtCoordinates(FIntPoint((GetActorLocation().X / 200), ((GetActorLocation().Y + 200) / 200))));
+					} else if (CharacterFacingDirection == ECharacter_FacingDirections::TopLeft) {
+						ValidAttackTargetsArray.Add(WorldGridRef->FindCharacterAtCoordinates(FIntPoint(((GetActorLocation().X + 200) / 200), (GetActorLocation().Y / 200))));
+						ValidAttackTargetsArray.Add(WorldGridRef->FindCharacterAtCoordinates(FIntPoint(((GetActorLocation().X - 200) / 200), (GetActorLocation().Y / 200))));
+						ValidAttackTargetsArray.Add(WorldGridRef->FindCharacterAtCoordinates(FIntPoint((GetActorLocation().X / 200), ((GetActorLocation().Y - 200) / 200))));
+
+						ValidAttackTargetsArray.Add(WorldGridRef->FindGridTileAtCoordinates(FIntPoint(((GetActorLocation().X + 200) / 200), (GetActorLocation().Y / 200))));
+						ValidAttackTargetsArray.Add(WorldGridRef->FindGridTileAtCoordinates(FIntPoint(((GetActorLocation().X - 200) / 200), (GetActorLocation().Y / 200))));
+						ValidAttackTargetsArray.Add(WorldGridRef->FindGridTileAtCoordinates(FIntPoint((GetActorLocation().X / 200), ((GetActorLocation().Y - 200) / 200))));
+					}
+
+					break;
+				}
 			default:
 				break;
 			}
@@ -410,17 +458,6 @@ void ACharacter_Pathfinder::AvatarStopMoving(bool SnapToGrid)
 
 ECharacter_FacingDirections ACharacter_Pathfinder::GetCharacterFacingDirection()
 {
-	// Normalize yaw rotation value to be between 0 and 360
-	//while (GetActorRotation().Yaw < 0.f) {
-	//	SetActorRotation(FRotator(GetActorRotation().Pitch, GetActorRotation().Yaw + 360.f, GetActorRotation().Roll));
-	//	UE_LOG(LogTemp, Warning, TEXT("Spirit_Blunderbuss_Implementation / Actor rotation is: %f %f %f"), GetActorRotation().Pitch, (FMath::FloorToInt(GetActorRotation().Yaw) % 360), GetActorRotation().Roll);
-	//}
-
-	//if (GetActorRotation().Yaw > 0.f) {
-	//	SetActorRotation(FRotator(GetActorRotation().Pitch, GetActorRotation().Yaw - 360.f, GetActorRotation().Roll));
-	//	UE_LOG(LogTemp, Warning, TEXT("Spirit_Blunderbuss_Implementation / Actor rotation is: %f %f %f"), GetActorRotation().Pitch, GetActorRotation().Yaw, GetActorRotation().Roll);
-	//}
-
 	ECharacter_FacingDirections ReturnDirection;
 
 	if (GetActorRotation().Yaw >= -315.f && GetActorRotation().Yaw <= -225.f) {

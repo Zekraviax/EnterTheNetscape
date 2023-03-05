@@ -1,6 +1,7 @@
 #include "Actor_WorldGrid.h"
 
 #include "Actor_GridTile.h"
+#include "Character_Pathfinder.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -99,14 +100,12 @@ AActor_GridTile* AActor_WorldGrid::FindGridTileAtCoordinates(FIntPoint GridCoord
 	AActor_GridTile* ReturnTileReference = nullptr;
 	FIntPoint TileGridCoordinates;
 	TArray<AActor*> GridTilesArray;
-	//TArray<FIntPoint> CoordinatesArray;
 
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor_GridTile::StaticClass(), GridTilesArray);
 	for (int i = 0; i < GridTilesArray.Num(); i++) {
 		AActor_GridTile* FoundTile = Cast<AActor_GridTile>(GridTilesArray[i]);
 
 		TileGridCoordinates = ConvertGridTileLocationToCoordinates(FoundTile->GetActorLocation());
-		//CoordinatesArray.Add(TileGridCoordinates);
 
 		if (GridCoordinates == TileGridCoordinates) {
 			ReturnTileReference = FoundTile;
@@ -115,4 +114,26 @@ AActor_GridTile* AActor_WorldGrid::FindGridTileAtCoordinates(FIntPoint GridCoord
 	}
 
 	return ReturnTileReference;
+}
+
+
+ACharacter_Pathfinder* AActor_WorldGrid::FindCharacterAtCoordinates(FIntPoint GridCoordinates)
+{
+	ACharacter_Pathfinder* ReturnCharacter = nullptr;
+	FIntPoint ActorGridCoordinates;
+	TArray<AActor*> CharactersArray;
+
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACharacter_Pathfinder::StaticClass(), CharactersArray);
+	for (int i = 0; i < CharactersArray.Num(); i++) {
+		ACharacter_Pathfinder* FoundCharacter = Cast<ACharacter_Pathfinder>(CharactersArray[i]);
+
+		ActorGridCoordinates = ConvertGridTileLocationToCoordinates(FoundCharacter->GetActorLocation());
+
+		if (GridCoordinates == ActorGridCoordinates) {
+			ReturnCharacter = FoundCharacter;
+			return ReturnCharacter;
+		}
+	}
+
+	return ReturnCharacter;
 }

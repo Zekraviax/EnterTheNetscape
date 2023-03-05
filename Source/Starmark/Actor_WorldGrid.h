@@ -9,6 +9,7 @@
 
 // Forward Declarations
 class AActor_GridTile;
+class ACharacter_Pathfinder;
 
 
 UCLASS()
@@ -57,4 +58,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	AActor_GridTile* FindGridTileAtCoordinates(FIntPoint GridCoordinates);
+
+	UFUNCTION(BlueprintCallable)
+	ACharacter_Pathfinder* FindCharacterAtCoordinates(FIntPoint GridCoordinates);
 };

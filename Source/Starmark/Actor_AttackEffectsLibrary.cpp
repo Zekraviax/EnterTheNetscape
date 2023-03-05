@@ -69,6 +69,9 @@ void AActor_AttackEffectsLibrary::SwitchOnAttackEffect_Implementation(EBattle_At
 	case (EBattle_AttackEffects::Spirit_Blunderbuss):
 		Spirit_Blunderbuss(Attacker, Target);
 		break;
+	case (EBattle_AttackEffects::Spirit_CrescentSlash):
+		Spirit_CrescentSlash(Attacker, Target);
+		break;
 	case (EBattle_AttackEffects::Sugar_Bash):
 		if (Cast<ACharacter_Pathfinder>(Target))
 			Sugar_Bash(Attacker, Cast<ACharacter_Pathfinder>(Target));
@@ -191,6 +194,13 @@ void AActor_AttackEffectsLibrary::Spirit_Blunderbuss_Implementation(ACharacter_P
 		int Damage = Attacker->AvatarData.BattleStats.Strength + 2;
 		Cast<AEnterTheNetscape_PlayerState>(GetWorld()->GetFirstPlayerController()->PlayerState)->Server_SubtractHealth(Cast<ACharacter_Pathfinder>(Target), Damage);
 	}
+}
+
+
+void AActor_AttackEffectsLibrary::Spirit_CrescentSlash_Implementation(ACharacter_Pathfinder* Attacker, AActor* Target)
+{
+	int Damage = Attacker->AvatarData.BattleStats.Strength;
+	Cast<AEnterTheNetscape_PlayerState>(GetWorld()->GetFirstPlayerController()->PlayerState)->Server_SubtractHealth(Cast<ACharacter_Pathfinder>(Target), Damage);
 }
 
 

@@ -104,6 +104,9 @@ public:
 	UFUNCTION(BlueprintCallable, Server, Unreliable)
 	void Spirit_Blunderbuss(ACharacter_Pathfinder* Attacker, AActor* Target);
 
+	UFUNCTION(BlueprintCallable, Server, Unreliable)
+	void Spirit_CrescentSlash(ACharacter_Pathfinder* Attacker, AActor* Target);
+
 // ------------------------- Sugar
 	UFUNCTION(BlueprintCallable, Server, Unreliable)
 	void Sugar_Bash(ACharacter_Pathfinder* Attacker, ACharacter_Pathfinder* Defender);

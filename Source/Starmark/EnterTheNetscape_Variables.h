@@ -89,9 +89,7 @@ enum class EBattle_AttackPatterns : uint8
 	AOE_Circle,
 	SingleTile,
 	Ring,
-	// Special patterns for single attacks
-	WideWall,
-	TwoTiles,
+	Special,		// The pattern is based on the attack itself, not the pattern
 };
 
 
@@ -130,6 +128,7 @@ enum class EBattle_AttackEffects : uint8
 	Spirit_Cut,
 	Spirit_DashAttack,
 	Spirit_Blunderbuss,
+	Spirit_CrescentSlash,
 	// Sugar
 	Sugar_Bash,
 	Sugar_Concuss,
@@ -152,11 +151,6 @@ enum class EBattle_AttackEffects : uint8
 	SpawnWall,
 	SpawnHurricane,
 	SpawnHats,
-	AddPropertyStoneRoad,
-	AddPropertyShadow,
-	AddPropertyFire,
-	// Alternative Attack Functions/Properties
-	LowerTargetHealthEqualsHigherDamageDealt,
 	// Special Functions
 	SummonAvatar,
 };
@@ -437,9 +431,6 @@ struct STARMARK_API FAvatar_AttackStruct : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EBattle_AttackTargetsInRange AttackTargetsInRange;
 
-	// Effect: On attack launch
-	// Effect: On Self
-	// Effect: On Target(s)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<EBattle_AttackEffects> AttackEffectsOnTarget;
 

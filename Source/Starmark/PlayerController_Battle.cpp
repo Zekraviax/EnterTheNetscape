@@ -264,15 +264,12 @@ void APlayerController_Battle::OnPrimaryClick(AActor* ClickedActor, TArray<AActo
 				UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor_WorldGrid::StaticClass(), WorldGridArray);
 
 				if (WorldGridArray.Num() > 0) {
-					// Get target's orientation
-					// Based on the direction they're facing, teleport Chirp to be 200 units/1 tile behind them
-					ECharacter_FacingDirections CharacterFacingDirection = ClickedCharacter->GetCharacterFacingDirection();
-
-					//FVector DefenderForwardVector = ClickedCharacter->GetActorForwardVector();
-					//FRotator DefenderRotation = ClickedCharacter->GetActorRotation();
-
 					AActor_WorldGrid* WorldGridRef = Cast<AActor_WorldGrid>(WorldGridArray[0]);
 					AActor_GridTile* TileToTeleportTo = nullptr;
+
+					// Get target's orientation
+					// Based on the direction they're facing, teleport Chirp to be 200 units / 1 tile behind them
+					ECharacter_FacingDirections CharacterFacingDirection = ClickedCharacter->GetCharacterFacingDirection();
 
 					if (CharacterFacingDirection == ECharacter_FacingDirections::TopRight) {
 						TileToTeleportTo = WorldGridRef->FindGridTileAtCoordinates(FIntPoint(((ClickedCharacter->GetActorLocation().X - 200) / 200), (ClickedCharacter->GetActorLocation().Y / 200)));
