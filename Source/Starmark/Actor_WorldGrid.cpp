@@ -27,7 +27,9 @@ bool AActor_WorldGrid::IsGridCellWalkable(const FIntPoint& Location) const
 	return true;
 }
 
-
+// This function is to be used for pathing only
+// For other world position to tile coordinate conversions, use the other function:
+// ConvertGridTileLocationToCoordinates
 bool AActor_WorldGrid::ConvertWorldTileToGridCoordinates(const FVector& WorldPos, FIntPoint& GridPos) const
 {
 	FVector MyLocation = GetActorLocation();
@@ -37,6 +39,19 @@ bool AActor_WorldGrid::ConvertWorldTileToGridCoordinates(const FVector& WorldPos
 
 	// Returns a bool, but also outputs the grid coordinates
 	return (GridPos.X < MapSize.X && GridPos.Y < MapSize.Y);
+}
+
+
+// This function is a more sane version of the previous function:
+// ConvertWorldTileToGridCoordinates
+FIntPoint AActor_WorldGrid::ConvertGridTileLocationToCoordinates(FVector ActorLocation) const
+{
+	FIntPoint ReturnCoordinates;
+
+	ReturnCoordinates.X = ActorLocation.X / GridTileSize.X;
+	ReturnCoordinates.Y = ActorLocation.Y / GridTileSize.Y;
+
+	return ReturnCoordinates;
 }
 
 
@@ -54,6 +69,9 @@ FVector AActor_WorldGrid::ConvertGridCoordinatesToWorldTileCenter(const FIntPoin
 }
 
 
+// This function is to be used for pathing only
+// For other world position to tile coordinate conversions, use the other function:
+// FindGridTileAtCoordinates
 AActor_GridTile* AActor_WorldGrid::GetWorldTileActorAtGridCoordinates(const FIntPoint& GridCoordinates) const
 {
 	AActor_GridTile* TileReference = nullptr;
@@ -68,9 +86,33 @@ AActor_GridTile* AActor_WorldGrid::GetWorldTileActorAtGridCoordinates(const FInt
 
 		if (GridCoordinates == TileGridCoordinates) {
 			TileReference = FoundTile;
-			break;
+			return TileReference;
 		}
 	}
 
 	return TileReference;
+}
+
+
+AActor_GridTile* AActor_WorldGrid::FindGridTileAtCoordinates(FIntPoint GridCoordinates)
+{
+	AActor_GridTile* ReturnTileReference = nullptr;
+	FIntPoint TileGridCoordinates;
+	TArray<AActor*> GridTilesArray;
+	//TArray<FIntPoint> CoordinatesArray;
+
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor_GridTile::StaticClass(), GridTilesArray);
+	for (int i = 0; i < GridTilesArray.Num(); i++) {
+		AActor_GridTile* FoundTile = Cast<AActor_GridTile>(GridTilesArray[i]);
+
+		TileGridCoordinates = ConvertGridTileLocationToCoordinates(FoundTile->GetActorLocation());
+		//CoordinatesArray.Add(TileGridCoordinates);
+
+		if (GridCoordinates == TileGridCoordinates) {
+			ReturnTileReference = FoundTile;
+			return ReturnTileReference;
+		}
+	}
+
+	return ReturnTileReference;
 }

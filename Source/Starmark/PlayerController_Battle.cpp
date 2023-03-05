@@ -3,6 +3,7 @@
 
 #include "Actor_AttackEffectsLibrary.h"
 #include "Actor_GridTile.h"
+#include "Actor_WorldGrid.h"
 #include "AIController.h"
 #include "Character_HatTrick.h"
 #include "Engine/World.h"
@@ -219,10 +220,6 @@ void APlayerController_Battle::OnPrimaryClick(AActor* ClickedActor, TArray<AActo
 				}
 			}
 		}
-		// Spirit's Blunderbuss
-		else if (CurrentSelectedAvatar->CurrentSelectedAttack.AttackEffectsOnTarget.Contains(EBattle_AttackEffects::Spirit_Blunderbuss)) {
-			CurrentSelectedAvatar->LaunchAttack_Implementation(Cast<AActor_GridTile>(ClickedActor));
-		}
 		// Chirp's Swoop
 		else if (CurrentSelectedAvatar->CurrentSelectedAttack.AttackEffectsOnTarget.Contains(EBattle_AttackEffects::Chirp_Swoop)) {
 			if (ValidTargetsArray.Contains(ClickedActor)) {
@@ -254,8 +251,55 @@ void APlayerController_Battle::OnPrimaryClick(AActor* ClickedActor, TArray<AActo
 					Client_SendEndOfTurnCommandToServer();
 				}
 			}
+
+		}
+		// Chirp's Backstab
+		// Make sure Chirp can teleport behind the target before executing the move
+		else if (CurrentSelectedAvatar->CurrentSelectedAttack.AttackEffectsOnTarget.Contains(EBattle_AttackEffects::Chirp_Backstab)) {
+			if (Cast<ACharacter_Pathfinder>(ClickedActor)) {
+				ACharacter_Pathfinder* ClickedCharacter = Cast<ACharacter_Pathfinder>(ClickedActor);
+
+				// Get the WorldGrid actor
+				TArray<AActor*> WorldGridArray;
+				UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor_WorldGrid::StaticClass(), WorldGridArray);
+
+				if (WorldGridArray.Num() > 0) {
+					// Get target's orientation
+					// Based on the direction they're facing, teleport Chirp to be 200 units/1 tile behind them
+					ECharacter_FacingDirections CharacterFacingDirection = ClickedCharacter->GetCharacterFacingDirection();
+
+					//FVector DefenderForwardVector = ClickedCharacter->GetActorForwardVector();
+					//FRotator DefenderRotation = ClickedCharacter->GetActorRotation();
+
+					AActor_WorldGrid* WorldGridRef = Cast<AActor_WorldGrid>(WorldGridArray[0]);
+					AActor_GridTile* TileToTeleportTo = nullptr;
+
+					if (CharacterFacingDirection == ECharacter_FacingDirections::TopRight) {
+						TileToTeleportTo = WorldGridRef->FindGridTileAtCoordinates(FIntPoint(((ClickedCharacter->GetActorLocation().X - 200) / 200), (ClickedCharacter->GetActorLocation().Y / 200)));
+					} else if (CharacterFacingDirection == ECharacter_FacingDirections::BottomRight) {
+						TileToTeleportTo = WorldGridRef->FindGridTileAtCoordinates(FIntPoint((ClickedCharacter->GetActorLocation().X / 200), ((ClickedCharacter->GetActorLocation().Y - 200) / 200)));
+					} else if (CharacterFacingDirection == ECharacter_FacingDirections::BottomLeft) {
+						TileToTeleportTo = WorldGridRef->FindGridTileAtCoordinates(FIntPoint(((ClickedCharacter->GetActorLocation().X + 200) / 200), (ClickedCharacter->GetActorLocation().Y / 200)));
+					} else if (CharacterFacingDirection == ECharacter_FacingDirections::TopLeft) {
+						TileToTeleportTo = WorldGridRef->FindGridTileAtCoordinates(FIntPoint((ClickedCharacter->GetActorLocation().X / 200), ((ClickedCharacter->GetActorLocation().Y + 200) / 200)));
+					}
+
+					if (IsValid(TileToTeleportTo)) {
+						if (!IsValid(TileToTeleportTo->OccupyingActor)) {
+							// Teleport the currently acting entity
+							CurrentSelectedAvatar->SetActorLocation(FVector(TileToTeleportTo->GetActorLocation().X, TileToTeleportTo->GetActorLocation().Y, CurrentSelectedAvatar->GetActorLocation().Z + 10.f));
+							CurrentSelectedAvatar->SetActorRotation(ClickedCharacter->GetActorRotation());
+
+							// Deal damage
+							CurrentSelectedAvatar->LaunchAttack_Implementation(ClickedCharacter);
+							Client_SendEndOfTurnCommandToServer();
+						}
+					}
+				}
+			}
+		}
 		// All other attacks
-		} else if (CurrentSelectedAvatar->CurrentSelectedAttack.Name != "Default" && CurrentSelectedAvatar->CurrentSelectedAttack.Name != "None" && CurrentSelectedAvatar->CurrentSelectedAttack.Name != "---" && ValidTargetsArray.Num() > 0) {
+		else if (CurrentSelectedAvatar->CurrentSelectedAttack.Name != "Default" && CurrentSelectedAvatar->CurrentSelectedAttack.Name != "None" && CurrentSelectedAvatar->CurrentSelectedAttack.Name != "---" && ValidTargetsArray.Num() > 0) {
 			// Subtract attack's MP cost
 			CurrentSelectedAvatar->AvatarData.CurrentManaPoints -= CurrentSelectedAvatar->CurrentSelectedAttack.ManaCost;
 

@@ -21,6 +21,16 @@ class UWidget_HUD_Battle;
 class UWidgetComponent_AvatarBattleData;
 
 
+UENUM(BlueprintType)
+enum class ECharacter_FacingDirections : uint8
+{
+	TopRight,
+	TopLeft,
+	BottomRight,
+	BottomLeft
+};
+
+
 UCLASS()
 class STARMARK_API ACharacter_Pathfinder : public ACharacter
 {
@@ -164,6 +174,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void AvatarStopMoving(bool SnapToGrid);
+
+	UFUNCTION(BlueprintCallable)
+	ECharacter_FacingDirections GetCharacterFacingDirection();
 
 // ------------------------- Multiplayer
 	UFUNCTION(Client, Unreliable)

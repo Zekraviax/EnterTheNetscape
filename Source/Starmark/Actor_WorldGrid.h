@@ -44,6 +44,9 @@ public:
 	bool ConvertWorldTileToGridCoordinates(const FVector& WorldPos, FIntPoint& GridPos) const;
 
 	UFUNCTION(BlueprintCallable)
+	FIntPoint ConvertGridTileLocationToCoordinates(FVector ActorLocation) const;
+
+	UFUNCTION(BlueprintCallable)
 	FVector ConvertGridCoordinatesToWorldTile(const FIntPoint& GridCoordinates) const;
 
 	UFUNCTION(BlueprintCallable)
@@ -51,4 +54,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	AActor_GridTile* GetWorldTileActorAtGridCoordinates(const FIntPoint& GridCoordinates) const;
+
+	UFUNCTION(BlueprintCallable)
+	AActor_GridTile* FindGridTileAtCoordinates(FIntPoint GridCoordinates);
 };

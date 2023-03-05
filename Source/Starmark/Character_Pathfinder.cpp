@@ -408,6 +408,53 @@ void ACharacter_Pathfinder::AvatarStopMoving(bool SnapToGrid)
 }
 
 
+ECharacter_FacingDirections ACharacter_Pathfinder::GetCharacterFacingDirection()
+{
+	// Normalize yaw rotation value to be between 0 and 360
+	//while (GetActorRotation().Yaw < 0.f) {
+	//	SetActorRotation(FRotator(GetActorRotation().Pitch, GetActorRotation().Yaw + 360.f, GetActorRotation().Roll));
+	//	UE_LOG(LogTemp, Warning, TEXT("Spirit_Blunderbuss_Implementation / Actor rotation is: %f %f %f"), GetActorRotation().Pitch, (FMath::FloorToInt(GetActorRotation().Yaw) % 360), GetActorRotation().Roll);
+	//}
+
+	//if (GetActorRotation().Yaw > 0.f) {
+	//	SetActorRotation(FRotator(GetActorRotation().Pitch, GetActorRotation().Yaw - 360.f, GetActorRotation().Roll));
+	//	UE_LOG(LogTemp, Warning, TEXT("Spirit_Blunderbuss_Implementation / Actor rotation is: %f %f %f"), GetActorRotation().Pitch, GetActorRotation().Yaw, GetActorRotation().Roll);
+	//}
+
+	ECharacter_FacingDirections ReturnDirection;
+
+	if (GetActorRotation().Yaw >= -315.f && GetActorRotation().Yaw <= -225.f) {
+		// Bottom Right
+		ReturnDirection = ECharacter_FacingDirections::BottomRight;
+	} else if (GetActorRotation().Yaw >= -225.f && GetActorRotation().Yaw <= -135.f) {
+		// Bottom Left
+		ReturnDirection = ECharacter_FacingDirections::BottomLeft;
+	} else if (GetActorRotation().Yaw >= -135.f && GetActorRotation().Yaw <= -45.f) {
+		// Top Left
+		ReturnDirection = ECharacter_FacingDirections::TopLeft;
+	} else if (GetActorRotation().Yaw >= -45.f && GetActorRotation().Yaw <= 45.f) {
+		// Top Right
+		ReturnDirection = ECharacter_FacingDirections::TopRight;
+	} else if (GetActorRotation().Yaw >= 45.f && GetActorRotation().Yaw <= 135.f) {
+		// Bottom Right
+		ReturnDirection = ECharacter_FacingDirections::BottomRight;
+	} else if (GetActorRotation().Yaw >= 135.f && GetActorRotation().Yaw <= 225.f) {
+		// Bottom Left
+		ReturnDirection = ECharacter_FacingDirections::BottomLeft;
+	} else if (GetActorRotation().Yaw >= 225.f && GetActorRotation().Yaw <= 315.f) {
+		// Top Left
+		ReturnDirection = ECharacter_FacingDirections::TopLeft;
+	} else if (GetActorRotation().Yaw >= 315.f && GetActorRotation().Yaw <= 405.f) {
+		// Top Right
+		ReturnDirection = ECharacter_FacingDirections::TopRight;
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("ACharacter_Pathfinder  /  GetCharacterFacingDirection()  /  Error: Character Yaw Value Too High Or Low"));
+	}
+
+	return ReturnDirection;
+}
+
+
 // ------------------------- Multiplayer
 void ACharacter_Pathfinder::Client_GetAvatarData_Implementation(FNetscapeExplorer_Struct NewAvatarData)
 {
