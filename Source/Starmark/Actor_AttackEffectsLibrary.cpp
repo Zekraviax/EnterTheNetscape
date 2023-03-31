@@ -84,6 +84,10 @@ void AActor_AttackEffectsLibrary::SwitchOnAttackEffect_Implementation(EBattle_At
 		if (Cast<ACharacter_Pathfinder>(Target))
 			Sugar_Sting(Attacker, Cast<ACharacter_Pathfinder>(Target));
 		break;
+	case (EBattle_AttackEffects::Sugar_HoneyBolt):
+		if (Cast<ACharacter_Pathfinder>(Target))
+			Sugar_Sting(Attacker, Cast<ACharacter_Pathfinder>(Target));
+		break;
 	default:
 		break;
 	}
@@ -228,8 +232,53 @@ void AActor_AttackEffectsLibrary::Sugar_Concuss_Implementation(ACharacter_Pathfi
 }
 
 
-void AActor_AttackEffectsLibrary::Sugar_Sting_Implementation(ACharacter_Pathfinder * Attacker, ACharacter_Pathfinder * Defender)
+void AActor_AttackEffectsLibrary::Sugar_Sting_Implementation(ACharacter_Pathfinder* Attacker, ACharacter_Pathfinder* Defender)
 {
 	int Damage = Attacker->AvatarData.BattleStats.Strength + 2;
 	Cast<AEnterTheNetscape_PlayerState>(GetWorld()->GetFirstPlayerController()->PlayerState)->Server_SubtractHealth(Defender, Damage);
+}
+
+
+void AActor_AttackEffectsLibrary::Sugar_HoneyBolt_Implementation(ACharacter_Pathfinder* Attacker, AActor* Target)
+{
+	// Spawn projectile
+	if (!RangedProjectileActor_Reference->IsValidLowLevel() && RangedProjectileActor_Class) {
+		RangedProjectileActor_Reference = GetWorld()->SpawnActor<AActor_RangedAttackProjectile>(RangedProjectileActor_Class, Attacker->GetActorLocation(), Attacker->GetActorRotation(), SpawnInfo);
+	}
+
+	// Set owner
+	RangedProjectileActor_Reference->EntityOwner = Attacker;
+
+	// Launch projectile
+	float XValue = 0;
+	float YValue = 0;
+	float ZValue = 0;
+
+	//UE_LOG(LogTemp, Warning, TEXT("Sugar_HoneyBolt_Implementation / Actor rotation is: %f %f %f"), Attacker->GetActorRotation().Roll, GetActorRotation().Pitch, Attacker->GetActorRotation().Yaw);
+	UE_LOG(LogTemp, Warning, TEXT("Sugar_HoneyBolt_Implementation / Actor forward vector is: %f %f %f"), Attacker->GetActorForwardVector().X, Attacker->GetActorForwardVector().Y, Attacker->GetActorForwardVector().Z);
+
+	if (Attacker->GetActorForwardVector().X >= 0.1f) {
+		XValue = 10.f;
+	}
+	else if (Attacker->GetActorForwardVector().X <= -0.1f) {
+		XValue = -10.f;
+	}
+
+	if (Attacker->GetActorForwardVector().Y >= 0.1f) {
+		YValue = 10.f;
+	}
+	else if (Attacker->GetActorForwardVector().Y <= -0.1f) {
+		YValue = -10.f;
+	}
+
+	ZValue = Attacker->GetActorForwardVector().Z;
+
+	UE_LOG(LogTemp, Warning, TEXT("Sugar_HoneyBolt_Implementation / projectile velocity is: %f %f %f"), XValue, YValue, ZValue);
+	RangedProjectileActor_Reference->VelocityEachTick = FVector(XValue, YValue, ZValue);
+
+	// just deal damage to each entity in range immediately
+	if (Cast<ACharacter_Pathfinder>(Target)) {
+		int Damage = Attacker->AvatarData.BattleStats.Strength;
+		Cast<AEnterTheNetscape_PlayerState>(GetWorld()->GetFirstPlayerController()->PlayerState)->Server_SubtractHealth(Cast<ACharacter_Pathfinder>(Target), Damage);
+	}
 }

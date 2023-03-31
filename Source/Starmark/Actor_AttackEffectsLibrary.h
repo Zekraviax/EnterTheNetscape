@@ -105,6 +105,7 @@ public:
 	void Spirit_Blunderbuss(ACharacter_Pathfinder* Attacker, AActor* Target);
 
 	UFUNCTION(BlueprintCallable, Server, Unreliable)
+
 	void Spirit_CrescentSlash(ACharacter_Pathfinder* Attacker, AActor* Target);
 
 // ------------------------- Sugar
@@ -116,4 +117,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Server, Unreliable)
 	void Sugar_Sting(ACharacter_Pathfinder* Attacker, ACharacter_Pathfinder* Defender);
+
+	UFUNCTION(BlueprintCallable, Server, Unreliable)
+	void Sugar_HoneyBolt(ACharacter_Pathfinder* Attacker, AActor* Target);
 };

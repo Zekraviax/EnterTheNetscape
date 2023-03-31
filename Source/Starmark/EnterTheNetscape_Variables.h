@@ -133,6 +133,7 @@ enum class EBattle_AttackEffects : uint8
 	Sugar_Bash,
 	Sugar_Concuss,
 	Sugar_Sting,
+	Sugar_HoneyBolt,
 	// Status Effects
 	AddParalyzeStatus,
 	AddBurnStatus,
