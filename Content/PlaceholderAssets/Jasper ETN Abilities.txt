@@ -1,0 +1,24 @@
+Pocket Amp:
+Summon an Amplifier on to the field. Whenever you play "Bardsongs", they will be played through the Amp as well.
+
+Soothing Sounds:
+Bardsong: Heal allies near you. The closer you are to an ally, the more they are healed
+
+Crowd-Surfer:
+Target an ally. Dash in a straight line, stopping next to them.
+
+Power Chord:
+Bardsong: Play a hella chord that grants healing and buffs to allies, and debuffs enemies. The closer they are, the more potent the effects.
+
+Slide Guitar!:
+Slide X tiles in a straight line. When the slide ends, play a chord that heals allies and hurts enemies. The closer they are, the more potent the effects.
+
+Shrieker
+Bardsong: Use your guitar and Amplifier to cause an undescribably horrible sound that damages enemies and enrages allies, causing them to do more damage.
+The close you are to your Amplifier, and everyone else is to you, the more potent the effects.
+
+Improv Session:
+Bardsong: Jam out and grant allies random positive effects, and enemies random negative effects. The closer they are, the more potent the effects.
+
+Rift Riffs:
+Play some riffs, opening up rifts between you and an enemy or ally that anyone can use to teleport between the two.
